@@ -31,7 +31,40 @@ public class MapManager
 	public GameObject Map { get; private set; }
 	public string MapName { get; private set; }
 	public Grid CellGrid { get; private set; }
+	Dictionary<Vector3Int, BaseObject> _cells = new Dictionary<Vector3Int, BaseObject>();
+	private int MinX;
+	private int MaxX;
+	private int MinY;
+	private int MaxY;
+
+	public Vector3Int World2Cell(Vector3 worldPos) { return CellGrid.WorldToCell(worldPos); }
+	public Vector3 Cell2World(Vector3Int cellPos) { return CellGrid.CellToWorld(cellPos); }
+
+	public void LoadMap(string mapName)
+	{
+		DestroyMap();
+
+		GameObject map = Managers.Resource.Instantiate(mapName);
+		map.transform.position = Vector3.zero;
+		map.name = $"@Map_{mapName}";
 
 
+		Map = map;
+		MapName = mapName;
+		CellGrid = map.GetComponent<Grid>();
+
+		// ParseCollisionData(map, mapName); //아 ai가 어떻게들어올지고민
+	}
+	public void DestroyMap()
+	{
+		ClearObjects();
+
+		if (Map != null)
+			Managers.Resource.Destroy(Map);
+	}
+
+	public void ClearObjects()
+	{
+	}
 
 }

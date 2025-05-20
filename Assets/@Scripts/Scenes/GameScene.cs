@@ -9,11 +9,10 @@ public class GameScene : BaseScene
 	{
 		if (base.Init() == false)
 			return false;
+		Debug.Log("<color=magenta>[GameScene]</color> Init");
 
 		SceneType = EScene.GameScene;
-
-
-
+		Managers.Map.LoadMap("Level");
 		return true;
 	}
 
