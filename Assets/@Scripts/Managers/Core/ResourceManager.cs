@@ -43,7 +43,24 @@ public class ResourceManager
 
 		return null;
 	}
+// ResourceManager.cs에 오버로드 추가
+	public GameObject Instantiate(string key, Vector3 position, Quaternion rotation = default, Transform parent = null, bool pooling = false)
+	{
+		GameObject prefab = Load<GameObject>(key);
+		if (prefab == null)
+		{
+			Debug.LogError($"Failed to load prefab : {key}");
+			return null;
+		}
 
+		if (pooling)
+			return Managers.Pool.Pop(prefab);
+			
+		GameObject go = Object.Instantiate(prefab, position, rotation, parent);
+		go.name = prefab.name;
+
+		return go;
+	}
 	public GameObject Instantiate(string key, Transform parent = null, bool pooling = false)
 	{
 		GameObject prefab = Load<GameObject>(key);

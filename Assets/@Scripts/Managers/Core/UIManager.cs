@@ -24,12 +24,13 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class UIManager
 {
 	public UIManager()
 	{
-		Debug.Log("<color=magenta>[UIManager]</color> 생성됨");
+		Debug.Log("<color=orange>[UIManager]</color> 생성됨");
 	}
 
 	private int _order = 10;
@@ -236,4 +237,31 @@ public class UIManager
 		CloseAllPopupUI();
 		_sceneUI = null;
 	}
+
+	public static void BindEvent(GameObject go, Action<PointerEventData> action = null, Define.EUIEvent type = Define.EUIEvent.Click)
+	{
+		UI_EventHandler evt = Util.GetOrAddComponent<UI_EventHandler>(go);
+
+		switch (type)
+		{
+			case Define.EUIEvent.Click:
+				evt.OnClickHandler -= action;
+				evt.OnClickHandler += action;
+				break;
+			case Define.EUIEvent.PointerDown:
+				evt.OnPointerDownHandler -= action;
+				evt.OnPointerDownHandler += action;
+				break;
+			case Define.EUIEvent.PointerUp:
+				evt.OnPointerUpHandler -= action;
+				evt.OnPointerUpHandler += action;
+				break;
+			case Define.EUIEvent.Drag:
+				evt.OnDragHandler -= action;
+				evt.OnDragHandler += action;
+				break;
+		}
+	}
+
+	// 향후 UI 팝업 관리, UI 사운드 재생 등의 메서드 추가 예정
 }

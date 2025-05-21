@@ -16,6 +16,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class Managers : MonoBehaviour
 {
@@ -26,12 +27,17 @@ public class Managers : MonoBehaviour
 
 	#region Contents
 	private GameManager _game = new GameManager();
+	private GameManagerDK _game_dk = new GameManagerDK();
+    private InputManager _input = new InputManager(); // 추가된 부분
 	private ObjectManager _object = new ObjectManager();
 	private MapManager _map = new MapManager();
 
 	public static GameManager Game { get { return Instance?._game; } }
+	public static GameManagerDK Game_DK { get { return Instance?._game_dk; } }
+
 	public static ObjectManager Object { get { return Instance?._object; } }
 	public static MapManager Map { get { return Instance?._map; } }
+	public static InputManager Input { get { return Instance?._input; } } // 추가된 부분
 	#endregion
 
 	#region Core
@@ -46,9 +52,24 @@ public class Managers : MonoBehaviour
 	public static ResourceManager Resource { get { return Instance?._resource; } }
 	public static SceneManagerEx Scene { get { return Instance?._scene; } }
 	public static UIManager UI { get { return Instance?._ui; } }
+
+
+	
 	#endregion
+    // MonoBehaviourHandler 추가
+	// Managers.cs 수정
+	public static Action UpdateHandler;  // static으로 변경
+	public static Action LateUpdateHandler;  // static으로 변경
 
+	private void Update()
+	{
+		UpdateHandler?.Invoke();
+	}
 
+	private void LateUpdate()
+	{
+		LateUpdateHandler?.Invoke();
+	}
 
 	public static void Init()
 	{
@@ -68,6 +89,8 @@ public class Managers : MonoBehaviour
 
 			// 초기화
 			s_instance = go.GetComponent<Managers>();
+			            // MonoBehaviourHandler.Instance.ToString();
+
 		}
 	}
 

@@ -15,14 +15,8 @@ MonoBehaviour:
   m_GroupName: Prefabs
   m_GUID: 8b6f37a6951c9e246bb403b67ba11597
   m_SerializeEntries:
-  - m_GUID: 549c69af39b84624b8a053537c407def
-    m_Address: Level
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - PreLoad
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 5a40e413d750cdb44b0fe888fbf55284
-    m_Address: BaseMap
+  - m_GUID: 80193940ce077ac43ac29df77022759a
+    m_Address: Restaurant
     m_ReadOnly: 0
     m_SerializedLabels:
     - PreLoad

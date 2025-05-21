@@ -12,7 +12,14 @@ public class GameScene : BaseScene
 		Debug.Log("<color=magenta>[GameScene]</color> Init");
 
 		SceneType = EScene.GameScene;
-		Managers.Map.LoadMap("Level");
+		Managers.Map.LoadMap("Restaurant");
+
+		    // 프리팹 로드
+    	GameObject highlightPrefab = Managers.Resource.Load<GameObject>("Quad");
+		GameObject placeablePrefab = Managers.Resource.Load<GameObject>("Lock");
+		
+		// 그리드 컨트롤 초기화
+		Managers.Game_DK.InitGridControl(highlightPrefab, placeablePrefab);
 		return true;
 	}
 

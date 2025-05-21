@@ -66,5 +66,29 @@ public class MapManager
 	public void ClearObjects()
 	{
 	}
+    public Vector3 GetCellCenterWorld(Vector3Int cellPos)
+    {
+        return CellGrid.GetCellCenterWorld(cellPos);
+    }
 
+    public bool IsCellValid(Vector3Int cellPos)
+    {
+        if (cellPos.x < MinX || cellPos.x > MaxX || cellPos.y < MinY || cellPos.y > MaxY)
+            return false;
+        return !_cells.ContainsKey(cellPos);
+    }
+		// 오브젝트 배치
+	public GameObject PlaceObjectAtCell(GameObject prefab, Vector3Int cellPos)
+	{
+		Vector3 worldPos = GetCellCenterWorld(cellPos);
+	
+		GameObject instance = Managers.Resource.Instantiate(prefab.name, worldPos);
+		BaseObject baseObj = instance.GetComponent<BaseObject>();
+		if (baseObj != null)
+		{
+			_cells[cellPos] = baseObj;
+		}
+		
+		return instance;
+	}
 }
