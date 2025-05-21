@@ -78,7 +78,7 @@ public class GameManagerDK
         // 첫 드래그일 경우 고스트 인스턴스 생성
         if (_ghostInstance == null)
         {
-            _ghostInstance = GameObject.Instantiate(_placeablePrefab);
+            _ghostInstance = Managers.Resource.Instantiate(_placeablePrefab.name);
             ApplyTransparency(_ghostInstance, 0.5f);
             Debug.Log("[GameManager] 드래그 시작");
         }

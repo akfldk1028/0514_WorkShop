@@ -35,6 +35,8 @@ public static class Define
 
 	public enum EObjectType
 	{
+		Unit,
+		Item,
 		None,
 		HeroCamp,
 		Hero,

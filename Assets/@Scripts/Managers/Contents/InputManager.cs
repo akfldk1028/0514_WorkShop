@@ -17,7 +17,8 @@ public class InputManager
     public InputManager()
     {
         Debug.Log("<color=cyan>[InputManager]</color> 생성됨");
-        Managers.UpdateHandler += OnUpdate;  // Instance를 통해 접근
+        //TODO MESSAGE MANAGER 추가해야함 PUBLISH SUBSCRIBE
+        Managers.UpdateHandler += OnUpdate;  // Instance를 통해 접근 /
     }
     ~InputManager()
     {

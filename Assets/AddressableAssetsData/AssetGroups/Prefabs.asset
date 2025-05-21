@@ -15,8 +15,32 @@ MonoBehaviour:
   m_GroupName: Prefabs
   m_GUID: 8b6f37a6951c9e246bb403b67ba11597
   m_SerializeEntries:
+  - m_GUID: 45d539c9e08257b429c94fb60b783692
+    m_Address: Floor
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PreLoad
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 80193940ce077ac43ac29df77022759a
     m_Address: Restaurant
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PreLoad
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 92113fe5fd9b69440985d6ac8f85aaa0
+    m_Address: Customer_DK
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PreLoad
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c490da17d2804264b9a509649aaa5baa
+    m_Address: Quad
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PreLoad
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e1e1432e81566234db60b4dfdbd095e1
+    m_Address: Lock
     m_ReadOnly: 0
     m_SerializedLabels:
     - PreLoad
