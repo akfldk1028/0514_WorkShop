@@ -13,20 +13,40 @@ public class InputManager
     
     private bool _isDragging = false;
     private Vector3Int _lastDragCell = Vector3Int.zero;
+    private IDisposable _updateSubscription;
+    private bool _initialized = false;
+
     
     public InputManager()
     {
         Debug.Log("<color=cyan>[InputManager]</color> 생성됨");
-        //TODO MESSAGE MANAGER 추가해야함 PUBLISH SUBSCRIBE
-        Managers.UpdateHandler += OnUpdate;  // Instance를 통해 접근 /
     }
+    
+    public void Init()
+    {
+        if (_initialized) return;
+        _initialized = true;
+        
+        if (Managers.ActionMessage != null)
+        {
+            // Managers.UpdateHandler += OnUpdate;  // Instance를 통해 접근 /
+            _updateSubscription = Managers.Subscribe(ActionType.Managers_Update, OnUpdate);
+            Debug.Log("<color=cyan>[InputManager]</color> Update 구독 성공");
+        }
+ 
+    }
+    
     ~InputManager()
     {
-        if (Managers.Initialized)
-            Managers.UpdateHandler -= OnUpdate; // 클래스 이름을 통해 정적 멤버에 접근
+        _updateSubscription?.Dispose();
     }
+    
+
+
+
     private void OnUpdate()
     {
+        Debug.Log("<color=cyan>[InputManager]</color> OnUpdate() 호출");
         // UI 위에 마우스가 있는 경우 처리하지 않음
         if (IsMouseOverUI)
         {

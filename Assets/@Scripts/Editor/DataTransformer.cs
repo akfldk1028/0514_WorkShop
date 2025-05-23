@@ -31,13 +31,14 @@ public class DataTransformer : EditorWindow
 	[MenuItem("Tools/ParseExcel %#K")]
 	public static void ParseExcelDataToJson()
 	{
-		ParseExcelDataToJson<MonsterDataLoader, MonsterData>("Monster");
-		ParseExcelDataToJson<HeroDataLoader, HeroData>("Hero");
+		// ParseExcelDataToJson<HeroDataLoader, HeroData>("Hero");
+		// ParseExcelDataToJson<MonsterDataLoader, MonsterData>("Monster");
+		ParseExcelDataToJson<CustomerDataLoader, CustomerData>("Customer");
 		// ParseExcelDataToJson<HeroInfoDataLoader, HeroInfoData>("HeroInfo");
-		ParseExcelDataToJson<SkillDataLoader, SkillData>("Skill");
-		ParseExcelDataToJson<ProjectileDataLoader, ProjectileData>("Projectile");
+		// ParseExcelDataToJson<SkillDataLoader, SkillData>("Skill");
+		// ParseExcelDataToJson<ProjectileDataLoader, ProjectileData>("Projectile");
 
-		ParseExcelDataToJson<TextDataLoader, TextData>("Text");
+		// ParseExcelDataToJson<TextDataLoader, TextData>("Text");
 
 
 

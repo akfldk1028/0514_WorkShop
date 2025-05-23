@@ -1,0 +1,23 @@
+{
+  "customers": [
+    {
+      "Rarity": "SR",
+      "GachaSpawnWeight": 3,
+      "GachaWeight": 3,
+      "GachaExpCount": 10,
+      "Order": "\"\"\"\"\"\"",
+      "DataId": 101000,
+      "DescriptionTextID": "기본손님",
+      "PrefabLabel": "HeroPrefab",
+      "ClientPrefab": "ClientCustomer",
+      "IconImage": "002.sprite",
+      "DefaultSkillId": 10002,
+      "EnvSkillId": 0,
+      "SkillAId": 0,
+      "SkillBId": 0,
+      "IsValidTarget": false,
+      "IsNpc": false,
+      "MoveSpeed": 5.0
+    }
+  ]
+}

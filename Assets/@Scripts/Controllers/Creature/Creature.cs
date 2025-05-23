@@ -35,18 +35,18 @@ public class Creature : BaseObject
 	public CreatureStat AttackSpeedRate;
 	#endregion
 
-	protected float AttackDistance
-	{
-		get
-		{
-			float env = 2.2f;
-			if (Target != null && Target.ObjectType == EObjectType.Env)
-				return Mathf.Max(env, Collider.radius + Target.Collider.radius + 0.1f);
+	// protected float AttackDistance
+	// {
+	// 	get
+	// 	{
+	// 		float env = 2.2f;
+	// 		if (Target != null && Target.ObjectType == EObjectType.Env)
+	// 			return Mathf.Max(env, Collider.radius + Target.Collider.radius + 0.1f);
 
-			float baseValue = CreatureData.AtkRange;
-			return baseValue;
-		}
-	}
+	// 		float baseValue = CreatureData.AtkRange;
+	// 		return baseValue;
+	// 	}
+	// }
 
 	protected ECreatureState _creatureState = ECreatureState.None;
 	public virtual ECreatureState CreatureState
@@ -74,33 +74,33 @@ public class Creature : BaseObject
 	{
 		DataTemplateID = templateID;
 
-		if (ObjectType == EObjectType.Hero)
-			CreatureData = Managers.Data.HeroDic[templateID];
-		else
-			CreatureData = Managers.Data.MonsterDic[templateID];
+		// if (ObjectType == EObjectType.Hero)
+		// 	CreatureData = Managers.Data.HeroDic[templateID];
+		// else
+		// 	CreatureData = Managers.Data.MonsterDic[templateID];
 
 		gameObject.name = $"{CreatureData.DataId}_{CreatureData.DescriptionTextID}";
 
 		// Collider
-		Collider.offset = new Vector2(CreatureData.ColliderOffsetX, CreatureData.ColliderOffsetY);
-		Collider.radius = CreatureData.ColliderRadius;
+		// Collider.offset = new Vector2(CreatureData.ColliderOffsetX, CreatureData.ColliderOffsetY);
+		// Collider.radius = CreatureData.ColliderRadius;
 
 		// RigidBody
 		RigidBody.mass = 0;
 
 		// Spine
-		SetSpineAnimation(CreatureData.SkeletonDataID, SortingLayers.CREATURE);
+		// SetSpineAnimation(CreatureData.SkeletonDataID, SortingLayers.CREATURE);
 
 		// Skills
 		// Skills = gameObject.GetOrAddComponent<SkillComponent>();
 		// Skills.SetInfo(this, CreatureData);
 
 		// Stat
-		Hp = CreatureData.MaxHp;
-		MaxHp = new CreatureStat(CreatureData.MaxHp);
-		Atk = new CreatureStat(CreatureData.Atk);
-		CriRate = new CreatureStat(CreatureData.CriRate);
-		CriDamage = new CreatureStat(CreatureData.CriDamage);
+		// Hp = CreatureData.MaxHp;
+		// MaxHp = new CreatureStat(CreatureData.MaxHp);
+		// Atk = new CreatureStat(CreatureData.Atk);
+		// CriRate = new CreatureStat(CreatureData.CriRate);
+		// CriDamage = new CreatureStat(CreatureData.CriDamage);
 		ReduceDamageRate = new CreatureStat(0);
 		LifeStealRate = new CreatureStat(0);
 		ThornsDamageRate = new CreatureStat(0);
@@ -187,12 +187,12 @@ public class Creature : BaseObject
 		}
 
 		float distToTargetSqr = DistToTargetSqr;
-		float attackDistanceSqr = AttackDistance * AttackDistance;
-		if (distToTargetSqr > attackDistanceSqr)
-		{
-			CreatureState = ECreatureState.Idle;
-			return;
-		}
+		// float attackDistanceSqr = AttackDistance * AttackDistance;
+		// if (distToTargetSqr > attackDistanceSqr)
+		// {
+		// 	CreatureState = ECreatureState.Idle;
+		// 	return;
+		// }
 
 		// DoSkill
 		// Skills.CurrentSkill.DoSkill();

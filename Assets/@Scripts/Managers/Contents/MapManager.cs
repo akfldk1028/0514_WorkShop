@@ -39,10 +39,79 @@ public class MapManager
 
 	public Vector3Int World2Cell(Vector3 worldPos) { return CellGrid.WorldToCell(worldPos); }
 	public Vector3 Cell2World(Vector3Int cellPos) { return CellGrid.CellToWorld(cellPos); }
+    List<Vector3Int> _waitingCells = new List<Vector3Int>();
+	public IReadOnlyList<Vector3Int> WaitingCells => _waitingCells;
 
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="mapName"></param>
+	/// 
+
+  [Header("Auto Customer Spawning")]
+    public float spawnInterval = 2.0f;
+    private float lastSpawnTime = 0f;
+    private IDisposable updateSubscription;
+        private bool autoSpawnEnabled = false;
+
+    public void StartAutoSpawn()
+    {
+        if (autoSpawnEnabled) return;
+        
+        autoSpawnEnabled = true;
+        lastSpawnTime = Time.time;
+        
+        // Managers_Update 액션을 구독
+        updateSubscription = Managers.Subscribe(ActionType.Managers_Update, OnManagersUpdate);
+        
+        Debug.Log("[MapManager] Action 구독 기반 자동 스폰 시작");
+    }
+    public void StopAutoSpawn()
+    {
+		autoSpawnEnabled = false;
+
+        updateSubscription?.Dispose();
+        updateSubscription = null;
+        
+        Debug.Log("[MapManager] 자동 스폰 중지");
+    }
+
+    private void OnManagersUpdate()
+    {
+        if (!autoSpawnEnabled) return;
+        
+        if (Time.time - lastSpawnTime >= spawnInterval)
+        {
+            SpawnRandomCustomer();
+            lastSpawnTime = Time.time;
+        }
+    }
+    private void SpawnRandomCustomer()
+    {
+        if (_waitingCells.Count > 0)
+        {
+            int randomIndex = UnityEngine.Random.Range(0, _waitingCells.Count);
+            Vector3Int cellPos = _waitingCells[randomIndex];
+            Vector3 worldPos = GetCellCenterWorld(cellPos);
+            worldPos.y = 0f; // 또는 적절한 지면 높이
+            Customer customer = Managers.Object.Spawn<Customer>(worldPos, CUSTOMER_ID, pooling: true);
+            
+            Debug.Log($"[MapManager] 고객 생성: {customer.name}");
+            
+            // 고객 생성 이벤트 발행
+            Managers.PublishAction(ActionType.Customer_Spawned);
+        }
+    }
+
+
+	
 	public void LoadMap(string mapName)
 	{
-		DestroyMap();
+		if (Map != null)
+		{
+			Managers.Resource.Destroy(Map);
+		}
 
 		GameObject map = Managers.Resource.Instantiate(mapName);
 		map.transform.position = Vector3.zero;
@@ -52,20 +121,57 @@ public class MapManager
 		Map = map;
 		MapName = mapName;
 		CellGrid = map.GetComponent<Grid>();
+		CacheWaitingPlaces();
 
+
+		StartAutoSpawn();
+		// Map.Get
 		// ParseCollisionData(map, mapName); //아 ai가 어떻게들어올지고민
 	}
-	public void DestroyMap()
-	{
-		ClearObjects();
 
-		if (Map != null)
-			Managers.Resource.Destroy(Map);
+	private void CacheWaitingPlaces()
+	{
+		_waitingCells.Clear();
+
+		Transform waitingRoot = Map.transform.Find("WaitingPlaces");
+		if (waitingRoot == null)
+		{
+			Debug.LogWarning("WaitingPlaces 오브젝트를 찾을 수 없습니다.");
+			return;
+		}
+
+		Debug.Log($"[MapManager] WaitingPlaces found, childCount = {waitingRoot.childCount}");
+		foreach (Transform place in waitingRoot)
+		{
+			// 1) child 이름 찍어보고
+			Debug.Log($"  └─ place: {place.name} @ worldPos={place.position}");
+
+			// 2) 월드→셀 좌표 변환
+			Vector3Int cellPos = CellGrid.WorldToCell(place.position);
+			_waitingCells.Add(cellPos);
+
+			// 3) 변환된 셀좌표도 찍어보기
+			Debug.Log($"     → cellPos: {cellPos}");
+		}
 	}
 
-	public void ClearObjects()
-	{
-	}
+    public void SpawnFirstWaitingPlace() {
+        if (_waitingCells.Count == 0)
+        {
+            Debug.LogWarning("[MapManager] WaitingPlaces 가 없습니다.");
+        }
+
+        Vector3Int firstCell = _waitingCells[0];
+        Vector3 worldPos = GetCellCenterWorld(firstCell);
+		worldPos.y = 0f; // 또는 적절한 지면 높이
+
+        Customer customer = Managers.Object.Spawn<Customer>(worldPos, CUSTOMER_ID, pooling: true);
+    }
+
+
+
+
+	
     public Vector3 GetCellCenterWorld(Vector3Int cellPos)
     {
         return CellGrid.GetCellCenterWorld(cellPos);
@@ -91,4 +197,10 @@ public class MapManager
 		
 		return instance;
 	}
+
+	    void OnDestroy()
+    {
+        StopAutoSpawn(); // 구독 해제
+    }
+
 }

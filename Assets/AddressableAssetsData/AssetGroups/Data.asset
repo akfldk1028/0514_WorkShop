@@ -15,32 +15,8 @@ MonoBehaviour:
   m_GroupName: Data
   m_GUID: 4ef6f93e6dc9c1540812bda65fca63fe
   m_SerializeEntries:
-  - m_GUID: 1cec976e0ef2f3640aa07229e38571ca
-    m_Address: ProjectileData
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - PreLoad
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 370d1146a43d3aa4e85effd08e92aa51
-    m_Address: HeroData
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - PreLoad
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 5d67fd61ce60d4e46a5f0c67923be21d
-    m_Address: SkillData
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - PreLoad
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 758ff23a6509ab94bb53c7fbf73cd2eb
-    m_Address: MonsterData
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - PreLoad
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: ec3d6568470cb5143b24f73cbbe9edd8
-    m_Address: TextData
+  - m_GUID: a0e54082ed00757429bf0496943f57e6
+    m_Address: CustomerData
     m_ReadOnly: 0
     m_SerializedLabels:
     - PreLoad

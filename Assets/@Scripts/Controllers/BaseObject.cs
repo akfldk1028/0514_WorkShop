@@ -33,7 +33,7 @@ public class BaseObject : InitBase
 		if (base.Init() == false)
 			return false;
 
-		Collider = gameObject.GetOrAddComponent<CircleCollider2D>();
+		// Collider = gameObject.GetOrAddComponent<CircleCollider2D>();
 		// SkeletonAnim = GetComponent<SkeletonAnimation>();
 		RigidBody = GetComponent<Rigidbody2D>();
 		// HurtFlash = gameObject.GetOrAddComponent<HurtFlashEffect>();

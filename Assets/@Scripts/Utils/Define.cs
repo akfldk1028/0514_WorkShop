@@ -35,6 +35,7 @@ public static class Define
 
 	public enum EObjectType
 	{
+		Customer,
 		Unit,
 		Item,
 		None,
@@ -271,6 +272,8 @@ public static class Define
 	public const int HERO_WIZARD_ID = 201000;
 	public const int HERO_KNIGHT_ID = 201001;
 	public const int HERO_LION_ID = 201003;
+
+	public const int CUSTOMER_ID = 101000;
 
 	public const int MONSTER_SLIME_ID = 202001;
 	public const int MONSTER_SPIDER_COMMON_ID = 202002;

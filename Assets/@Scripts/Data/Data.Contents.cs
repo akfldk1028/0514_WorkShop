@@ -14,25 +14,50 @@ namespace Data
 		public int DataId;
 		public string DescriptionTextID;
 		public string PrefabLabel;
-		public float ColliderOffsetX;
-		public float ColliderOffsetY;
-		public float ColliderRadius;
-		public float MaxHp;
-		public float UpMaxHpBonus;
-		public float Atk;
-		public float AtkRange;
-		public float AtkBonus;
-		public float MoveSpeed;
-		public float CriRate;
-		public float CriDamage;
+		public string ClientPrefab;
 		public string IconImage;
-		public string SkeletonDataID;
 		public int DefaultSkillId;
 		public int EnvSkillId;
 		public int SkillAId;
 		public int SkillBId;
+		public bool IsValidTarget;
+		public bool IsNpc;
+		public float MoveSpeed;
+	
 	}
 	#endregion
+
+
+	#region CustomerData
+	[Serializable]
+	public class CustomerData : CreatureData
+	{
+		public string Rarity;
+		public int GachaSpawnWeight;
+		public int GachaWeight;
+		public int GachaExpCount;
+		public string Order;
+
+
+	}
+
+	[Serializable]
+	public class CustomerDataLoader : ILoader<int, CustomerData>
+	{
+		public List<CustomerData> customers = new List<CustomerData>();
+		public Dictionary<int, CustomerData> MakeDict()
+		{
+			Dictionary<int, CustomerData> dict = new Dictionary<int, CustomerData>();
+			foreach (CustomerData customer in customers)
+				dict.Add(customer.DataId, customer);
+			return dict;
+		}
+	}
+	#endregion
+
+
+
+
 
 	#region MonsterData
 	[Serializable]

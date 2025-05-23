@@ -75,20 +75,20 @@ public class UI_HeroInfoPopup : UI_Popup
 		if (_heroDataId < 0)
 			return;
 
-		Data.HeroData data = Managers.Data.HeroDic[_heroDataId];
+		// Data.HeroData data = Managers.Data.HeroDic[_heroDataId];
 
-		GetImage((int)Images.HeroIconImage).sprite = Managers.Resource.Load<Sprite>(data.IconImage);
-		GetText((int)Texts.NameText).text = data.DescriptionTextID;
+		// GetImage((int)Images.HeroIconImage).sprite = Managers.Resource.Load<Sprite>(data.IconImage);
+		// GetText((int)Texts.NameText).text = data.DescriptionTextID;
 
 			// GetText((int)Texts.LevelText).text = SaveData.Level.ToString();
 			// GetText((int)Texts.ExpText).text = $"{SaveData.Exp} / ??";
 
 		// TODO
-		float atk = data.Atk;
-		float hp = data.MaxHp;
-		GetText((int)Texts.BattlePowerText).text = (hp + atk * 5).ToString("F0");
-		GetText((int)Texts.DamageText).text = atk.ToString("F0");
-		GetText((int)Texts.HpText).text = hp.ToString("F0");
+		// float atk = data.Atk;
+		// float hp = data.MaxHp;
+		// GetText((int)Texts.BattlePowerText).text = (hp + atk * 5).ToString("F0");
+		// GetText((int)Texts.DamageText).text = atk.ToString("F0");
+		// GetText((int)Texts.HpText).text = hp.ToString("F0");
 	}
 
 	void OnClickCloseArea(PointerEventData evt)

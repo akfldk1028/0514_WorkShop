@@ -6,8 +6,10 @@ using UnityEngine.UI;
 using static Define;
 using System;
 
-public abstract class Unit : BaseObject, IComparable<Unit>
-{
+public class Unit : BaseObject, IComparable<Unit>
+{	
+    public Data.CreatureData CreatureData { get; private set; }
+
     public bool isHandFull;
     public Transform hand;
     public Slider slider;
@@ -36,10 +38,34 @@ public abstract class Unit : BaseObject, IComparable<Unit>
         if (!base.Init())
             return false;
 
-        ObjectType = EObjectType.Unit;
         return true;
     }
-        public int CompareTo(Unit other)
+
+    public virtual void SetInfo<T>(int templateID, T clientCreature) 
+    {
+    	DataTemplateID = templateID;
+
+		if (ObjectType == EObjectType.Customer)
+			CreatureData = Managers.Data.CustomerDic[templateID];
+
+
+    }
+    protected ECreatureState _creatureState = ECreatureState.None;
+
+	public virtual ECreatureState CreatureState
+	{
+		get { return _creatureState; }
+		set
+		{
+			if (_creatureState != value)
+			{
+				_creatureState = value;
+				UpdateAnimation();
+			}
+		}
+	}
+
+    public int CompareTo(Unit other)
     {
         if (other == null) return 1;
         return other.priority.CompareTo(this.priority); // 높은 priority가 먼저

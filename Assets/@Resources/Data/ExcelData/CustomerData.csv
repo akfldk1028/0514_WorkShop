@@ -1,0 +1,2 @@
+﻿DataId,DescriptionTextID,Label,ClientPrefab,IconImage,DefaultSkill,EnvSkill,SkillA,SkillB,IsValidTarget,IsNpc,MovSpeed,Rarity,GachaSpawnWeight,GachaWeight,GachaExpCount,Order
+101000,기본손님,HeroPrefab,ClientCustomer,002.sprite,10002,0,0,0,FALSE,FALSE,5,SR,3,3,10,""""""

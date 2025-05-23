@@ -28,7 +28,7 @@ MonoBehaviour:
     - PreLoad
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 92113fe5fd9b69440985d6ac8f85aaa0
-    m_Address: Customer_DK
+    m_Address: Customer
     m_ReadOnly: 0
     m_SerializedLabels:
     - PreLoad
