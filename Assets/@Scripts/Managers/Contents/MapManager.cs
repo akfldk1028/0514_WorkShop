@@ -43,68 +43,6 @@ public class MapManager
 	public IReadOnlyList<Vector3Int> WaitingCells => _waitingCells;
 
 
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="mapName"></param>
-	/// 
-
-  [Header("Auto Customer Spawning")]
-    public float spawnInterval = 2.0f;
-    private float lastSpawnTime = 0f;
-    private IDisposable updateSubscription;
-        private bool autoSpawnEnabled = false;
-
-    public void StartAutoSpawn()
-    {
-        if (autoSpawnEnabled) return;
-        
-        autoSpawnEnabled = true;
-        lastSpawnTime = Time.time;
-        
-        // Managers_Update 액션을 구독
-        updateSubscription = Managers.Subscribe(ActionType.Managers_Update, OnManagersUpdate);
-        
-        Debug.Log("[MapManager] Action 구독 기반 자동 스폰 시작");
-    }
-    public void StopAutoSpawn()
-    {
-		autoSpawnEnabled = false;
-
-        updateSubscription?.Dispose();
-        updateSubscription = null;
-        
-        Debug.Log("[MapManager] 자동 스폰 중지");
-    }
-
-    private void OnManagersUpdate()
-    {
-        if (!autoSpawnEnabled) return;
-        
-        if (Time.time - lastSpawnTime >= spawnInterval)
-        {
-            SpawnRandomCustomer();
-            lastSpawnTime = Time.time;
-        }
-    }
-    private void SpawnRandomCustomer()
-    {
-        if (_waitingCells.Count > 0)
-        {
-            int randomIndex = UnityEngine.Random.Range(0, _waitingCells.Count);
-            Vector3Int cellPos = _waitingCells[randomIndex];
-            Vector3 worldPos = GetCellCenterWorld(cellPos);
-            worldPos.y = 0f; // 또는 적절한 지면 높이
-            Customer customer = Managers.Object.Spawn<Customer>(worldPos, CUSTOMER_ID, pooling: true);
-            
-            Debug.Log($"[MapManager] 고객 생성: {customer.name}");
-            
-            // 고객 생성 이벤트 발행
-            Managers.PublishAction(ActionType.Customer_Spawned);
-        }
-    }
-
-
 	
 	public void LoadMap(string mapName)
 	{
@@ -124,7 +62,6 @@ public class MapManager
 		CacheWaitingPlaces();
 
 
-		StartAutoSpawn();
 		// Map.Get
 		// ParseCollisionData(map, mapName); //아 ai가 어떻게들어올지고민
 	}
@@ -198,9 +135,5 @@ public class MapManager
 		return instance;
 	}
 
-	    void OnDestroy()
-    {
-        StopAutoSpawn(); // 구독 해제
-    }
 
 }

@@ -104,7 +104,6 @@ public class Managers : MonoBehaviour
 
     public static void Init()
     {
-        // Debug.Log("<color=yellow>[Managers]</color> Init");
         if (s_instance == null && Initialized == false)
         {
             Initialized = true;
@@ -118,9 +117,7 @@ public class Managers : MonoBehaviour
 
             DontDestroyOnLoad(go);
 
-            // 초기화
             s_instance = go.GetComponent<Managers>();
-            // s_instance._input.Init();
         }
     }
 

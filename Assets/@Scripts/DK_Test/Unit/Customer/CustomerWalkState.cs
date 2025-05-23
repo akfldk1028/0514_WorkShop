@@ -21,7 +21,7 @@
             if(customer.chair == null)
             {
                 action.CustomerStandIdle();
-                customer.currState = customer.musteriChairBekleState;
+                // customer.currState = customer.musteriChairBekleState;
                 return;
             }
 
@@ -38,6 +38,6 @@
 
             customer.agent.isStopped = true;
             customer.chair.SetMusteri(customer);
-            customer.currState = customer.standToSitState;
+            // customer.currState = customer.standToSitState;
         }
     }

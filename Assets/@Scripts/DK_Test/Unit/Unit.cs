@@ -14,9 +14,9 @@ public class Unit : BaseObject, IComparable<Unit>
     public Transform hand;
     public Slider slider;
     public Image queueImage;
-    public Action_Test action;
     public NavMeshAgent agent;
     public int priority;  // 우선순위 숫자 (높을수록 먼저 처리되게 할 수도 있음)
+public Action_Test action;  // Inspector에서 할당
 
     [Header("States")]
     [SerializeField] private StateBase _currState;
@@ -38,6 +38,7 @@ public class Unit : BaseObject, IComparable<Unit>
         if (!base.Init())
             return false;
 
+        action = GetComponent<Action_Test>();
         return true;
     }
 

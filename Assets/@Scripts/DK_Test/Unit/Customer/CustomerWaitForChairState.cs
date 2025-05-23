@@ -13,7 +13,7 @@ public class CustomerWaitForChairState : CustomerBaseState
         // customer.chair = customer.FindEmptyChair();
         if(customer.chair != null)
         {
-            customer.currState = customer.customerWalkState;
+            // customer.currState = customer.customerWalkState;
         }
     }
 }

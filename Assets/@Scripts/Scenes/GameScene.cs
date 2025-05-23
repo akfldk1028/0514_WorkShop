@@ -13,6 +13,7 @@ public class GameScene : BaseScene
 
 		SceneType = EScene.GameScene;
 		Managers.Map.LoadMap("Restaurant");
+        Managers.Game.CustomerCreator.StartAutoSpawn();
 
 		    // 프리팹 로드
     	GameObject highlightPrefab = Managers.Resource.Load<GameObject>("Quad");
@@ -23,8 +24,9 @@ public class GameScene : BaseScene
 		return true;
 	}
 
-	public override void Clear()
-	{
-
-	}
+  public override void Clear()
+    {
+        // 씬 종료 시 정리
+        Managers.Game.CustomerCreator.StopAutoSpawn();
+    }
 }
