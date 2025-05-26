@@ -75,32 +75,9 @@ public class BaseObject : InitBase
 	// }
 	#endregion
 
-	#region Spine
-	protected virtual void SetSpineAnimation(string dataLabel, int sortingOrder)
-	{
 
-	
+	protected virtual void UpdateAnimation(){}
 
-
-		// Spine SkeletonAnimation은 SpriteRenderer 를 사용하지 않고 MeshRenderer을 사용함
-		// 그렇기떄문에 2D Sort Axis가 안먹히게 되는데 SortingGroup을 SpriteRenderer,MeshRenderer을 같이 계산함.
-		SortingGroup sg = Util.GetOrAddComponent<SortingGroup>(gameObject);
-		sg.sortingOrder = sortingOrder;
-	}
-
-	protected virtual void UpdateAnimation()
-	{
-	}
-
-	public void AddAnimation(int trackIndex, string AnimName, bool loop, float delay)
-	{
-
-	}
-
-	// public virtual void OnAnimEventHandler(TrackEntry trackEntry, Spine.Event e)
-	// {
-	// 	Debug.Log("OnAnimEventHandler");
-	// }
-	#endregion
+	public void AddAnimation(int trackIndex, string AnimName, bool loop, float delay){}
 
 }

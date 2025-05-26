@@ -16,6 +16,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.AI;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using Object = UnityEngine.Object;
 
@@ -44,7 +45,7 @@ public class ResourceManager
 		return null;
 	}
 // ResourceManager.cs에 오버로드 추가
-	public GameObject Instantiate(string key, Vector3 position, Quaternion rotation = default, Transform parent = null, bool pooling = false)
+	public GameObject Instantiate(string key, Vector3 position , Quaternion rotation = default, Transform parent = null, bool pooling = false)
 	{
 		GameObject prefab = Load<GameObject>(key);
 		if (prefab == null)
@@ -57,6 +58,7 @@ public class ResourceManager
 			return Managers.Pool.Pop(prefab);
 			
 		GameObject go = Object.Instantiate(prefab, position, rotation, parent);
+		
 		go.name = prefab.name;
 
 		return go;

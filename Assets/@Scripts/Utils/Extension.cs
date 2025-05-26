@@ -66,4 +66,16 @@ public static class Extension
 			(list[k], list[n]) = (list[n], list[k]); //swap
 		}
 	}
+
+	public static Vector3 GetPosition(this GameObject go)
+	{
+		return go.transform.position;
+	}
+
+	public static Vector3 GetPosition(this Transform tf)
+	{
+		return tf.position;
+	}
+
+
 }

@@ -27,11 +27,34 @@ public class GameManager
     private CustomerCreator _customerCreator = new CustomerCreator();
     
     public  CustomerCreator CustomerCreator { get { Managers.Game?._customerCreator.Init(); return Managers.Game?._customerCreator; } }
-    #endregion
+    
+    private List<Item> _items = new List<Item>();
+    public IReadOnlyList<Item> Items => _items;
+
+	#endregion
 	public GameManager()
 	{
 		Debug.Log("<color=yellow>[GameManager]</color> 생성됨");
 	}
+ 
+    public void RegisterItem(Item item)
+    {
+        if (!_items.Contains(item))
+        {
+            _items.Add(item);
+			Debug.Log($"[RegisterItem] _items.Count: {_items.Count}");
+        }
+    }
+
+    public void UnregisterItem(Item item)
+    {
+        if (_items.Contains(item))
+        {
+            _items.Remove(item);
+			Debug.Log($"[UnregisterItem] _items.Count: {_items.Count}");
+        }
+    }
+  
  
 
 

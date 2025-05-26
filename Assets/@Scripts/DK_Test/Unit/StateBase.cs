@@ -5,6 +5,6 @@ using UnityEngine;
 public abstract class StateBase : MonoBehaviour
 {
     public Item item;
-    public abstract void StartState(Action_Test action);
-    public abstract void UpdateState(Action_Test action);
+    public abstract void StartState(CharacterAction action);
+    public abstract void UpdateState(CharacterAction action);
 }

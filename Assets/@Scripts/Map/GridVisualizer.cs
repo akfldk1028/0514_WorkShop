@@ -1,13 +1,12 @@
 using UnityEngine;
 
-[ExecuteInEditMode] // ¿¡µðÅÍ ¸ðµå¿¡¼­µµ ½ÇÇàµÇµµ·Ï
+[ExecuteInEditMode] // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½å¿¡ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Çµï¿½ï¿½ï¿½
 [RequireComponent(typeof(Grid))]
 public class GridVisualizer : MonoBehaviour
 {
     public bool showGrid = true;
     public Color gridColor = new Color(0.5f, 0.5f, 0.5f, 0.3f);
 
-    // ±×¸®µå Å©±â´Â ¼¿ Å©±â¿Í ¼ö·®À¸·Î °è»êµÊ
     [Header("Grid Size (in cells)")]
     public int gridSizeX = 20;
     public int gridSizeZ = 20;
@@ -21,7 +20,6 @@ public class GridVisualizer : MonoBehaviour
 
     private void OnValidate()
     {
-        // Inspector¿¡¼­ °ªÀÌ ¹Ù²î¾úÀ» ¶§ ±×¸®µå ¾÷µ¥ÀÌÆ®
         grid = GetComponent<Grid>();
     }
 
@@ -35,10 +33,8 @@ public class GridVisualizer : MonoBehaviour
 
         Gizmos.color = gridColor;
 
-        // ±×¸®µå ±âÁØÁ¡
         Vector3 gridOrigin = transform.position;
 
-        // XÃà ±âÁØ ¼± (Z ¹æÇâÀ¸·Î ÁøÇà)
         for (int z = 0; z <= gridSizeZ; z++)
         {
             float zPos = z * effectiveCellSize.z;
@@ -47,7 +43,6 @@ public class GridVisualizer : MonoBehaviour
             Gizmos.DrawLine(startPos, endPos);
         }
 
-        // ZÃà ±âÁØ ¼± (X ¹æÇâÀ¸·Î ÁøÇà)
         for (int x = 0; x <= gridSizeX; x++)
         {
             float xPos = x * effectiveCellSize.x;
@@ -57,15 +52,12 @@ public class GridVisualizer : MonoBehaviour
         }
     }
 
-    // ±×¸®µå ³» ¿ùµå ÁÂÇ¥¸¦ ¼¿ Áß¾Ó ÁÂÇ¥·Î ½º³À
     public Vector3 SnapToGrid(Vector3 worldPosition)
     {
-        // Grid ÄÄÆ÷³ÍÆ® È°¿ëÇÏ¿© ¼¿ ÁÂÇ¥ °è»ê
         Vector3Int cellPos = grid.WorldToCell(worldPosition);
         return grid.GetCellCenterWorld(cellPos);
     }
 
-    // µð¹ö±ë¿ë: ¾À ºä¿¡¼­ ¼¿ À§Ä¡ Ç¥½Ã
     public void DebugShowCellPosition(Vector3 worldPosition)
     {
         Vector3Int cellPos = grid.WorldToCell(worldPosition);
@@ -75,7 +67,6 @@ public class GridVisualizer : MonoBehaviour
         Debug.Log($"Cell Position: {cellPos}");
         Debug.Log($"Cell Center: {cellCenter}");
 
-        // ¾À ºä¿¡ 5ÃÊ°£ Ç¥½Ã
         Debug.DrawLine(cellCenter - Vector3.right * 0.5f, cellCenter + Vector3.right * 0.5f, Color.red, 5f);
         Debug.DrawLine(cellCenter - Vector3.forward * 0.5f, cellCenter + Vector3.forward * 0.5f, Color.red, 5f);
     }

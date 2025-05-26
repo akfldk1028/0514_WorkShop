@@ -16,13 +16,11 @@ public class Unit : BaseObject, IComparable<Unit>
     public Image queueImage;
     public NavMeshAgent agent;
     public int priority;  // 우선순위 숫자 (높을수록 먼저 처리되게 할 수도 있음)
-public Action_Test action;  // Inspector에서 할당
+    public CharacterAction action;  // Inspector에서 할당
 
     [Header("States")]
     [SerializeField] private StateBase _currState;
-    [Space(5)]
-    public QueueBekleState queueWaitState;
-    public QueueState queueState;
+
 
     public StateBase currState
     {
@@ -38,13 +36,17 @@ public Action_Test action;  // Inspector에서 할당
         if (!base.Init())
             return false;
 
-        action = GetComponent<Action_Test>();
+        action = GetComponent<CharacterAction>();
         return true;
     }
 
     public virtual void SetInfo<T>(int templateID, T clientCreature) 
     {
     	DataTemplateID = templateID;
+        agent = GetComponent<NavMeshAgent>();
+        Debug.Log("[Unit] agent: " + agent);
+        Debug.Log("[Unit] agent: " + agent);
+        Debug.Log("[Unit] agent: " + agent);
 
 		if (ObjectType == EObjectType.Customer)
 			CreatureData = Managers.Data.CustomerDic[templateID];

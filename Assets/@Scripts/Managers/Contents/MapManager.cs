@@ -39,8 +39,9 @@ public class MapManager
 
 	public Vector3Int World2Cell(Vector3 worldPos) { return CellGrid.WorldToCell(worldPos); }
 	public Vector3 Cell2World(Vector3Int cellPos) { return CellGrid.CellToWorld(cellPos); }
-    List<Vector3Int> _waitingCells = new List<Vector3Int>();
-	public IReadOnlyList<Vector3Int> WaitingCells => _waitingCells;
+    List<Vector3> _waitingCells = new List<Vector3>();
+	public IReadOnlyList<Vector3> WaitingCells => _waitingCells;
+	public Vector3 DoorPosition { get; private set; }
 
 
 	
@@ -55,15 +56,19 @@ public class MapManager
 		map.transform.position = Vector3.zero;
 		map.name = $"@Map_{mapName}";
 
+		// Door 위치 캐싱
+		GameObject doorObj = GameObject.Find("Transform/Door");
+		if (doorObj.IsValid())
+		{
+			DoorPosition = doorObj.GetPosition();
+			Debug.Log("Door Pos: " + DoorPosition);
+		}
+
 
 		Map = map;
 		MapName = mapName;
 		CellGrid = map.GetComponent<Grid>();
 		CacheWaitingPlaces();
-
-
-		// Map.Get
-		// ParseCollisionData(map, mapName); //아 ai가 어떻게들어올지고민
 	}
 
 	private void CacheWaitingPlaces()
@@ -84,27 +89,16 @@ public class MapManager
 			Debug.Log($"  └─ place: {place.name} @ worldPos={place.position}");
 
 			// 2) 월드→셀 좌표 변환
-			Vector3Int cellPos = CellGrid.WorldToCell(place.position);
-			_waitingCells.Add(cellPos);
+			_waitingCells.Add(Vector3Int.RoundToInt(place.position));
 
 			// 3) 변환된 셀좌표도 찍어보기
-			Debug.Log($"     → cellPos: {cellPos}");
+			// Debug.Log($"     → cellPos: {cellPos}");
+			foreach (var cell in WaitingCells)
+			{
+				Debug.Log($"     → WaitingCells: {cell}");
+			}
 		}
 	}
-
-    public void SpawnFirstWaitingPlace() {
-        if (_waitingCells.Count == 0)
-        {
-            Debug.LogWarning("[MapManager] WaitingPlaces 가 없습니다.");
-        }
-
-        Vector3Int firstCell = _waitingCells[0];
-        Vector3 worldPos = GetCellCenterWorld(firstCell);
-		worldPos.y = 0f; // 또는 적절한 지면 높이
-
-        Customer customer = Managers.Object.Spawn<Customer>(worldPos, CUSTOMER_ID, pooling: true);
-    }
-
 
 
 

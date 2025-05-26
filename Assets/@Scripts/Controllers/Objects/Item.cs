@@ -1,134 +1,54 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 
-using static Define;
-
-
-/*
- 🧩 큐 시스템 통합 설계
-
- ✅ NPC
-   - 자동 상태 기반 priority 설정
-   - 큐에 추가되어 대기
-   - 자동 상태머신 기반 조리 수행
-
- ✅ 플레이어
-   - int.MaxValue 등으로 우선순위 최고로 설정하거나
-   - 큐를 완전히 생략하고 UseDirectly() 수행
-   - 조리 UI/애니메이션 수동 조작
-
- ✅ 장점
-   - 유지보수 편리 (플레이어/AI 공통 시스템 사용)
-   - 멀티플레이 or AI 대체 가능
-   - 직관적 큐 시각화 및 상태 흐름 처리 용이
-*/
-
-
+/// <summary>
+/// Item 클래스: PriorityQueue<Unit> 기반 대기열 관리 및 비주얼 업데이트 기능을 제공합니다.
+/// </summary>
 public class Item : BaseObject
 {
-    public int plateCount;
-    public List<GameObject> chefs;
-    public List<GameObject> dishwashers;
-    public List<Transform> createdQueueTransform;
-    public Transform chefPlace;
-    public List<Transform> platePlaces;
+    [Header("Queue Visualization")]
+    [Tooltip("대기열 시각화를 위한 트랜스폼 리스트 (0번이 가장 앞)")]
+    public List<Transform> queueSlots;
 
+    // 내부 힙 기반 우선순위 큐
     private PriorityQueue<Unit> _queue = new PriorityQueue<Unit>();
 
-    // ✅ 외부에서 접근 가능하게 public getter 제공
-    public PriorityQueue<Unit> queue => _queue;
+    /// <summary>
+    /// 현재 대기열 (외부에서 Peek/Count 사용 가능)
+    /// </summary>
+    public PriorityQueue<Unit> Queue => _queue;
 
     public override bool Init()
     {
         if (!base.Init())
             return false;
-
-        ObjectType = EObjectType.Item; // 너희 게임에 맞게 Enum 지정
         return true;
     }
 
-    public void CreateQueue(Unit unit)
+    /// <summary>
+    /// 대기열에 Unit을 추가합니다. 우선순위에 따라 자동 정렬됩니다.
+    /// </summary>
+    public void Enqueue(Unit unit)
     {
+        if (unit == null) return;
         _queue.Push(unit);
-        UpdateQueueVisual();
+        Debug.Log($"Enqueue: {unit.name}");
     }
 
-    public void UpdateQueue(Unit unit)
+    /// <summary>
+    /// 대기열에서 Unit을 제거합니다. 선두 단위만 Pop합니다.
+    /// </summary>
+    public void Dequeue(Unit unit)
     {
-        // Remove 시뮬레이션
-        List<Unit> temp = new List<Unit>();
-        while (_queue.Count > 0)
-        {
-            var u = _queue.Pop();
-            if (u != unit)
-                temp.Add(u);
-        }
-
-        foreach (var u in temp)
-            _queue.Push(u);
-
-        UpdateQueueVisual();
+        if (_queue.Count == 0) return;
+        // 단위가 선두에 있을 때만 Pop
+        if (_queue.Peek() == unit)
+            _queue.Pop();
     }
+    public bool IsQueueEmpty => _queue.Count == 0;
 
-    private void UpdateQueueVisual()
-    {
-        List<Unit> orderedUnits = new List<Unit>();
-        while (_queue.Count > 0)
-        {
-            orderedUnits.Add(_queue.Pop());
-        }
-
-        for (int i = 0; i < orderedUnits.Count && i < createdQueueTransform.Count; i++)
-        {
-            Unit unit = orderedUnits[i];
-            unit.queueState.queuePlace = createdQueueTransform[i].position;
-            unit.queueState.isUpdate = true;
-            unit.currState = unit.queueState;
-        }
-
-        foreach (var unit in orderedUnits)
-        {
-            _queue.Push(unit);
-        }
-    }
+    /// <summary>
+    /// 현재 대기열에 등록된 Unit 수를 반환합니다.
+    /// </summary>
+    public int QueueCount => _queue.Count;
 }
-
-
-
-
-// public class Item : MonoBehaviour
-// {
-//     public int plateCount;
-//     public List<GameObject> chefs;
-//     public List<GameObject> dishwashers;
-//     public List<Transform> createdQueueTransform;
-//     [SerializeField] private List<Unit> _queue;
-//     public List<Unit> queue { get => _queue; set { _queue = value;}}
-//     public Transform chefPlace;
-//     public List <Transform> platePlaces;
-//     public void CreateQueue(Unit unit)
-//     {
-//         if(!queue.Contains(unit))
-//         {
-//             queue.Add(unit);
-//         }
-//     }
-//     public void UpdateQueue(Unit unit)
-//     {
-//         if(queue.Contains(unit))
-//         {
-//             queue.Remove(unit);
-//         }
-//         for (int i = 0; i < queue.Count; i++)
-//         {
-            
-//             // queue[i].queueState.oncekiState = queue[i].currState;
-//             queue[i].queueState.queuePlace = createdQueueTransform[i].position;
-//             queue[i].queueState.isUpdate = true;
-//             queue[i].currState = queue[i].queueState;
-//         }
-//     }
-    
-// }

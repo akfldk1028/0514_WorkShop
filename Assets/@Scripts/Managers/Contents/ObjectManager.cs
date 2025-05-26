@@ -16,6 +16,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.AI;
 using static Define;
 
 public class ObjectManager
@@ -25,8 +26,8 @@ public class ObjectManager
 		Debug.Log("<color=cyan>[ObjectManager]</color> 생성됨");
 	}
 
-	public HashSet<Hero> Heroes { get; } = new HashSet<Hero>();
-	public HashSet<Monster> Monsters { get; } = new HashSet<Monster>();
+	// public HashSet<Hero> Heroes { get; } = new HashSet<Hero>();
+	// public HashSet<Monster> Monsters { get; } = new HashSet<Monster>();
 	public HashSet<Customer> Customers { get; } = new HashSet<Customer>();
 
 	#region Roots
@@ -60,9 +61,14 @@ public class ObjectManager
 		string prefabName = typeof(T).Name;
 		Debug.Log($"<color=magenta>[ObjectManager]</color> Spawn {prefabName} at {position}");
 
-		GameObject go = Managers.Resource.Instantiate(prefabName, position, pooling: pooling);
+
+		GameObject go = Managers.Resource.Instantiate(prefabName, position: position, pooling: pooling);
+		
+		Debug.Log($"<color=magenta>[ObjectManager]</color> Spawn {prefabName} at {position}");
 		go.name = prefabName;
 		go.transform.position = position;
+
+
 
 		BaseObject obj = go.GetComponent<BaseObject>();
 		if (obj.ObjectType == EObjectType.Hero)
@@ -100,13 +106,13 @@ public class ObjectManager
 
 		if (obj.ObjectType == EObjectType.Hero)
 		{
-			Hero hero = obj.GetComponent<Hero>();
-			Heroes.Remove(hero);
+			// Hero hero = obj.GetComponent<Hero>();
+			// Heroes.Remove(hero);
 		}
 		else if (obj.ObjectType == EObjectType.Monster)
 		{
-			Monster monster = obj.GetComponent<Monster>();
-			Monsters.Remove(monster);
+			// Monster monster = obj.GetComponent<Monster>();
+			// Monsters.Remove(monster);
 		}
 
 

@@ -14,6 +14,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Pool;
 
 internal class Pool
@@ -57,6 +58,12 @@ internal class Pool
 	private GameObject OnCreate()
 	{
 		GameObject go = GameObject.Instantiate(_prefab);
+		// var agent = go.GetComponent<NavMeshAgent>();
+		// Debug.Log("[Pool] agent: " + agent);
+		// if (agent != null)
+		// {
+		// 	agent.Warp(new Vector3(39.00f, 0.00f, 3.00f));
+		// }
 		go.transform.SetParent(Root);
 		go.name = _prefab.name;
 		return go;

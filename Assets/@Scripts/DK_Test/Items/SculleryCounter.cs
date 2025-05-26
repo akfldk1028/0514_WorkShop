@@ -12,15 +12,15 @@ public class SculleryCounter : Item
     
     public void CheckCounter()
     {
-        if(queue.Count > 0)
-        {
+        // if(queue.Count > 0)
+        // {
             // queue[0].GetComponent<DishWasher>().CheckCounter();
-        }
+        // }
     }
-    public bool CheckQueueCapacityIsFull()
-    {
-        return waiterItem.queue.Count >= waiterItem.createdQueueTransform.Count;
-    }
+    // public bool CheckQueueCapacityIsFull()
+    // {
+        // return waiterItem.queue.Count >= waiterItem.createdQueueTransform.Count;
+    // }
     private void Start() {
         // scullery = GetComponentInParent<Scullery>();
     }
