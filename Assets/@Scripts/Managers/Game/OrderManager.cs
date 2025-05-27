@@ -30,7 +30,8 @@ public class OrderManager
     public void AddOrder(Order order)
     {
         orderQueue.Enqueue(order);
-        UpdateOrderUI();
+        Managers.PublishAction(ActionType.Customer_Ordered);
+      
     }
 
     public Order GetNextOrder()

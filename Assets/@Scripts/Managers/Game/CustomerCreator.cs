@@ -10,18 +10,13 @@ public class CustomerCreator
 
     private FoodManager _foodManager = new FoodManager();
     private OrderManager _orderManager = new OrderManager();
+    public TableManager _tableManager = new TableManager();
+
     public  FoodManager FoodManager { get { Instance._foodManager.SetInfo(); return Instance._foodManager; } }
     public  OrderManager OrderManager { get { Instance._orderManager.SetInfo(); return Instance._orderManager; } }
-        // 손님 리스트 (전체 관리)
+    public TableManager TableManager { get { Instance._tableManager.SetInfo(); return Instance._tableManager; } }
     private List<Customer> _customers = new List<Customer>();
     public IReadOnlyList<Customer> Customers => _customers;
-
-    // 주문 대기 큐 (플레이어가 클릭한 순서대로)
-    private Queue<Order> _orderQueue = new Queue<Order>();
-    public IReadOnlyCollection<Order> OrderQueue => _orderQueue;
-
-  
-
 
     public float spawnInterval = 2.0f;
     private float lastSpawnTime = 0f;
@@ -29,11 +24,11 @@ public class CustomerCreator
     private IDisposable customerSubscription;
     private bool isActive = false;
 
-
     public CustomerCreator()
     {
         s_instance = this; // 싱글톤 인스턴스 할당
         Debug.Log("<color=orange>[CustomerCreator]</color> 생성됨");
+
     }
     
     public void StartAutoSpawn()
@@ -54,9 +49,6 @@ public class CustomerCreator
         Debug.Log("[CustomerCreator] 자동 스폰 중지");
     }
     
-
-
-
 
     private void OnUpdate()
     {
@@ -86,36 +78,14 @@ public class CustomerCreator
         );
     }
     // 플레이어가 손님을 클릭해서 주문을 받는 함수
-    public void OnPlayerTakeOrder(Customer customer)
+    public void OnPlayerTakeOrder(Table table)
     {
-        // 손님이 주문한 모든 음식(orderedFoods) → Order 객체로 변환해서 큐에 추가
-        foreach (var kvp in customer.orderedFoods)
+        var orders = table.CollectOrdersFromSeatedCustomers();
+        foreach (var order in orders)
         {
-            var food = kvp.Key;
-            var info = kvp.Value;
-            var order = new Order
-            {
-                customer = customer,
-                recipeName = food.foodName,
-                requestText = info.specialRequest,
-                isRecommendation = info.isRecommended,
-                orderTime = DateTime.Now
-            };
-            _orderQueue.Enqueue(order);
-            _orderManager.AddOrder(order); // 주문 매니저에도 추가
+            _orderManager.AddOrder(order); // OrderManager의 주문 큐에 추가
         }
-        // UI 갱신, 알림 등
-        _orderManager.UpdateOrderUI();
     }
-
-    // 플레이어가 제조/서빙할 때 주문을 꺼내는 함수
-    public Order GetNextOrder()
-    {
-        if (_orderQueue.Count > 0)
-            return _orderQueue.Dequeue();
-        return null;
-    }
-
 
     private void OnCustomerAction(ActionType actionType)
     {
@@ -139,14 +109,21 @@ public class CustomerCreator
                 // Managers.UI.HighlightTable();
                 // Managers.UI.ShowMessage("손님이 자리에 앉으러 이동 중!");
                 break;
+                
             case ActionType.Customer_Seated:
                 Debug.Log("[GameManager] 고객이 자리에 앉음!");
                 // TODO: 착석 효과음, 착석 수 카운트, 테이블 UI 갱신, 업적/퀘스트 체크 등
                 // Managers.Sound.Play("Seat");
                 // Managers.Game.IncrementSeatedCount();
                 break;
+            case ActionType.Customer_TableFullyOccupied:
+                Debug.Log("[GameManager] 테이블 만석!");
+                // TODO: 테이블 만석 알림, 주문 버튼 활성화, UI 갱신 등
+                // Managers.UI.ShowTableFullMessage();
+                break;
             case ActionType.Customer_Ordered:
                 Debug.Log("[GameManager] 고객이 주문함!");
+                _orderManager.UpdateOrderUI();
                 // TODO: 전체 주문 리스트 UI 갱신, 주문 알림, 사운드, 통계 등
                 // Managers.OrderManager.AddOrder(...);
                 // Managers.UI.UpdateOrderList();
@@ -209,4 +186,5 @@ public class CustomerCreator
             }
         }
     }
+
 }

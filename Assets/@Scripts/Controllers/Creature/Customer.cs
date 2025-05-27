@@ -34,6 +34,7 @@ public class Customer : Unit
     public Image earnMoneyImage;
     public Image orderImage;
     private Chair _chair;
+    public Chair Chair => _chair;
     public Transform placeToSit;
     public Transform door;
     
@@ -54,7 +55,7 @@ public class Customer : Unit
     [SerializeField]
     public TextMeshProUGUI orderText; // 인스펙터에서 할당 or 코드에서 찾기
 
-    private Item queueManager;
+    private Item ItemqueueManager;
     public ECustomerState CustomerState
     {
         get => _customerState;
@@ -79,11 +80,13 @@ public class Customer : Unit
         action = GetComponent<CharacterAction>();
         
         // GameManager.Items에서 가장 가까운 Item을 골라 참조
-        queueManager = Managers.Game.Items
+        ItemqueueManager = Managers.Game.Items
+            .Where(item => item.ObjectType == Define.EObjectType.Chair)
             .OrderBy(item => Vector3.Distance(transform.position, item.transform.position))
             .FirstOrDefault();
 
-        Debug.Log("[Customer] queueManager: " + queueManager);
+
+        Debug.Log("[Customer] ItemqueueManager: " + ItemqueueManager);
         return true;
     }
 
@@ -184,6 +187,11 @@ public class Customer : Unit
                     _chair.SeatCustomer(this);
                     transform.position = _chair.placeToSit.position;
                     Managers.PublishAction(ActionType.Customer_Seated);
+                    // 테이블 만석 체크 및 알림
+                    if (_chair.table != null && _chair.table.IsFullyOccupied)
+                    {
+                        Managers.PublishAction(ActionType.Customer_TableFullyOccupied);
+                    }
                 }
                 break;
 
@@ -234,32 +242,34 @@ public class Customer : Unit
 
         switch (CustomerState)
         {
-
             case ECustomerState.EnteringRestaurant:
                 // (도착 감지 로직)
                 if (agent != null 
                     && !agent.pathPending 
                     && agent.remainingDistance <= agent.stoppingDistance + 0.1f)
                 {
-                    Debug.Log($"[EnteringRestaurant] ECustomerState.EnteringRestaurante: {ECustomerState.EnteringRestaurant}");
-                   queueManager.Queue.Push(this);
-                   CustomerState = ECustomerState.WaitingForChair;
+                    CustomerState = ECustomerState.WaitingForChair;
+
+                    // Debug.Log($"[EnteringRestaurant] ECustomerState.EnteringRestaurante: {ECustomerState.EnteringRestaurant}");
+                    // if (ItemqueueManager is Chair chair)
+                    // {
+                    //     chair.Queue.Push(this);
+                    //     CustomerState = ECustomerState.WaitingForChair;
+                    // }
                 }
                 break;
             case ECustomerState.WaitingForChair:
-                if (queueManager.Queue.Peek() != this)
-                {
-                    action.CustomerStandIdle();
-                    break;
-                }
                 var found = FindEmptyChair();
                 if (found != null)
                 {
                     _chair = found;
                     _chair.Reserve(this); // 예약!
                     placeToSit = found.placeToSit;
-                    queueManager.Queue.Pop();
                     CustomerState = ECustomerState.WalkingToChair;
+                }
+                else
+                {
+                    action.CustomerStandIdle();
                 }
                 break;
             case ECustomerState.WalkingToChair:
@@ -286,6 +296,7 @@ public class Customer : Unit
                     CustomerState = ECustomerState.Ordering;
                 }
                 break;
+                
             case ECustomerState.Eating:
                 if (_stateTimer >= eatingTime)
                 {
