@@ -52,7 +52,7 @@ public class Customer : Unit
     
     
     [SerializeField]
-    public TextMeshProUGUI orderText; // 인스펙터에서 할당 or 코드에서 찾기
+    public TextMeshProUGUI orderText; 
 
     private Item queueManager;
     public ECustomerState CustomerState
@@ -384,7 +384,7 @@ public class Customer : Unit
         orderText.text = text.TrimEnd('\n');
     }
 
-
+  
     private void SetupCustomerModel(ClientCustomer clientCustomer)
     {
         transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
