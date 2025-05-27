@@ -390,11 +390,7 @@ public class Customer : Unit
         transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
         modelInstance = Instantiate(clientCustomer.ModelPrefab, transform.position, Quaternion.identity);
         
-        // var agent = modelInstance.GetComponent<NavMeshAgent>();
-        // if (agent != null)
-        // {
-        //     agent.Warp(transform.position);
-        // }
+
         modelInstance.transform.SetParent(transform);
         // Relay 스크립트 추가 및 연결
         var relay = modelInstance.AddComponent<AnimationEventRelay>();
@@ -405,7 +401,7 @@ public class Customer : Unit
         {
             modelAnimator.runtimeAnimatorController = clientCustomer.AnimatorController;
         }
-
+    
         if (action != null)
         {
             action.SetAnimator(modelAnimator);
