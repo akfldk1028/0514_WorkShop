@@ -401,7 +401,9 @@ public class Customer : Unit
         {
             modelAnimator.runtimeAnimatorController = clientCustomer.AnimatorController;
         }
-    
+      
+
+      
         if (action != null)
         {
             action.SetAnimator(modelAnimator);
