@@ -1,0 +1,2 @@
+﻿DataId,DescriptionTextID,Label,ClientPrefab,IconImage,DefaultSkill,EnvSkill,SkillA,SkillB,IsValidTarget,IsNpc,MovSpeed
+201000,일반플레이어,Player,ClientPlayer,002.sprite,10002,0,0,0,FALSE,FALSE,5

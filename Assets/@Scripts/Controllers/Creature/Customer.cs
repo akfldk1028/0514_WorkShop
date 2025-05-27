@@ -41,11 +41,11 @@ public class Customer : Unit
     public float eatingTime = 10f;
     public AudioClip gainGoldClip;
     
-    [Header("Model References")]
-    public GameObject modelInstance;
-    public Animator modelAnimator;
+    private GameObject modelInstance;
+    private Animator modelAnimator;
     
     // 상태 관리
+    public Dictionary<Food, FoodOrderInfo> orderedFoods = new Dictionary<Food, FoodOrderInfo>();
     private ECustomerState _customerState = ECustomerState.None;
     private float _stateTimer;
     private float _sitTimer = 0f;
@@ -69,7 +69,6 @@ public class Customer : Unit
         }
     }
 
-    public Dictionary<Food, FoodOrderInfo> orderedFoods = new Dictionary<Food, FoodOrderInfo>();
 
     public override bool Init()
     {
@@ -104,7 +103,7 @@ public class Customer : Unit
         {
             SetupCustomerModel(clientCustomer);
         }
-        GenerateDummyOrder();
+         GenerateOrderFromManager();
          UpdateOrderText();
 
         CustomerState = ECustomerState.EnteringRestaurant;
@@ -322,35 +321,13 @@ public class Customer : Unit
                 break;
         }
     }
-// public void OnPlayerClick()
-// {
-//     if (CanOrder)
-//     {
-//         Order order = new Order();
-//         order.customer = this;
-//         if (명확한_주문)
-//         {
-//             order.recipeName = "소맥";
-//             order.isRecommendation = false;
-//         }
-//         else
-//         {
-//             order.requestText = "떡볶이랑 어울리는 칵테일";
-//             order.isRecommendation = true;
-//         }
-//         order.orderTime = DateTime.Now;
-//         OrderManager.Instance.AddOrder(order);
-//         // 상태 전환 등
-//     }
-// }
 
-    // 애니메이션 이벤트에서 호출됨 (예: Stand To Sit → 주문 상태로)
+
     public void SiparisStateGec()
     {
         CustomerState = ECustomerState.Ordering;
     }
 
-    // 애니메이션 이벤트에서 호출됨 (예: Siparis Verme → 음식 기다리기 상태로)
     public void SiparisVer()
     {
         CustomerState = ECustomerState.WaitingForFood;
@@ -372,19 +349,13 @@ public class Customer : Unit
 
     #endregion
 
-
-    private void GenerateDummyOrder()
+    private void GenerateOrderFromManager()
     {
         orderedFoods.Clear();
 
-        // 더미 음식 데이터 (실제 게임에서는 FoodManager 등에서 가져오면 됨) 레벨, 방향키, 
-        // 이거 사용자가 주문받는 순서대로 QUEUE로 넣어줘야함 PRIORITY QUEUE
-        var foodList = new List<Food>
-        {
-            new Food("Gaelic Coffee", 5000, new List<string>{"소주", "맥주"}, "국민조합 술"),
-            new Food("Word Eight", 7000, new List<string>{"잭다니엘", "콜라"}, "위스키 칵테일"),
-            new Food("Pizza!!!!!!!!!!!!!!!!!!!!!!", 6000, new List<string>{"떡", "고추장", "어묵"}, "매콤한 분식")
-        };
+        // FoodManager에서 음식 리스트 받아오기
+        var foodList = Managers.Game.CustomerCreator.FoodManager.GetAllFoods();
+        if (foodList.Count == 0) return;
 
         // 랜덤 주문 예시
         var pick = foodList[Random.Range(0, foodList.Count)];
@@ -395,6 +366,7 @@ public class Customer : Unit
             isRecommended = Random.value > 0.7f
         };
     }
+
 
     public void UpdateOrderText()
     {
@@ -415,7 +387,7 @@ public class Customer : Unit
 
     private void SetupCustomerModel(ClientCustomer clientCustomer)
     {
-        transform.position = new Vector3(transform.position.x, -5f, transform.position.z);
+        transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
         modelInstance = Instantiate(clientCustomer.ModelPrefab, transform.position, Quaternion.identity);
         
         // var agent = modelInstance.GetComponent<NavMeshAgent>();
@@ -434,27 +406,13 @@ public class Customer : Unit
             modelAnimator.runtimeAnimatorController = clientCustomer.AnimatorController;
         }
 
-            // CharacterAction에 Animator 할당
         if (action != null)
         {
             action.SetAnimator(modelAnimator);
         }
     }
 
-    // 음식 받는 순간 호출 (예시)
-    public void ReceiveFood()
-    {
-        Managers.PublishAction(ActionType.Customer_ReceivedFood);
-        StartEatingFood();
-    }
 
-    public void StartEatingFood()
-    {
-        CustomerState = ECustomerState.Eating;
-        Managers.PublishAction(ActionType.Customer_StartedEating);
-    }
-
- 
 
 }
 

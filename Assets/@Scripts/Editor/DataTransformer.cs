@@ -34,6 +34,7 @@ public class DataTransformer : EditorWindow
 		// ParseExcelDataToJson<HeroDataLoader, HeroData>("Hero");
 		// ParseExcelDataToJson<MonsterDataLoader, MonsterData>("Monster");
 		ParseExcelDataToJson<CustomerDataLoader, CustomerData>("Customer");
+		ParseExcelDataToJson<PlayerDataLoader, PlayerData>("Player");
 		// ParseExcelDataToJson<HeroInfoDataLoader, HeroInfoData>("HeroInfo");
 		// ParseExcelDataToJson<SkillDataLoader, SkillData>("Skill");
 		// ParseExcelDataToJson<ProjectileDataLoader, ProjectileData>("Projectile");

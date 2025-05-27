@@ -26,7 +26,7 @@ public enum ActionType
     SceneUnloaded,
     
     // 플레이어 이벤트
-    PlayerSpawn,
+    Player_Spawned,
     PlayerDeath,
     PlayerLevelUp,
     
@@ -34,6 +34,9 @@ public enum ActionType
     UIOpen,
     UIClose,
     
+    MoveDirChanged,
+    JoystickStateChanged,
+
     // 기타 커스텀 이벤트
     CustomEvent
 }

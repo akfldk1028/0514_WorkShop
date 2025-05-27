@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using static Define;
 
@@ -9,20 +10,31 @@ public class CustomerCreator
 
     private FoodManager _foodManager = new FoodManager();
     private OrderManager _orderManager = new OrderManager();
-    public  FoodManager FoodManager { get { Instance._foodManager.Init(); return Instance._foodManager; } }
-    public  OrderManager OrderManager { get { Instance._orderManager.Init(); return Instance._orderManager; } }
-    
-    public CustomerCreator()
-    {
-        Debug.Log("<color=orange>[CustomerCreator]</color> 생성됨");
-    }
-    
+    public  FoodManager FoodManager { get { Instance._foodManager.SetInfo(); return Instance._foodManager; } }
+    public  OrderManager OrderManager { get { Instance._orderManager.SetInfo(); return Instance._orderManager; } }
+        // 손님 리스트 (전체 관리)
+    private List<Customer> _customers = new List<Customer>();
+    public IReadOnlyList<Customer> Customers => _customers;
+
+    // 주문 대기 큐 (플레이어가 클릭한 순서대로)
+    private Queue<Order> _orderQueue = new Queue<Order>();
+    public IReadOnlyCollection<Order> OrderQueue => _orderQueue;
+
+  
+
+
     public float spawnInterval = 2.0f;
     private float lastSpawnTime = 0f;
     private IDisposable updateSubscription;
     private IDisposable customerSubscription;
-
     private bool isActive = false;
+
+
+    public CustomerCreator()
+    {
+        s_instance = this; // 싱글톤 인스턴스 할당
+        Debug.Log("<color=orange>[CustomerCreator]</color> 생성됨");
+    }
     
     public void StartAutoSpawn()
     {
@@ -42,6 +54,10 @@ public class CustomerCreator
         Debug.Log("[CustomerCreator] 자동 스폰 중지");
     }
     
+
+
+
+
     private void OnUpdate()
     {
         if (!isActive) return;
@@ -53,7 +69,7 @@ public class CustomerCreator
         }
     }
     
-    public void Init()
+    public void SetInfo()
     {
         // 여러 Customer 이벤트를 한번에 구독
         customerSubscription = Managers.SubscribeMultiple(OnCustomerAction, 
@@ -69,6 +85,37 @@ public class CustomerCreator
             ActionType.Customer_Left
         );
     }
+    // 플레이어가 손님을 클릭해서 주문을 받는 함수
+    public void OnPlayerTakeOrder(Customer customer)
+    {
+        // 손님이 주문한 모든 음식(orderedFoods) → Order 객체로 변환해서 큐에 추가
+        foreach (var kvp in customer.orderedFoods)
+        {
+            var food = kvp.Key;
+            var info = kvp.Value;
+            var order = new Order
+            {
+                customer = customer,
+                recipeName = food.foodName,
+                requestText = info.specialRequest,
+                isRecommendation = info.isRecommended,
+                orderTime = DateTime.Now
+            };
+            _orderQueue.Enqueue(order);
+            _orderManager.AddOrder(order); // 주문 매니저에도 추가
+        }
+        // UI 갱신, 알림 등
+        _orderManager.UpdateOrderUI();
+    }
+
+    // 플레이어가 제조/서빙할 때 주문을 꺼내는 함수
+    public Order GetNextOrder()
+    {
+        if (_orderQueue.Count > 0)
+            return _orderQueue.Dequeue();
+        return null;
+    }
+
 
     private void OnCustomerAction(ActionType actionType)
     {

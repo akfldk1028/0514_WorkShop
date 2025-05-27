@@ -23,20 +23,52 @@ using Random = UnityEngine.Random;
 
 public class GameManager
 {
+    // private List<Item> _items = new List<Item>();
+    // public IReadOnlyList<Item> Items => _items;
+
     #region Sub Systems
     private CustomerCreator _customerCreator = new CustomerCreator();
-    
-    public  CustomerCreator CustomerCreator { get { Managers.Game?._customerCreator.Init(); return Managers.Game?._customerCreator; } }
-    
+    public  CustomerCreator CustomerCreator { get { Managers.Game?._customerCreator.SetInfo(); return Managers.Game?._customerCreator; } }
+
     private List<Item> _items = new List<Item>();
     public IReadOnlyList<Item> Items => _items;
+    private Player _player;
+    public Player Player => _player;
 
 	#endregion
 	public GameManager()
 	{
 		Debug.Log("<color=yellow>[GameManager]</color> 생성됨");
 	}
- 
+ 	#region Move
+	private Vector2 _moveDir;
+    public Vector2 MoveDir
+    {
+        get { return _moveDir; }
+        set
+        {
+            _moveDir = value;
+            Debug.Log($"[GameManager] MoveDir: {_moveDir}");
+            _player?.Move(_moveDir); // Player.cs의 Move 함수 호출
+            Managers.PublishAction(ActionType.MoveDirChanged);
+        }
+    }
+    private Define.EJoystickState _joystickState;
+    public Define.EJoystickState JoystickState
+    {
+        get { return _joystickState; }
+        set
+        {
+            _joystickState = value;
+            Debug.Log($"[GameManager] JoystickState: {_joystickState}");
+            Managers.PublishAction(ActionType.JoystickStateChanged);
+        }
+    }
+    #endregion
+    public void SetPlayer(Player player)
+    {
+        _player = player;
+    }
     public void RegisterItem(Item item)
     {
         if (!_items.Contains(item))
@@ -64,6 +96,4 @@ public class GameManager
 
 	#endregion
 
-	#region Action
-	#endregion
 }

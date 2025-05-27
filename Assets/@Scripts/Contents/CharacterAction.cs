@@ -29,6 +29,14 @@ public class CharacterAction : MonoBehaviour
         animator.SetBool("idle",false);
         animator.SetBool("tasi",false);
     }
+    public void WalkIdle()
+    {
+
+        animator.SetBool("tasirkenDur",false);
+        animator.SetBool("yuru",true);
+        animator.SetBool("idle",false);
+        animator.SetBool("tasi",false);
+    }
     public void Idle()
     {
         if(animator.GetBool("idle") == true)
@@ -38,6 +46,8 @@ public class CharacterAction : MonoBehaviour
         animator.SetBool("idle",true);
         animator.SetBool("tasi",false);
     }
+
+    
     public void Carry()
     {
         if(animator.GetBool("tasi") == true)

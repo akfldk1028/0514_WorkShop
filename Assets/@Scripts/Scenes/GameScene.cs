@@ -14,7 +14,11 @@ public class GameScene : BaseScene
 		SceneType = EScene.GameScene;
 		Managers.Map.LoadMap("Restaurant");
         Managers.Game.CustomerCreator.StartAutoSpawn();
-
+		// Managers.Game.PlayerManager.SetInfo();
+		Vector3 playerPos = new Vector3(39.0f, 0.0f, 3.0f);
+		Player player = Managers.Object.Spawn<Player>(playerPos, 201000);
+        Managers.Game.SetPlayer(player); // GameManager에 등록
+		Debug.Log("player : " + player);
 		    // 프리팹 로드
     	GameObject highlightPrefab = Managers.Resource.Load<GameObject>("Quad");
 		GameObject placeablePrefab = Managers.Resource.Load<GameObject>("Lock");

@@ -18,18 +18,6 @@ public class Unit : BaseObject, IComparable<Unit>
     public int priority;  // 우선순위 숫자 (높을수록 먼저 처리되게 할 수도 있음)
     public CharacterAction action;  // Inspector에서 할당
 
-    [Header("States")]
-    [SerializeField] private StateBase _currState;
-
-
-    public StateBase currState
-    {
-        get => _currState;
-        set {
-            _currState = value;
-            _currState.StartState(action);
-        }
-    }
 
     public override bool Init()
     {
@@ -44,10 +32,7 @@ public class Unit : BaseObject, IComparable<Unit>
     {
     	DataTemplateID = templateID;
         agent = GetComponent<NavMeshAgent>();
-        Debug.Log("[Unit] agent: " + agent);
-        Debug.Log("[Unit] agent: " + agent);
-        Debug.Log("[Unit] agent: " + agent);
-
+     
 		if (ObjectType == EObjectType.Customer)
 			CreatureData = Managers.Data.CustomerDic[templateID];
 

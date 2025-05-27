@@ -55,7 +55,25 @@ namespace Data
 	}
 	#endregion
 
+	#region PlayerData
+	[Serializable]
+	public class PlayerData : CreatureData
+	{
+	}
 
+	[Serializable]
+	public class PlayerDataLoader : ILoader<int, PlayerData>
+	{
+		public List<PlayerData> players = new List<PlayerData>();
+		public Dictionary<int, PlayerData> MakeDict()
+		{
+			Dictionary<int, PlayerData> dict = new Dictionary<int, PlayerData>();
+			foreach (PlayerData player in players)
+				dict.Add(player.DataId, player);
+			return dict;
+		}
+	}
+	#endregion
 
 
 

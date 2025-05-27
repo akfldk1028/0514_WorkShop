@@ -27,6 +27,7 @@ public class DataManager
 	}
 	
 	public Dictionary<int, Data.CustomerData> CustomerDic { get; private set; } = new Dictionary<int, Data.CustomerData>();
+	public Dictionary<int, Data.PlayerData> PlayerDic { get; private set; } = new Dictionary<int, Data.PlayerData>();
 	// public Dictionary<int, Data.MonsterData> MonsterDic { get; private set; } = new Dictionary<int, Data.MonsterData>();
 	// public Dictionary<int, Data.HeroData> HeroDic { get; private set; } = new Dictionary<int, Data.HeroData>();
 	// public Dictionary<int, Data.HeroInfoData> HeroInfoDic { get; private set; } = new Dictionary<int, Data.HeroInfoData>();
@@ -42,10 +43,16 @@ public class DataManager
 	public void Init()
 	{
 		CustomerDic = LoadJson<Data.CustomerDataLoader, int, Data.CustomerData>("CustomerData").MakeDict();
+		PlayerDic = LoadJson<Data.PlayerDataLoader, int, Data.PlayerData>("PlayerData").MakeDict();
 		Debug.Log($"<color=magenta>[DataManager]</color> CustomerDic {CustomerDic}");
 		foreach (var item in CustomerDic)
 		{
 			Debug.Log($"<color=magenta>[DataManager]</color> CustomerDic {item.Key} {item.Value}");
+		}
+		Debug.Log($"<color=magenta>[DataManager]</color> PlayerDic {PlayerDic}");
+		foreach (var item in PlayerDic)
+		{
+			Debug.Log($"<color=magenta>[DataManager]</color> PlayerDic {item.Key} {item.Value}");
 		}
 		// MonsterDic = LoadJson<Data.MonsterDataLoader, int, Data.MonsterData>("MonsterData").MakeDict();
 		// HeroDic = LoadJson<Data.HeroDataLoader, int, Data.HeroData>("HeroData").MakeDict();

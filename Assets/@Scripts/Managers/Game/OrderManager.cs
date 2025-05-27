@@ -21,7 +21,7 @@ public class OrderManager
         Debug.Log("<color=orange>[OrderManager]</color> 생성됨");
     }
 
-    public void Init()
+    public void SetInfo()
     {
 
     }

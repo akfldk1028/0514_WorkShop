@@ -29,6 +29,7 @@ public class ObjectManager
 	// public HashSet<Hero> Heroes { get; } = new HashSet<Hero>();
 	// public HashSet<Monster> Monsters { get; } = new HashSet<Monster>();
 	public HashSet<Customer> Customers { get; } = new HashSet<Customer>();
+	public HashSet<Player> Players { get; } = new HashSet<Player>();
 
 	#region Roots
 	public Transform GetRootTransform(string name)
@@ -43,7 +44,7 @@ public class ObjectManager
 	public Transform HeroRoot { get { return GetRootTransform("@Heroes"); } }
 	public Transform MonsterRoot { get { return GetRootTransform("@Monsters"); } }
 	public Transform CustomerRoot { get { return GetRootTransform("@Customers"); } }
-
+	public Transform PlayerRoot { get { return GetRootTransform("@Players"); } }
 	#endregion
 
 	
@@ -71,21 +72,10 @@ public class ObjectManager
 
 
 		BaseObject obj = go.GetComponent<BaseObject>();
-		if (obj.ObjectType == EObjectType.Hero)
-		{
-			obj.transform.parent = HeroRoot;
-			// Hero hero = go.GetComponent<Hero>();
-			// Heroes.Add(hero);
-			// hero.SetInfo(templateID);
-		}
-		else if (obj.ObjectType == EObjectType.Monster)
-		{
-			obj.transform.parent = HeroRoot;
-			// Monster monster = go.GetComponent<Monster>();
-			// Monsters.Add(monster);
-			// monster.SetInfo(templateID);
-		}
-		else if (obj.ObjectType == EObjectType.Customer)
+	    Debug.Log($"<color=magenta>[ObjectManager]</color> Spawn {prefabName} at {obj.ObjectType}");
+
+		
+		if (obj.ObjectType == EObjectType.Customer)
 		{
 			Data.CustomerData data = Managers.Data.CustomerDic[templateID];
 			ClientCustomer clientCustomer = Managers.Resource.Load<ClientCustomer>(data.ClientPrefab);
@@ -95,6 +85,19 @@ public class ObjectManager
 			Customers.Add(customer);
 
 		}
+        else if (obj.ObjectType == EObjectType.Player)
+        {
+            Debug.Log($"<color=magenta>[ObjectManager]</color> Spawn {prefabName} at {templateID}");
+            Debug.Log($"<color=magenta>[ObjectManager]</color> Spawn {prefabName} at { Managers.Data.PlayerDic[templateID]}");
+
+            Data.PlayerData data = Managers.Data.PlayerDic[templateID];
+			ClientPlayer clientPlayer = Managers.Resource.Load<ClientPlayer>(data.ClientPrefab);
+            Player player = go.GetComponent<Player>();
+            player.SetInfo(templateID, clientPlayer);
+            obj.transform.parent = PlayerRoot;
+            Players.Add(player);
+        }
+
 
 
 		return obj as T;

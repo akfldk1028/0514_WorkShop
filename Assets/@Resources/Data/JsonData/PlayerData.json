@@ -1,0 +1,18 @@
+{
+  "players": [
+    {
+      "DataId": 201000,
+      "DescriptionTextID": "일반플레이어",
+      "PrefabLabel": "Player",
+      "ClientPrefab": "ClientPlayer",
+      "IconImage": "002.sprite",
+      "DefaultSkillId": 10002,
+      "EnvSkillId": 0,
+      "SkillAId": 0,
+      "SkillBId": 0,
+      "IsValidTarget": false,
+      "IsNpc": false,
+      "MoveSpeed": 5.0
+    }
+  ]
+}

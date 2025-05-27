@@ -8,12 +8,15 @@ public class AnimationEventRelay : MonoBehaviour
     public void SiparisStateGec()
     {
         if (customer != null)
-            customer.SiparisStateGec();
+            // customer.SiparisStateGec();
+            customer.CustomerState = ECustomerState.Ordering;
+
     }
 
     public void SiparisVer()
     {
         if (customer != null)
-            customer.SiparisVer();
+            // customer.SiparisVer();
+            customer.CustomerState = ECustomerState.WaitingForFood;
     }
 }

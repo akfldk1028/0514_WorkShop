@@ -24,6 +24,7 @@ public class Managers : MonoBehaviour
     private GameManager _game = new GameManager();
     private GameManagerDK _game_dk = new GameManagerDK();
     private InputManager _input = new InputManager();
+    private Keyboard _keyboard = new Keyboard();
     private ObjectManager _object = new ObjectManager();
     private MapManager _map = new MapManager();
 
@@ -33,6 +34,7 @@ public class Managers : MonoBehaviour
     public static ObjectManager Object { get { return Instance?._object; } }
     public static MapManager Map { get { return Instance?._map; } }
     public static InputManager Input { get { Instance?._input.Init();  return Instance?._input; } }
+    public static Keyboard Keyboard { get { Instance?._keyboard.SetInfo();  return Instance?._keyboard; } }
     #endregion
 
     #region Core
@@ -64,6 +66,7 @@ public class Managers : MonoBehaviour
 
     void Update()
     {
+        _keyboard.Update(); // 키보드 입력 체크
 		_action_message.Publish(ActionType.Managers_Update);
     }
     

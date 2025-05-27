@@ -35,6 +35,7 @@ public static class Define
 
 	public enum EObjectType
 	{
+		Player,
 		Chair,
 		Customer,
 		Unit,
