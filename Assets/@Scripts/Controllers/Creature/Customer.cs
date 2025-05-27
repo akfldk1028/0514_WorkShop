@@ -393,6 +393,7 @@ public class Customer : Unit
 
         modelInstance.transform.SetParent(transform);
         // Relay 스크립트 추가 및 연결
+         // Relay 스크립트 추가 및 연결
         var relay = modelInstance.AddComponent<AnimationEventRelay>();
         relay.customer = this;
 
