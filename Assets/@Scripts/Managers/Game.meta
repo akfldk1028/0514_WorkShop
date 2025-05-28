@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/@Scripts/Managers/Game.meta
 guid: 7ac2a56ddf1014d479109e1c87e8bdf9
+========
+guid: 185681aacde4204498b2543ba2f79862
+>>>>>>>> origin/Jina_Test_0519:Assets/Fries and Seagull/Bar 02.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

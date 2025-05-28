@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/@Scripts/Message.meta
 guid: 94b9f3793af19854d8897eae71b0768b
+========
+guid: b1e2e42254982244fbbc44b75d79094d
+>>>>>>>> origin/Jina_Test_0519:Assets/Fries and Seagull/Bar 02/Models.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

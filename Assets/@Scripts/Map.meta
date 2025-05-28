@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/@Scripts/Map.meta
 guid: 15d793e8daa79cd45b25b77a1cd85714
+========
+guid: 7b61e40f2f8a17d4286f14048ac6ec46
+>>>>>>>> origin/Jina_Test_0519:Assets/Fries and Seagull/Bar 02/BRP Sample Scene.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

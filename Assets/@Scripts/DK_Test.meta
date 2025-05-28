@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/@Scripts/DK_Test.meta
 guid: 218f23c913fa6cd43a0ac560f52bf92a
+========
+guid: 65a2ea3a8aada8941b351972e30be17f
+>>>>>>>> origin/Jina_Test_0519:Assets/Fries and Seagull.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}
