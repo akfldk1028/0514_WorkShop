@@ -28,10 +28,13 @@ public class Managers : MonoBehaviour
 	private GameManager _game = new GameManager();
 	private ObjectManager _object = new ObjectManager();
 	private MapManager _map = new MapManager();
+	private InGameManager _Ingame;
 
 	public static GameManager Game { get { return Instance?._game; } }
 	public static ObjectManager Object { get { return Instance?._object; } }
 	public static MapManager Map { get { return Instance?._map; } }
+	public static InGameManager Ingame { get { return Instance?._Ingame; } }
+
 	#endregion
 
 	#region Core
@@ -68,6 +71,8 @@ public class Managers : MonoBehaviour
 
 			// 초기화
 			s_instance = go.GetComponent<Managers>();
+
+			s_instance._Ingame = go.AddComponent<InGameManager>();
 		}
 	}
 
