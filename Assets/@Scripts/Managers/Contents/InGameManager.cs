@@ -16,7 +16,6 @@ public class InGameManager : MonoBehaviour
 
     [Header("Interaction UI")]
     public GameObject interactionCanvas;
-    //public GameObject GameCanvas;
 
     //find로 연결해야하나?? 어떤식으로 작업해야하지?-?
 
