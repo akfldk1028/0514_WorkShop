@@ -28,6 +28,7 @@ public class Managers : MonoBehaviour
     private ObjectManager _object = new ObjectManager();
     private MapManager _map = new MapManager();
     private InGameManager _Ingame;
+    //private RythmGameManager _Rythm;
 
     // 메시지 채널 접근자
     public static MessageManager<ActionType> ActionMessage { get { return Instance?._action_message; } }
@@ -39,6 +40,8 @@ public class Managers : MonoBehaviour
     public static Keyboard Keyboard { get { Instance?._keyboard.SetInfo();  return Instance?._keyboard; } }
 
     public static InGameManager Ingame { get { return Instance?._Ingame; } }
+
+    //public static RythmGameManager RythmGame { get { return Instance?._Rythm; } }
     #endregion
 
     #region Core
@@ -126,6 +129,7 @@ public class Managers : MonoBehaviour
 
             s_instance = go.GetComponent<Managers>();
             s_instance._Ingame = go.AddComponent<InGameManager>();
+            //s_instance._Ingame = go.AddComponent<RythmGameManager>();
         }
     }
 
