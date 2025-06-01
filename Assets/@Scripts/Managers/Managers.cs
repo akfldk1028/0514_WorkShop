@@ -22,7 +22,7 @@ public class Managers : MonoBehaviour
     #region Contents
     private MessageManager<ActionType> _action_message = new MessageManager<ActionType>();
     private GameManager _game = new GameManager();
-    private GameManagerDK _game_dk = new GameManagerDK();
+    private PlacementManager _placement = new PlacementManager();
     private InputManager _input = new InputManager();
     private Keyboard _keyboard = new Keyboard();
     private ObjectManager _object = new ObjectManager();
@@ -33,7 +33,7 @@ public class Managers : MonoBehaviour
     // 메시지 채널 접근자
     public static MessageManager<ActionType> ActionMessage { get { return Instance?._action_message; } }
     public static GameManager Game { get { return Instance?._game; } }
-    public static GameManagerDK Game_DK { get { return Instance?._game_dk; } }
+    public static PlacementManager Placement { get { return Instance?._placement; } }
     public static ObjectManager Object { get { return Instance?._object; } }
     public static MapManager Map { get { return Instance?._map; } }
     public static InputManager Input { get { Instance?._input.Init();  return Instance?._input; } }

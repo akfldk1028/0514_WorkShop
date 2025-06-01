@@ -21,12 +21,6 @@ MonoBehaviour:
     m_SerializedLabels:
     - PreLoad
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 80193940ce077ac43ac29df77022759a
-    m_Address: Restaurant
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - PreLoad
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8237adf32a9b6de4892e6febe6b4bdef
     m_Address: Player
     m_ReadOnly: 0
@@ -41,6 +35,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c490da17d2804264b9a509649aaa5baa
     m_Address: Quad
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PreLoad
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c9fd4b29863cd25419d596f506741f8c
+    m_Address: RestaurantBar
     m_ReadOnly: 0
     m_SerializedLabels:
     - PreLoad

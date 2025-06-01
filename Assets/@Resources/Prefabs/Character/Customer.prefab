@@ -472,7 +472,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7679526581544062779, guid: 0d2d836e2e83b754fa1a1c4022d6d65d, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7679526581544062779, guid: 0d2d836e2e83b754fa1a1c4022d6d65d, type: 3}
       propertyPath: m_Center.y
@@ -527,15 +527,12 @@ MonoBehaviour:
   agent: {fileID: 537079316516741208}
   priority: 0
   action: {fileID: 0}
-  _currState: {fileID: 0}
   earnMoneyImage: {fileID: 0}
   orderImage: {fileID: 0}
   placeToSit: {fileID: 0}
   door: {fileID: 0}
   eatingTime: 0
   gainGoldClip: {fileID: 0}
-  modelInstance: {fileID: 0}
-  modelAnimator: {fileID: 0}
   orderText: {fileID: 3599230607586972823}
 --- !u!114 &1443951394609758018
 MonoBehaviour:

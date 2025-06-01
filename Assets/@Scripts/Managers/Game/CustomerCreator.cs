@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using static Define;
 
 public class CustomerCreator
@@ -171,20 +172,80 @@ public class CustomerCreator
     private void SpawnCustomer()
     {
         var waitingCells = Managers.Map.WaitingCells;
-        if (waitingCells.Count > 0)
+        if (waitingCells.Count == 0) return;
+
+        // (1) 랜덤으로 대기 지점 하나를 선택
+        int randomIndex = UnityEngine.Random.Range(0, waitingCells.Count);
+        Vector3 desiredPos = waitingCells[randomIndex];
+
+        // (2) 원하는 y 높이를 대략 0으로 맞추되, 실제 NavMesh 높이를 곧바로 취득할 것이므로 아래 코드에서 덮어씌워질 예정
+        desiredPos.y = 0f;
+
+        // (3) 먼저 NavMesh.SamplePosition으로 “진짜 NavMesh 위” 좌표를 구한다
+        NavMeshHit hit;
+        float sampleRadius = 10.0f; // 반경을 넉넉하게 잡는다 (필요에 따라 조정)
+        if (!NavMesh.SamplePosition(desiredPos, out hit, sampleRadius, NavMesh.AllAreas))
         {
-            int randomIndex = UnityEngine.Random.Range(0, waitingCells.Count);
-            Vector3 cellPos = waitingCells[randomIndex];
-            // Vector3 worldPos = Managers.Map.GetCellCenterWorld(cellPos);
-            cellPos.y = 0f;
-            
-            Customer customer = Managers.Object.Spawn<Customer>(cellPos, CUSTOMER_ID, pooling: true);
-            Debug.Log("[CustomerCreator] 고객 생성: " + customer);
-            if (customer != null)
-            {
-                Managers.PublishAction(ActionType.Customer_Spawned);
-            }
+            Debug.LogWarning("[CustomerCreator] NavMesh.SamplePosition 실패: NavMesh 위에 놓을 수 없습니다.");
+            return;
         }
+
+        // hit.position이 곧 “NavMesh 위에 유효한 좌표”가 된다
+        Vector3 spawnPos = hit.position;
+        Debug.Log($"[CustomerCreator] NavMesh 위로 보정된 Spawn 위치: {spawnPos}");
+
+        // (4) 이제 이 spawnPos를 사용해서 Customer를 생성한다
+        Customer customer = Managers.Object.Spawn<Customer>(spawnPos, CUSTOMER_ID, pooling: true);
+        if (customer == null)
+        {
+            Debug.LogWarning("[CustomerCreator] Customer 풀에서 가져오지 못했습니다.");
+            return;
+        }
+
+        // (5) Spawn 이후, NavMeshAgent 컴포넌트를 꺼내서 이동 기능을 바로 사용할 준비를 한다
+        NavMeshAgent agent = customer.GetComponent<NavMeshAgent>();
+        if (agent == null)
+        {
+            Debug.LogWarning("[CustomerCreator] Customer에 NavMeshAgent 컴포넌트가 없습니다!");
+        }
+        else
+        {
+
+        }
+
+        Managers.PublishAction(ActionType.Customer_Spawned);
     }
+
+    // private void SpawnCustomer()
+    // {
+    //     var waitingCells = Managers.Map.WaitingCells;
+    //     var waitingCellPos = Managers.Map.WaitingCellPos;
+
+    //     Debug.Log("[CustomerCreator] 고객 생성: " + waitingCellPos);
+    //     waitingCellPos.y = 0f;
+    //     Customer customer = Managers.Object.Spawn<Customer>(waitingCellPos, CUSTOMER_ID, pooling: true);
+    //     Debug.Log("[CustomerCreator] 고객 생성: " + customer);
+    //     if (customer != null)
+    //     {
+    //         Managers.PublishAction(ActionType.Customer_Spawned);
+    //     }
+
+
+    //     // if (waitingCells.Count > 0)
+    //     // {
+    //     //     int randomIndex = UnityEngine.Random.Range(0, waitingCells.Count);
+    //     //     Vector3 cellPos = waitingCells[randomIndex];
+    //     //     Debug.Log("[CustomerCreator] 고객 생성: " + cellPos);
+    //     //     // Vector3 worldPos = Managers.Map.GetCellCenterWorld(cellPos);
+    //     //     cellPos.y = 0f;
+            
+    //     //     Customer customer = Managers.Object.Spawn<Customer>(cellPos, CUSTOMER_ID, pooling: true);
+    //     //     Debug.Log("[CustomerCreator] 고객 생성: " + customer);
+    //     //     if (customer != null)
+    //     //     {
+    //     //         Managers.PublishAction(ActionType.Customer_Spawned);
+    //     //     }
+    //     // }
+    // }
 
 }

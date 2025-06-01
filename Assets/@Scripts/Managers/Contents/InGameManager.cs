@@ -9,7 +9,7 @@ public class InGameManager : MonoBehaviour
     public PlayerMove playerMove;
 
     [Header("Camera Control")]
-    public CameraControl cameraControl; //±âÁ¸ ¼ñ´õºä ÆÈ·Î¿ì Ä«¸Þ¶ó ÇØÁ¦
+    public CameraControl cameraControl; //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½È·Î¿ï¿½ Ä«ï¿½Þ¶ï¿½ ï¿½ï¿½ï¿½ï¿½
     public Transform cameraTransform;
     public Vector3 fixedCameraPosition;
     public Vector3 fixedCameraRotation;
@@ -17,7 +17,7 @@ public class InGameManager : MonoBehaviour
     [Header("Interaction UI")]
     public GameObject interactionCanvas;
 
-    //find·Î ¿¬°áÇØ¾ßÇÏ³ª?? ¾î¶²½ÄÀ¸·Î ÀÛ¾÷ÇØ¾ßÇÏÁö?-?
+    //findï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ï¿½Ï³ï¿½?? ï¿½î¶²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Û¾ï¿½ï¿½Ø¾ï¿½ï¿½ï¿½ï¿½ï¿½?-?
 
     private void Awake()
     {
@@ -46,16 +46,16 @@ public class InGameManager : MonoBehaviour
         if (cameraTransform == null && Camera.main != null)
             cameraTransform = Camera.main.transform;
 
-        if (interactionCanvas == null)
-        {
-            interactionCanvas = GameObject.Find("GameCanvas");
-            interactionCanvas.SetActive(false);
-        }
+        // if (interactionCanvas == null)
+        // {
+        //     interactionCanvas = GameObject.Find("GameCanvas");
+        //     interactionCanvas.SetActive(false);
+        // }
 
     }
 
 
-    //FÅ° »óÈ£ÀÛ¿ë ¿ÀºêÁ§Æ®¿¡¼­ È£Ãâ - ½ÃÁ¡ °íÁ¤, ÇÃ·¹ÀÌ¾î ¸ØÃã, UI Ç¥½Ã
+    //FÅ° ï¿½ï¿½È£ï¿½Û¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ È£ï¿½ï¿½ - ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½, ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½, UI Ç¥ï¿½ï¿½
     public void InteractWith(InteractableObject obj)
     {
         if (playerObj != null)
@@ -80,7 +80,7 @@ public class InGameManager : MonoBehaviour
             interactionCanvas.SetActive(true);
     }
 
-    //ESC ½Ã ½ÇÇà (±âÁ¸¼³Á¤À¸·Î µ¹¾Æ°¨)
+    //ESC ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Æ°ï¿½)
     public void Resume()
     {
         if (playerObj != null)

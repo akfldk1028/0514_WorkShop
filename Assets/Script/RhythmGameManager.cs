@@ -6,23 +6,23 @@ using System.Linq;
 
 public class RhythmGameManager : MonoBehaviour
 {
-    [Header("»ç¿îµå ¼³Á¤")]
+    [Header("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½")]
     public AudioClip soundClip;
     public AudioClip inputClip;
     public AudioSource audioSource;
 
-    [Header("¸ÞÆ®·Î³ð ¼³Á¤")]
+    [Header("ï¿½ï¿½Æ®ï¿½Î³ï¿½ ï¿½ï¿½ï¿½ï¿½")]
     public AudioClip metronomeClip;
     public AudioSource metronomeSource;
 
-    [Header("Ä«¿îÆ®´Ù¿î TMP ÅØ½ºÆ®")]
+    [Header("Ä«ï¿½ï¿½Æ®ï¿½Ù¿ï¿½ TMP ï¿½Ø½ï¿½Æ®")]
     public TextMeshProUGUI Num;
 
-    [Header("ÆÇÁ¤ ¿ÀÂ÷ ¹üÀ§")]
+    [Header("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½")]
     [SerializeField] private float perfectWindow = 0.15f;
     [SerializeField] private float goodWindow = 0.3f;
 
-    [Header("¸®µë ¼³Á¤")]
+    [Header("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½")]
     [SerializeField] private float interval = 0.65f;
     [SerializeField] private List<string> rhythmPattern = new List<string> { "A", "S", "AD", "0", "D", "0", "D", "A" };
 
@@ -30,12 +30,12 @@ public class RhythmGameManager : MonoBehaviour
     private List<float> inputTimes = new List<float>();
     private List<string> inputKeys = new List<string>();
 
-    [Header("Å° ÀÔ·Â ¾È³»")]
+    [Header("Å° ï¿½Ô·ï¿½ ï¿½È³ï¿½")]
     public TextMeshProUGUI keyText;
 
     private bool useMetronome = true;
 
-    // ÄÚ·çÆ¾ ÇÚµé·¯
+    // ï¿½Ú·ï¿½Æ¾ ï¿½Úµé·¯
     private Coroutine rhythmCoroutine;
     private Coroutine inputCoroutine;
     private Coroutine metronomeCoroutine;
@@ -43,9 +43,9 @@ public class RhythmGameManager : MonoBehaviour
     public void StartRhythmSequence()
     {
         TrimTrailingSilence();
-        if (keyText != null) //Å° ÅØ½ºÆ®¿¡ ¶ç¿ì±â
+        if (keyText != null) //Å° ï¿½Ø½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         {
-            string patternText = string.Join("  ", rhythmPattern); // "0" Á¦¿Ü
+            string patternText = string.Join("  ", rhythmPattern); // "0" ï¿½ï¿½ï¿½ï¿½
             keyText.text = patternText;
         }
 
@@ -207,7 +207,7 @@ public class RhythmGameManager : MonoBehaviour
         }
         if (keyText != null)
             keyText.text = "";
-        InGameManager.Instance.OnRhythmResult(allCorrect);
+        // InGameManager.Instance.OnRhythmResult(allCorrect);
     }
 
     public void ForceStopAndFail()
@@ -217,6 +217,6 @@ public class RhythmGameManager : MonoBehaviour
         if (metronomeCoroutine != null) StopCoroutine(metronomeCoroutine);
 
         useMetronome = false;
-        InGameManager.Instance.OnRhythmResult(false);
+        // InGameManager.Instance.OnRhythmResult(false);
     }
 }
