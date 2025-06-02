@@ -9,15 +9,17 @@ public class InGameManager : MonoBehaviour
     public PlayerMove playerMove;
 
     [Header("Camera Control")]
-    public CameraControl cameraControl; //기존 숄더뷰 팔로우 카메라 해제
+    public CameraControl cameraControl;
     public Transform cameraTransform;
     public Vector3 fixedCameraPosition;
     public Vector3 fixedCameraRotation;
 
     [Header("Interaction UI")]
     public GameObject interactionCanvas;
+    public GameObject StartText;
 
-    //find로 연결해야하나?? 어떤식으로 작업해야하지?-?
+    [Header("리듬 게임")]
+    public RhythmGameManager rhythmGameManager;
 
     private void Awake()
     {
@@ -30,6 +32,24 @@ public class InGameManager : MonoBehaviour
         }
 
         AutoAssign();
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            StartText.SetActive(false);
+            if (rhythmGameManager != null)
+                rhythmGameManager.StartRhythmSequence();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (rhythmGameManager != null)
+                rhythmGameManager.ForceStopAndFail();
+
+            Resume();
+        }
     }
 
     private void AutoAssign()
@@ -49,13 +69,25 @@ public class InGameManager : MonoBehaviour
         if (interactionCanvas == null)
         {
             interactionCanvas = GameObject.Find("GameCanvas");
-            interactionCanvas.SetActive(false);
+            if (interactionCanvas != null)
+                interactionCanvas.SetActive(false);
         }
 
+        if (StartText == null && interactionCanvas != null)
+        {
+            Transform found = interactionCanvas.transform.Find("StartText");
+            if (found != null)
+                StartText = found.gameObject;
+        }
+
+        if (rhythmGameManager == null)
+        {
+            GameObject obj = GameObject.Find("RhythmManager");
+            if (obj != null)
+                rhythmGameManager = obj.GetComponent<RhythmGameManager>();
+        }
     }
 
-
-    //F키 상호작용 오브젝트에서 호출 - 시점 고정, 플레이어 멈춤, UI 표시
     public void InteractWith(InteractableObject obj)
     {
         if (playerObj != null)
@@ -80,9 +112,11 @@ public class InGameManager : MonoBehaviour
             interactionCanvas.SetActive(true);
     }
 
-    //ESC 시 실행 (기존설정으로 돌아감)
     public void Resume()
     {
+        if (StartText != null)
+            StartText.SetActive(true);
+
         if (playerObj != null)
             playerObj.SetActive(true);
 
@@ -94,5 +128,19 @@ public class InGameManager : MonoBehaviour
 
         if (interactionCanvas != null)
             interactionCanvas.SetActive(false);
+    }
+
+    public void OnRhythmResult(bool isSuccess)
+    {
+        Debug.Log("리듬 게임 결과: " + (isSuccess ? "성공" : "실패"));
+
+        if (isSuccess)
+        {
+            // 성공 시 처리
+        }
+        else
+        {
+            // 실패 시 처리
+        }
     }
 }
