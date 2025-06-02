@@ -10,6 +10,7 @@ public class InGameManager : MonoBehaviour
 
     [Header("Camera Control")]
     public CameraControl cameraControl;
+
     public Transform cameraTransform;
     public Vector3 fixedCameraPosition;
     public Vector3 fixedCameraRotation;
@@ -18,8 +19,10 @@ public class InGameManager : MonoBehaviour
     public GameObject interactionCanvas;
     public GameObject StartText;
 
+
     [Header("리듬 게임")]
     public RhythmGameManager rhythmGameManager;
+
 
     private void Awake()
     {
@@ -71,23 +74,31 @@ public class InGameManager : MonoBehaviour
             interactionCanvas = GameObject.Find("GameCanvas");
             if (interactionCanvas != null)
                 interactionCanvas.SetActive(false);
+
+            // if (interactionCanvas == null)
+            // {
+            //     interactionCanvas = GameObject.Find("GameCanvas");
+            //     interactionCanvas.SetActive(false);
+            // }
+
+            if (StartText == null && interactionCanvas != null)
+            {
+                Transform found = interactionCanvas.transform.Find("StartText");
+                if (found != null)
+                    StartText = found.gameObject;
+            }
+
+            if (rhythmGameManager == null)
+            {
+                GameObject obj = GameObject.Find("RhythmManager");
+                if (obj != null)
+                    rhythmGameManager = obj.GetComponent<RhythmGameManager>();
+            }
         }
 
-        if (StartText == null && interactionCanvas != null)
-        {
-            Transform found = interactionCanvas.transform.Find("StartText");
-            if (found != null)
-                StartText = found.gameObject;
-        }
-
-        if (rhythmGameManager == null)
-        {
-            GameObject obj = GameObject.Find("RhythmManager");
-            if (obj != null)
-                rhythmGameManager = obj.GetComponent<RhythmGameManager>();
-        }
     }
 
+    // F키 상호작용 오브젝트에서 호출 - 시점 고정, 플레이어 멈춤, UI 표시
     public void InteractWith(InteractableObject obj)
     {
         if (playerObj != null)
@@ -101,7 +112,7 @@ public class InGameManager : MonoBehaviour
 
         if (cameraTransform != null)
         {
-            fixedCameraPosition = new Vector3(-6.38f, 4.5f, 9.55f);
+            fixedCameraPosition = new Vector3(-6.38f, 4.5f, 9.5f);
             fixedCameraRotation = new Vector3(70f, -90f, 0f);
 
             cameraTransform.position = fixedCameraPosition;
@@ -112,6 +123,7 @@ public class InGameManager : MonoBehaviour
             interactionCanvas.SetActive(true);
     }
 
+    //ESC로 빠져나옴
     public void Resume()
     {
         if (StartText != null)
@@ -144,3 +156,4 @@ public class InGameManager : MonoBehaviour
         }
     }
 }
+

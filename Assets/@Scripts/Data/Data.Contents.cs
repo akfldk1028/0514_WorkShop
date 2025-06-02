@@ -7,6 +7,42 @@ using static Define;
 
 namespace Data
 {
+	#region RecipeData
+	[Serializable]
+	public class RecipeData
+	{
+		public int NO;
+		public string RecipeID_eng;
+		public string RecipeName;
+		public int Diffic;
+		public string Description;
+		public List<string> KeyCombination;
+		public int BasePrice;
+		public List<string> Tags;
+		public string Category;
+		public List<string> RequiredIngredientsVisual;
+		public string CompletedVisualResourceID;
+		public string OpenOption;
+
+	}
+
+	[Serializable]
+	public class RecipeDataLoader : ILoader<int, RecipeData>
+	{
+		public List<RecipeData> recipes = new List<RecipeData>();
+
+		public Dictionary<int, RecipeData> MakeDict()
+		{
+			Dictionary<int, RecipeData> dict = new Dictionary<int, RecipeData>();
+			foreach (RecipeData recipe in recipes)
+				dict.Add(recipe.NO, recipe); // 또는 RecipeID_eng를 키로 쓸 수도 있음
+			return dict;
+		}
+	}
+	#endregion
+
+
+
 	#region CreatureData
 	[Serializable]
 	public class CreatureData
