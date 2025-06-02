@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 9222950067309222365}
   - component: {fileID: 2333983259405002355}
   - component: {fileID: 1981455305255618265}
+  - component: {fileID: 8799547789991284242}
   m_Layer: 0
   m_Name: Bench
   m_TagString: Untagged
@@ -35,7 +36,8 @@ Transform:
   m_LocalPosition: {x: 24.317242, y: 0, z: -40.324623}
   m_LocalScale: {x: 0.5362175, y: 0.5362176, z: 0.5362175}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 6526006768153943313}
   m_Father: {fileID: 4225498243361617539}
   m_LocalEulerAnglesHint: {x: 0, y: 88.176, z: 0}
 --- !u!33 &2594057155840710626
@@ -200,6 +202,23 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.806393, y: 2.258267, z: 0.8649578}
   m_Center: {x: -0.75851494, y: 0.9960549, z: -4.5622864}
+--- !u!114 &8799547789991284242
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 840834584855697592}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78d81994a26d39b4aa46b1650184e3db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  queueSlots: []
+  table: {fileID: 0}
+  _currentCustomer: {fileID: 0}
+  _reservedBy: {fileID: 0}
+  placeToSit: {fileID: 6526006768153943313}
 --- !u!1 &2847422901596263991
 GameObject:
   m_ObjectHideFlags: 0
@@ -216,6 +235,7 @@ GameObject:
   - component: {fileID: 4097334822827303439}
   - component: {fileID: 445275331914648859}
   - component: {fileID: 9207608492228038414}
+  - component: {fileID: 5579396127545547390}
   m_Layer: 0
   m_Name: Bench
   m_TagString: Untagged
@@ -235,7 +255,8 @@ Transform:
   m_LocalPosition: {x: 24.573883, y: 0, z: -33.492912}
   m_LocalScale: {x: 0.5362176, y: 0.5362176, z: 0.5362176}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 774067762462805217}
   m_Father: {fileID: 4225498243361617539}
   m_LocalEulerAnglesHint: {x: 0, y: 94.169, z: 0}
 --- !u!33 &1023422009846073274
@@ -400,6 +421,23 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.806393, y: 2.258267, z: 0.8649578}
   m_Center: {x: -0.75851494, y: 0.9960549, z: -4.5622864}
+--- !u!114 &5579396127545547390
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2847422901596263991}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78d81994a26d39b4aa46b1650184e3db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  queueSlots: []
+  table: {fileID: 0}
+  _currentCustomer: {fileID: 0}
+  _reservedBy: {fileID: 0}
+  placeToSit: {fileID: 774067762462805217}
 --- !u!1 &3109622691012507062
 GameObject:
   m_ObjectHideFlags: 0
@@ -625,6 +663,37 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -6947200256909088431, guid: 7dd5562a5ac82104d9f14275ba6a9f67, type: 3}
+--- !u!1 &3793793499328214406
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 774067762462805217}
+  m_Layer: 0
+  m_Name: Oturulacak yer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &774067762462805217
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3793793499328214406}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.01, y: 2.76, z: 0.19}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 699596880716270985}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4248807350136843906
 GameObject:
   m_ObjectHideFlags: 0
@@ -661,6 +730,37 @@ Transform:
   - {fileID: 5970298854825034495}
   - {fileID: 5781958172179854503}
   m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &4356043164232644053
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6526006768153943313}
+  m_Layer: 0
+  m_Name: Oturulacak yer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6526006768153943313
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4356043164232644053}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: 0.052270025, z: -0, w: 0.998633}
+  m_LocalPosition: {x: -0.24, y: 2.76, z: 0.68}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7945486012542768764}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5153675997693081656
 GameObject:

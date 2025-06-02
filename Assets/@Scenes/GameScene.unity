@@ -511,7 +511,6 @@ Transform:
   - {fileID: 1766341775}
   - {fileID: 1217211968}
   - {fileID: 1108687998}
-  - {fileID: 1028951765}
   - {fileID: 1968867296}
   - {fileID: 483579929}
   - {fileID: 1843551129}
@@ -523,7 +522,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 907135993}
+    m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 3940129039745843743, guid: 403db70a455322e47b8106be357179a5, type: 3}
       propertyPath: m_LocalPosition.x
@@ -574,11 +573,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 403db70a455322e47b8106be357179a5, type: 3}
---- !u!4 &1028951765 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3940129039745843743, guid: 403db70a455322e47b8106be357179a5, type: 3}
-  m_PrefabInstance: {fileID: 1028951764}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1108687997
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1455,6 +1449,7 @@ SceneRoots:
   - {fileID: 1825087884}
   - {fileID: 868393092}
   - {fileID: 215903215}
+  - {fileID: 1028951764}
   - {fileID: 907135993}
   - {fileID: 8985577469746879463}
   - {fileID: 480602372735553713}

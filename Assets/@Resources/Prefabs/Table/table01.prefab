@@ -470,6 +470,7 @@ GameObject:
   - component: {fileID: 6756899901890611713}
   - component: {fileID: 5217110970447527758}
   - component: {fileID: 3802739655068385482}
+  - component: {fileID: 2702078973524746667}
   m_Layer: 0
   m_Name: Bar Stool
   m_TagString: Untagged
@@ -489,7 +490,8 @@ Transform:
   m_LocalPosition: {x: 17.763882, y: 0, z: -63.02291}
   m_LocalScale: {x: 0.60225, y: 0.60225, z: 0.60225}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 8498893098635973314}
   m_Father: {fileID: 2504011024423214367}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &6756899901890611713
@@ -571,6 +573,23 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -6154138120391076372, guid: a8d9d1ff2b56d7a4d913b39e48dc25f8, type: 3}
+--- !u!114 &2702078973524746667
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2257612670886402497}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78d81994a26d39b4aa46b1650184e3db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  queueSlots: []
+  table: {fileID: 0}
+  _currentCustomer: {fileID: 0}
+  _reservedBy: {fileID: 0}
+  placeToSit: {fileID: 8498893098635973314}
 --- !u!1 &3170189209443641517
 GameObject:
   m_ObjectHideFlags: 0
@@ -877,6 +896,37 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.38390875, y: 0.09478521, z: 0.10337752}
   m_Center: {x: -0.5875485, y: 0.23660663, z: 0.006270975}
+--- !u!1 &5470303099094494117
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8498893098635973314}
+  m_Layer: 0
+  m_Name: Oturulacak yer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8498893098635973314
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5470303099094494117}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 3.58, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2491967168923407399}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8056095144983800087
 GameObject:
   m_ObjectHideFlags: 0
