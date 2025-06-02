@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Threading.Tasks;
 
 public class InGameManager : MonoBehaviour
 {
@@ -20,11 +21,11 @@ public class InGameManager : MonoBehaviour
     public GameObject StartText;
 
 
-    [Header("¸®µë °ÔÀÓ")]
+    [Header("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½")]
     public RhythmGameManager rhythmGameManager;
+    private int[] recipeIdList = { 200001, 200002, 200003, 200004, 200005 }; // ì˜ˆì‹œ: ì›í•˜ëŠ” idë“¤ë¡œ ì±„ìš°ì„¸ìš”
 
-
-    private void Awake()
+    private async void Awake()
     {
         if (Instance == null)
             Instance = this;
@@ -33,9 +34,42 @@ public class InGameManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+        await StartLoadAssetsAsync();
+        SetInfo();
 
         AutoAssign();
     }
+
+    private Task StartLoadAssetsAsync()
+    {
+        var tcs = new TaskCompletionSource<bool>();
+        Managers.Resource.LoadAllAsync<Object>("PreLoad", (key, count, totalCount) =>
+        {
+            Debug.Log($"<color=cyan>[UI_StartUpScene]</color> {key} {count}/{totalCount}");
+
+            if (count == totalCount)
+            {
+                Managers.Data.Init();
+                tcs.SetResult(true);
+            }
+        });
+        return tcs.Task;
+    }
+
+
+    private void SetInfo()
+    {
+        //ì¼ë‹¨ ì´ê±° ë°ì´í„° ì°¾ì•„ì„œ ë„£ì–´ì£¼ëŠ” ë¡œì§ ì¶”ê°€í•´ì•¼í•¨
+    }
+
+    public Data.RecipeData getRandomRecipe()
+    {
+        int randomIndex = Random.Range(0, recipeIdList.Length);
+        int randomId = recipeIdList[randomIndex];
+        Data.RecipeData data = Managers.Data.RecipeDic[randomId];
+        return data;
+    }
+
 
     void Update()
     {
@@ -98,7 +132,7 @@ public class InGameManager : MonoBehaviour
 
     }
 
-    // FÅ° »óÈ£ÀÛ¿ë ¿ÀºêÁ§Æ®¿¡¼­ È£Ãâ - ½ÃÁ¡ °íÁ¤, ÇÃ·¹ÀÌ¾î ¸ØÃã, UI Ç¥½Ã
+    // FÅ° ï¿½ï¿½È£ï¿½Û¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ È£ï¿½ï¿½ - ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½, ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½, UI Ç¥ï¿½ï¿½
     public void InteractWith(InteractableObject obj)
     {
         if (playerObj != null)
@@ -123,7 +157,7 @@ public class InGameManager : MonoBehaviour
             interactionCanvas.SetActive(true);
     }
 
-    //ESC·Î ºüÁ®³ª¿È
+    //ESCï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     public void Resume()
     {
         if (StartText != null)
@@ -144,15 +178,15 @@ public class InGameManager : MonoBehaviour
 
     public void OnRhythmResult(bool isSuccess)
     {
-        Debug.Log("¸®µë °ÔÀÓ °á°ú: " + (isSuccess ? "¼º°ø" : "½ÇÆĞ"));
+        Debug.Log("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: " + (isSuccess ? "ï¿½ï¿½ï¿½ï¿½" : "ï¿½ï¿½ï¿½ï¿½"));
 
         if (isSuccess)
         {
-            // ¼º°ø ½Ã Ã³¸®
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Ã³ï¿½ï¿½
         }
         else
         {
-            // ½ÇÆĞ ½Ã Ã³¸®
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Ã³ï¿½ï¿½
         }
     }
 }

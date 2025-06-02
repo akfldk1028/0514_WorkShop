@@ -35,7 +35,6 @@ public class RhythmGameManager : MonoBehaviour
 
     private bool useMetronome = true;
 
-    // �ڷ�ƾ �ڵ鷯
     private Coroutine rhythmCoroutine;
     private Coroutine inputCoroutine;
     private Coroutine metronomeCoroutine;
@@ -43,6 +42,16 @@ public class RhythmGameManager : MonoBehaviour
     public void StartRhythmSequence()
     {
         TrimTrailingSilence();
+        Data.RecipeData data = Managers.Ingame.getRandomRecipe();
+        Debug.Log(data.RecipeName);
+        Debug.Log(data.KeyCombination);
+        Debug.Log(data.BasePrice);
+        Debug.Log(data.Tags);
+        Debug.Log(data.Category);
+        Debug.Log(data.RequiredIngredientsVisual);
+        Debug.Log(data.CompletedVisualResourceID);
+        Debug.Log(data.OpenOption);
+
         if (keyText != null) //Ű �ؽ�Ʈ�� ����
         {
             string patternText = string.Join("  ", rhythmPattern); // "0" ����
