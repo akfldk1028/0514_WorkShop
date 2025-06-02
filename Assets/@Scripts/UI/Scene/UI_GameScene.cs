@@ -5,18 +5,15 @@ public class UI_GameScene : UI_Scene
 {
     enum Buttons
     {
-        GoldPlusButton,
         DiaPlusButton,
-        HeroesListButton,
-        SetHeroesButton,
         SettingButton,
-        InventoryButton,
-        WorldMapButton,
         QuestButton,
         ChallengeButton,
-        PortalButton,
-        CampButton,
+       
         CheatButton,
+        shopButton,
+
+        
     }
 
     enum Texts
@@ -46,19 +43,14 @@ public class UI_GameScene : UI_Scene
         BindTexts(typeof(Texts));
         BindSliders(typeof(Sliders));
 
-        GetButton((int)Buttons.GoldPlusButton).gameObject.BindEvent(OnClickGoldPlusButton);
-        GetButton((int)Buttons.DiaPlusButton).gameObject.BindEvent(OnClickDiaPlusButton);
-        GetButton((int)Buttons.HeroesListButton).gameObject.BindEvent(OnClickHeroesListButton);
-        GetButton((int)Buttons.SetHeroesButton).gameObject.BindEvent(OnClickSetHeroesButton);
+        // GetButton((int)Buttons.GoldPlusButton).gameObject.BindEvent(OnClickGoldPlusButton);
+        // GetButton((int)Buttons.DiaPlusButton).gameObject.BindEvent(OnClickDiaPlusButton);
         GetButton((int)Buttons.SettingButton).gameObject.BindEvent(OnClickSettingButton);
-        GetButton((int)Buttons.InventoryButton).gameObject.BindEvent(OnClickInventoryButton);
-        GetButton((int)Buttons.WorldMapButton).gameObject.BindEvent(OnClickWorldMapButton);
+        // GetButton((int)Buttons.InventoryButton).gameObject.BindEvent(OnClickInventoryButton);
         GetButton((int)Buttons.QuestButton).gameObject.BindEvent(OnClickQuestButton);
         GetButton((int)Buttons.ChallengeButton).gameObject.BindEvent(OnClickChallengeButton);
-        GetButton((int)Buttons.PortalButton).gameObject.BindEvent(OnClickPortalButton);
-        GetButton((int)Buttons.CampButton).gameObject.BindEvent(OnClickCampButton);
         GetButton((int)Buttons.CheatButton).gameObject.BindEvent(OnClickCheatButton);
-
+        GetButton((int)Buttons.shopButton).gameObject.BindEvent(OnClickShopButton);
         Refresh();
         
         return true;
@@ -91,6 +83,14 @@ public class UI_GameScene : UI_Scene
     {
         if (_init == false)
             return;
+    }
+
+    void OnClickShopButton(PointerEventData evt)
+    {
+        Debug.Log("<color=magenta>[UI_GameScene]</color> OnClickShopButton");
+        UI_TableSetting popup = Managers.UI.ShowPopupUI<UI_TableSetting>();
+        popup.GetComponent<Canvas>().sortingOrder = 101;
+        popup.SetInfo();
     }
 
     void OnClickGoldPlusButton(PointerEventData evt)

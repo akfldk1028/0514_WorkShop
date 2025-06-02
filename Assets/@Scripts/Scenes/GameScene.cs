@@ -21,10 +21,14 @@ public class GameScene : BaseScene
 		Debug.Log("player : " + player);
 		    // 프리팹 로드
     	GameObject highlightPrefab = Managers.Resource.Load<GameObject>("Quad");
-		GameObject placeablePrefab = Managers.Resource.Load<GameObject>("Lock");
 		
 		// 그리드 컨트롤 초기화
-		Managers.Game_DK.InitGridControl(highlightPrefab, placeablePrefab);
+		Managers.Placement.InitGridControl(highlightPrefab);
+
+
+		UI_GameScene sceneUI = Managers.UI.ShowSceneUI<UI_GameScene>();
+		sceneUI.GetComponent<Canvas>().sortingOrder = 100;
+		sceneUI.SetInfo();
 		return true;
 	}
 

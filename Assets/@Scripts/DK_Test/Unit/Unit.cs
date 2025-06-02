@@ -30,14 +30,28 @@ public class Unit : BaseObject, IComparable<Unit>
 
     public virtual void SetInfo<T>(int templateID, T clientCreature) 
     {
-    	DataTemplateID = templateID;
+        DataTemplateID = templateID;
         agent = GetComponent<NavMeshAgent>();
-     
-		if (ObjectType == EObjectType.Customer)
-			CreatureData = Managers.Data.CustomerDic[templateID];
 
+        if (agent != null)
+        {
+            // ① 혹시 비활성화된 상태였다면 활성화
+            if (!agent.enabled)
+                agent.enabled = true;
 
+            // ② 이전에 남아 있던 경로를 완전히 지워준다
+            agent.ResetPath();
+
+            // ③ (필요하다면) 지금 이 GameObject의 transform.position
+            //     을 다시 NavMesh 상에 정확히 올려놓고 싶다면 Warp을 호출
+            //     → 보통 SetInfo 직전 Spawn 위치를 제대로 잡아주었다면 생략해도 괜찮다.
+            // agent.Warp(transform.position);
+        }
+
+        if (ObjectType == EObjectType.Customer)
+            CreatureData = Managers.Data.CustomerDic[templateID];
     }
+
     protected ECreatureState _creatureState = ECreatureState.None;
 
 	public virtual ECreatureState CreatureState
