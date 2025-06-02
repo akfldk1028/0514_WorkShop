@@ -196,7 +196,7 @@ public class CustomerCreator
         Debug.Log($"[CustomerCreator] NavMesh 위로 보정된 Spawn 위치: {spawnPos}");
 
         // (4) 이제 이 spawnPos를 사용해서 Customer를 생성한다
-        Customer customer = Managers.Object.Spawn<Customer>(spawnPos, CUSTOMER_ID, pooling: true);
+        Customer customer = Managers.Object.Spawn<Customer>(spawnPos, CUSTOMER_ID_2, pooling: true);
         if (customer == null)
         {
             Debug.LogWarning("[CustomerCreator] Customer 풀에서 가져오지 못했습니다.");

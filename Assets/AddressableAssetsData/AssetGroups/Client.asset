@@ -15,14 +15,50 @@ MonoBehaviour:
   m_GroupName: Client
   m_GUID: 9a4e0e4044cc9f043b7c26da14c34e39
   m_SerializeEntries:
+  - m_GUID: 12b5397fc08b63c4ca0f331ff1791f40
+    m_Address: Clientbarbarian
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PreLoad
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2450acd7dc57b4a468d23a1686b91a8f
+    m_Address: Clientmage
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PreLoad
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5f4b6f416e5143649b22eebaf4d5fbff
+    m_Address: Clientdruid
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PreLoad
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6e90f8b35ed17ee4caed95fc895a9d9d
+    m_Address: Clientrogue
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PreLoad
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 94beebeedccf65c4990a05d6324952e4
     m_Address: ClientCustomer
     m_ReadOnly: 0
     m_SerializedLabels:
     - PreLoad
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 99fa2d3144c7d4448a6a3a8411d4f816
+    m_Address: Clientrogue_hooded
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PreLoad
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e6b6e731b47e48140b8132379eeb501c
     m_Address: ClientPlayer
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PreLoad
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ec8f8854d6f1cc24985eda82f86dd30b
+    m_Address: Clientengineer
     m_ReadOnly: 0
     m_SerializedLabels:
     - PreLoad

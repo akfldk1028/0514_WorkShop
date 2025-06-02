@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 3154d6cbf36c2f14bb93e7a38f20af55
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 625f186215c104763be7675aa2d941aa, type: 3}
+AssetOrigin:
+  serializedVersion: 1
+  productId: 303734
+  packageName: Voxel World Mega Pack Low poly Effects VFX
+  packageVersion: 1.0
+  assetPath: Assets/Voxel_World_VFX/Built_IN-RP/Shader/Particles_ADB_SCROll_HDR.shadergraph
+  uploadId: 712416
