@@ -183,7 +183,9 @@ public class DataTransformer : EditorWindow
 		var genericList = Activator.CreateInstance(genericListType) as IList;
 
 		List<string> splitList;
+  
 
+  
 		// CASE 1: ["a", "b", "c"] or ['a','b','c']
 		if (value.StartsWith("[") && value.EndsWith("]"))
 		{
