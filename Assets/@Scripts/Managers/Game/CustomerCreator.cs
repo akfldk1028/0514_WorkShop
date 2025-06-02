@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using static Define;
 
+// TODO 의자 지속적  찾기 로직추가해야함
 public class CustomerCreator
 {    
     private static CustomerCreator s_instance;
