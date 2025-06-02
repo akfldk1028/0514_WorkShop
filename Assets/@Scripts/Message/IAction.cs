@@ -19,6 +19,7 @@ public enum ActionType
     Customer_Left,
 
     Chair_OccupiedChanged, // 의자 착석 상태 변경
+    Chair_Changed,
     // 게임 상태 이벤트
     GameStart,
     GamePause,

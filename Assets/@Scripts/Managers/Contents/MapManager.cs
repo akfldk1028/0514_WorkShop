@@ -53,6 +53,7 @@ public class MapManager
 	
 	public IReadOnlyList<Vector3> WaitingCells => _waitingCells;
 	public Vector3 DoorPosition { get; private set; }
+	public Vector3 PlayerPosition { get; private set; }
 
 	Vector3 _waitingCellPos;
 
@@ -83,6 +84,13 @@ public class MapManager
 		{
 			DoorPosition = doorObj.GetPosition();
 			Debug.Log("Door Pos: " + DoorPosition);
+		}
+
+		GameObject playerObj = GameObject.Find("Transform/Player");
+		if (playerObj.IsValid())
+		{
+			PlayerPosition = playerObj.GetPosition();
+			Debug.Log("Player Pos: " + PlayerPosition);
 		}
 
 

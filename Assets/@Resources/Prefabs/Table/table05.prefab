@@ -32,9 +32,9 @@ Transform:
   m_GameObject: {fileID: 16322032978036640}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 26.013882, y: 0, z: -11.64291}
-  m_LocalScale: {x: 0.78787, y: 0.78787, z: 0.78787}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: 26.013882, y: 0, z: -11.32}
+  m_LocalScale: {x: 0.51, y: 0.51, z: 0.51}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 925734225154959976}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -197,6 +197,37 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.45331025, y: 2.9367855, z: 0.33333945}
   m_Center: {x: -2.0505505, y: 1.4683927, z: -1.8983239}
+--- !u!1 &1508867436530941465
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8492637136360440574}
+  m_Layer: 0
+  m_Name: Oturulacak yer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8492637136360440574
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1508867436530941465}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: 0.5177089, z: -0, w: 0.8555568}
+  m_LocalPosition: {x: 3.48, y: 2.0277553, z: -6.08}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7239020857867513680}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1552245204958180682
 GameObject:
   m_ObjectHideFlags: 0
@@ -443,6 +474,7 @@ GameObject:
   - component: {fileID: 128766144178331142}
   - component: {fileID: 797046096602811991}
   - component: {fileID: 8925334274765992431}
+  - component: {fileID: 5272491700874649110}
   m_Layer: 0
   m_Name: Chair 2
   m_TagString: Untagged
@@ -460,9 +492,10 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.27405298, z: -0, w: 0.9617146}
   m_LocalPosition: {x: 26.323883, y: 0, z: -9.73291}
-  m_LocalScale: {x: 0.7790301, y: 0.77903, z: 0.7790301}
+  m_LocalScale: {x: 0.48999998, y: 0.48999998, z: 0.48999998}
   m_ConstrainProportionsScale: 1
-  m_Children: []
+  m_Children:
+  - {fileID: 8492637136360440574}
   m_Father: {fileID: 925734225154959976}
   m_LocalEulerAnglesHint: {x: 0, y: 31.811, z: 0}
 --- !u!33 &3772143746058835155
@@ -590,6 +623,23 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.3894039, y: 0.10260177, z: 1.3947656}
   m_Center: {x: 0.0040356517, y: 1.8785533, z: -0.06885782}
+--- !u!114 &5272491700874649110
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3263832494661563066}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78d81994a26d39b4aa46b1650184e3db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  queueSlots: []
+  table: {fileID: 0}
+  _currentCustomer: {fileID: 0}
+  _reservedBy: {fileID: 0}
+  placeToSit: {fileID: 8492637136360440574}
 --- !u!1 &4030870956558717242
 GameObject:
   m_ObjectHideFlags: 0
@@ -618,9 +668,9 @@ Transform:
   m_GameObject: {fileID: 4030870956558717242}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.82208747, z: -0, w: 0.5693612}
-  m_LocalPosition: {x: 25.453842, y: 2.67, z: -11.119656}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: 26.7, y: 1.578, z: -10.62}
+  m_LocalScale: {x: 0.66, y: 0.66, z: 0.66}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 925734225154959976}
   m_LocalEulerAnglesHint: {x: 0, y: 110.589, z: 0}
@@ -733,9 +783,9 @@ Transform:
   m_GameObject: {fileID: 4344689262059910705}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 27.315887, y: 2.67, z: -10.771697}
-  m_LocalScale: {x: 1.7982779, y: 1.7982779, z: 1.7982779}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: 26.31, y: 1.662, z: -11.22}
+  m_LocalScale: {x: 0.99000007, y: 0.99000007, z: 0.99000007}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 3292376303215189326}
   m_Father: {fileID: 925734225154959976}
@@ -872,6 +922,7 @@ GameObject:
   - component: {fileID: 836812517049891819}
   - component: {fileID: 5687139647827603591}
   - component: {fileID: 3213675153656673885}
+  - component: {fileID: 4548894932992681545}
   m_Layer: 0
   m_Name: Chair 1
   m_TagString: Untagged
@@ -889,9 +940,10 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 26.308899, y: 0, z: -13.28291}
-  m_LocalScale: {x: 0.77903, y: 0.77903, z: 0.77903}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_LocalScale: {x: 0.48999998, y: 0.48999998, z: 0.48999998}
+  m_ConstrainProportionsScale: 1
+  m_Children:
+  - {fileID: 3522916280719271046}
   m_Father: {fileID: 925734225154959976}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &4512824449277811003
@@ -992,6 +1044,54 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.9883316, y: 2.7627745, z: 0.37207693}
   m_Center: {x: 0.00000035762787, y: 3.2528005, z: -0.8262056}
+--- !u!114 &4548894932992681545
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4584845542971577177}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78d81994a26d39b4aa46b1650184e3db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  queueSlots: []
+  table: {fileID: 0}
+  _currentCustomer: {fileID: 0}
+  _reservedBy: {fileID: 0}
+  placeToSit: {fileID: 3522916280719271046}
+--- !u!1 &4963334254624500102
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3522916280719271046}
+  m_Layer: 0
+  m_Name: Oturulacak yer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3522916280719271046
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4963334254624500102}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: 0.73235613, z: -0, w: 0.68092185}
+  m_LocalPosition: {x: -0.21704851, y: 2.0277553, z: 7.42}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3374220077688628400}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8330500737708451738
 GameObject:
   m_ObjectHideFlags: 0
@@ -1020,9 +1120,9 @@ Transform:
   m_GameObject: {fileID: 8330500737708451738}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 26.966583, y: 2.67, z: -12.6313305}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: 26.776, y: 1.648, z: -12.147}
+  m_LocalScale: {x: 0.61, y: 0.61, z: 0.61}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 925734225154959976}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

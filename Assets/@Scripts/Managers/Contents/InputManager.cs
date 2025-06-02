@@ -10,7 +10,9 @@ public class InputManager
     public Action<Vector3Int> OnMouseClickCell;
     public Action<Vector3Int> OnMouseDragCell;
     public Action<Vector3Int> OnMouseDragEndCell;
-
+    public Action OnBackViewKey;
+    public Action OnTopViewKey;
+    public Action OnPlayerViewKey;
     private bool _isDragging = false;
     private Vector3Int _lastDragCell = Vector3Int.zero;
     private IDisposable _updateSubscription;
@@ -61,7 +63,10 @@ public class InputManager
         if (Input.GetKey(KeyCode.S)) moveDir.y -= 1;
         if (Input.GetKey(KeyCode.A)) moveDir.x -= 1;
         if (Input.GetKey(KeyCode.D)) moveDir.x += 1;
-
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            Managers.Game.CustomerCreator._tableManager.DebugPrintAllTableOrders();
+        }
         if (Managers.Game != null)
         {
             moveDir = moveDir.normalized;
@@ -69,6 +74,14 @@ public class InputManager
             {
                 Managers.Game.MoveDir = moveDir;
             }
+        }
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            OnBackViewKey?.Invoke();
+        }
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            OnTopViewKey?.Invoke();
         }
     }
 

@@ -39,14 +39,14 @@ MonoBehaviour:
     m_SerializedLabels:
     - PreLoad
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c20f67017a60d3543b9ca93d83799d66
-    m_Address: table02
+  - m_GUID: a8d8a45201e44f24db89a59f52e598ad
+    m_Address: table06
     m_ReadOnly: 0
     m_SerializedLabels:
     - PreLoad
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: cd951d1dc15d5bb499b84ce65c6370c7
-    m_Address: table06
+  - m_GUID: c20f67017a60d3543b9ca93d83799d66
+    m_Address: table02
     m_ReadOnly: 0
     m_SerializedLabels:
     - PreLoad
