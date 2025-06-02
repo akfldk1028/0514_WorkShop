@@ -207,7 +207,7 @@ public class RhythmGameManager : MonoBehaviour
         }
         if (keyText != null)
             keyText.text = "";
-        // InGameManager.Instance.OnRhythmResult(allCorrect);
+        //InGameManager.Instance.OnRhythmResult(allCorrect);
     }
 
     public void ForceStopAndFail()
@@ -217,6 +217,6 @@ public class RhythmGameManager : MonoBehaviour
         if (metronomeCoroutine != null) StopCoroutine(metronomeCoroutine);
 
         useMetronome = false;
-        // InGameManager.Instance.OnRhythmResult(false);
+        //InGameManager.Instance.OnRhythmResult(false);
     }
 }
