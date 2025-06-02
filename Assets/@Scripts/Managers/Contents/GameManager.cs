@@ -51,7 +51,7 @@ public class GameManager
         set
         {
             _moveDir = value;
-            Debug.Log($"[GameManager] MoveDir: {_moveDir}");
+            //Debug.Log($"[GameManager] MoveDir: {_moveDir}"); 미안!
             _player?.Move(_moveDir); // Player.cs의 Move 함수 호출
             Managers.PublishAction(ActionType.MoveDirChanged);
         }
