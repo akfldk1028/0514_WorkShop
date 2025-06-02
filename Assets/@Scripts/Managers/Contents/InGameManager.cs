@@ -9,15 +9,20 @@ public class InGameManager : MonoBehaviour
     public PlayerMove playerMove;
 
     [Header("Camera Control")]
-    public CameraControl cameraControl; //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½È·Î¿ï¿½ Ä«ï¿½Þ¶ï¿½ ï¿½ï¿½ï¿½ï¿½
+    public CameraControl cameraControl;
+
     public Transform cameraTransform;
     public Vector3 fixedCameraPosition;
     public Vector3 fixedCameraRotation;
 
     [Header("Interaction UI")]
     public GameObject interactionCanvas;
+    public GameObject StartText;
 
-    //findï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ï¿½Ï³ï¿½?? ï¿½î¶²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Û¾ï¿½ï¿½Ø¾ï¿½ï¿½ï¿½ï¿½ï¿½?-?
+
+    [Header("¸®µë °ÔÀÓ")]
+    public RhythmGameManager rhythmGameManager;
+
 
     private void Awake()
     {
@@ -30,6 +35,24 @@ public class InGameManager : MonoBehaviour
         }
 
         AutoAssign();
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            StartText.SetActive(false);
+            if (rhythmGameManager != null)
+                rhythmGameManager.StartRhythmSequence();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (rhythmGameManager != null)
+                rhythmGameManager.ForceStopAndFail();
+
+            Resume();
+        }
     }
 
     private void AutoAssign()
@@ -46,16 +69,36 @@ public class InGameManager : MonoBehaviour
         if (cameraTransform == null && Camera.main != null)
             cameraTransform = Camera.main.transform;
 
-        // if (interactionCanvas == null)
-        // {
-        //     interactionCanvas = GameObject.Find("GameCanvas");
-        //     interactionCanvas.SetActive(false);
-        // }
+        if (interactionCanvas == null)
+        {
+            interactionCanvas = GameObject.Find("GameCanvas");
+            if (interactionCanvas != null)
+                interactionCanvas.SetActive(false);
+
+            // if (interactionCanvas == null)
+            // {
+            //     interactionCanvas = GameObject.Find("GameCanvas");
+            //     interactionCanvas.SetActive(false);
+            // }
+
+            if (StartText == null && interactionCanvas != null)
+            {
+                Transform found = interactionCanvas.transform.Find("StartText");
+                if (found != null)
+                    StartText = found.gameObject;
+            }
+
+            if (rhythmGameManager == null)
+            {
+                GameObject obj = GameObject.Find("RhythmManager");
+                if (obj != null)
+                    rhythmGameManager = obj.GetComponent<RhythmGameManager>();
+            }
+        }
 
     }
 
-
-    //FÅ° ï¿½ï¿½È£ï¿½Û¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ È£ï¿½ï¿½ - ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½, ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½, UI Ç¥ï¿½ï¿½
+    // FÅ° »óÈ£ÀÛ¿ë ¿ÀºêÁ§Æ®¿¡¼­ È£Ãâ - ½ÃÁ¡ °íÁ¤, ÇÃ·¹ÀÌ¾î ¸ØÃã, UI Ç¥½Ã
     public void InteractWith(InteractableObject obj)
     {
         if (playerObj != null)
@@ -69,7 +112,7 @@ public class InGameManager : MonoBehaviour
 
         if (cameraTransform != null)
         {
-            fixedCameraPosition = new Vector3(-6.38f, 4.5f, 9.55f);
+            fixedCameraPosition = new Vector3(-6.38f, 4.5f, 9.5f);
             fixedCameraRotation = new Vector3(70f, -90f, 0f);
 
             cameraTransform.position = fixedCameraPosition;
@@ -80,9 +123,12 @@ public class InGameManager : MonoBehaviour
             interactionCanvas.SetActive(true);
     }
 
-    //ESC ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Æ°ï¿½)
+    //ESC·Î ºüÁ®³ª¿È
     public void Resume()
     {
+        if (StartText != null)
+            StartText.SetActive(true);
+
         if (playerObj != null)
             playerObj.SetActive(true);
 
@@ -95,4 +141,19 @@ public class InGameManager : MonoBehaviour
         if (interactionCanvas != null)
             interactionCanvas.SetActive(false);
     }
+
+    public void OnRhythmResult(bool isSuccess)
+    {
+        Debug.Log("¸®µë °ÔÀÓ °á°ú: " + (isSuccess ? "¼º°ø" : "½ÇÆÐ"));
+
+        if (isSuccess)
+        {
+            // ¼º°ø ½Ã Ã³¸®
+        }
+        else
+        {
+            // ½ÇÆÐ ½Ã Ã³¸®
+        }
+    }
 }
+
