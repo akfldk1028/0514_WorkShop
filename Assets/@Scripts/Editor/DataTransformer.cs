@@ -147,7 +147,7 @@ public class DataTransformer : EditorWindow
 	// 문자열을 지정된 타입으로 변환
 	private static object ConvertValue(string value, Type type)
 	{
-		if (string.IsNullOrWhiteSpace(value) || value.Trim().ToLower() == "none")
+		if (string.IsNullOrWhiteSpace(value))
 			return GetDefaultValue(type);
 
 		try
