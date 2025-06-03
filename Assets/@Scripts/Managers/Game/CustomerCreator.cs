@@ -168,6 +168,7 @@ public class CustomerCreator
     void OnDestroy()
     {
         customerSubscription?.Dispose();
+        _tableManager?.Dispose(); // TableManager 구독 해제 추가
     }
 
     private void SpawnCustomer()
@@ -182,7 +183,7 @@ public class CustomerCreator
         // (2) 원하는 y 높이를 대략 0으로 맞추되, 실제 NavMesh 높이를 곧바로 취득할 것이므로 아래 코드에서 덮어씌워질 예정
         desiredPos.y = 0f;
 
-        // (3) 먼저 NavMesh.SamplePosition으로 “진짜 NavMesh 위” 좌표를 구한다
+        // (3) 먼저 NavMesh.SamplePosition으로 "진짜 NavMesh 위" 좌표를 구한다
         NavMeshHit hit;
         float sampleRadius = 10.0f; // 반경을 넉넉하게 잡는다 (필요에 따라 조정)
         if (!NavMesh.SamplePosition(desiredPos, out hit, sampleRadius, NavMesh.AllAreas))
@@ -191,7 +192,7 @@ public class CustomerCreator
             return;
         }
 
-        // hit.position이 곧 “NavMesh 위에 유효한 좌표”가 된다
+        // hit.position이 곧 "NavMesh 위에 유효한 좌표"가 된다
         Vector3 spawnPos = hit.position;
         Debug.Log($"[CustomerCreator] NavMesh 위로 보정된 Spawn 위치: {spawnPos}");
 
