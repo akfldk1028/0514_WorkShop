@@ -12,10 +12,10 @@ public class CameraController : InitBase
 	}
 
 	// 여러 뷰용 offset
-	public Vector3 backViewOffset = new Vector3(0f, -10f, -10f); // 사진 기반 값
+	public Vector3 backViewOffset = new Vector3(0f, -7f, -40f); // Y값을 -10f에서 -7f로 변경하여 카메라를 더 높게
 
-	public Vector3 backViewPosition = new Vector3(5f, -10f, 20.63f); // 더 뒤로 (Z값 증가)
-	public Vector3 backViewRotation = new Vector3(-5f, 0f, 0f);     // X값 5도로 올림
+	public Vector3 backViewPosition = new Vector3(5f, -20f, 0f); // 더 뒤로 (Z값 증가)
+	public Vector3 backViewRotation = new Vector3(0f, 0f, 0f);     // X값 5도로 올림
 	// 투시적 탑뷰: 주점 전체가 잘 보이도록 실제 카메라 위치/회전값 적용
 	public Vector3 topViewPosition = new Vector3(35.3f, 113.5f, 124.7f); // 예시: 주점 위쪽/뒤쪽
 	public Vector3 topViewRotation = new Vector3(45f, -147.18f, 0f);     // 예시: 약간 기울어진 각도
@@ -23,8 +23,8 @@ public class CameraController : InitBase
 	private Vector3 currentOffset;
 	private enum ViewMode { BackView, TopView }
 	private ViewMode currentViewMode = ViewMode.BackView;
-    public float positionSmoothSpeed = 0.05f;
-    public float rotationSmoothSpeed = 7f;
+    public float positionSmoothSpeed = 0.125f;  // 0.05f에서 증가 (더 부드럽게)
+    public float rotationSmoothSpeed = 2f;      // 7f에서 감소 (너무 빠른 회전 방지)
 
 	private bool justSwitchedToBackView = false;
 
@@ -74,7 +74,7 @@ public class CameraController : InitBase
 			Vector3 desiredPosition = Target.transform.position + Target.transform.rotation * currentOffset;
 			transform.position = Vector3.Lerp(transform.position, desiredPosition, positionSmoothSpeed);
 
-			Quaternion desiredRotation = Quaternion.LookRotation(Target.transform.position + Target.transform.forward * 55f - transform.position);
+			Quaternion desiredRotation = Quaternion.LookRotation(Target.transform.position + Target.transform.forward * 25f - transform.position);
 			transform.rotation = Quaternion.Slerp(transform.rotation, desiredRotation, rotationSmoothSpeed * Time.deltaTime);
 		}
 		else if (currentViewMode == ViewMode.TopView)

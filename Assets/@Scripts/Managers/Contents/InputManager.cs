@@ -18,6 +18,11 @@ public class InputManager
     private IDisposable _updateSubscription;
     private bool _initialized = false;
 
+    // PlayerMove 관련 변수들
+    private Transform _playerTransform;
+    public float moveSpeed = 7f;
+    public float rotationSpeed = 200f;
+
     public InputManager()
     {
         Debug.Log("<color=cyan>[InputManager]</color> 생성됨");
@@ -32,6 +37,37 @@ public class InputManager
         {
             _updateSubscription = Managers.Subscribe(ActionType.Managers_Update, OnUpdate);
             Debug.Log("<color=cyan>[InputManager]</color> Update 구독 성공");
+        }
+
+        // Player Transform 찾기
+        FindPlayerTransform();
+    }
+
+    private void FindPlayerTransform()
+    {
+        GameObject playerObj = GameObject.FindWithTag("Player");
+        if (playerObj == null)
+        {
+            playerObj = GameObject.Find("Player");
+        }
+        
+        if (playerObj != null)
+        {
+            _playerTransform = playerObj.transform;
+            
+            // PlayerMove 컴포넌트가 있으면 설정값 가져오기
+            PlayerMove playerMove = playerObj.GetComponent<PlayerMove>();
+            if (playerMove != null)
+            {
+                moveSpeed = playerMove.moveSpeed;
+                rotationSpeed = playerMove.rotationSpeed;
+            }
+            
+            Debug.Log("<color=cyan>[InputManager]</color> Player 찾음: " + playerObj.name);
+        }
+        else
+        {
+            Debug.LogWarning("<color=cyan>[InputManager]</color> Player 오브젝트를 찾을 수 없습니다.");
         }
     }
 
@@ -58,23 +94,49 @@ public class InputManager
 
     private void HandleKeyboardInput()
     {
-        Vector2 moveDir = Vector2.zero;
-        if (Input.GetKey(KeyCode.W)) moveDir.y += 1;
-        if (Input.GetKey(KeyCode.S)) moveDir.y -= 1;
-        if (Input.GetKey(KeyCode.A)) moveDir.x -= 1;
-        if (Input.GetKey(KeyCode.D)) moveDir.x += 1;
-        if (Input.GetKeyDown(KeyCode.P))
+        // Player가 없으면 다시 찾기 시도
+        if (_playerTransform == null)
         {
-            Managers.Game.CustomerCreator._tableManager.DebugPrintAllTableOrders();
+            FindPlayerTransform();
         }
+
+        // 백뷰 3인칭 게임 조작 (탱크 컨트롤러)
+        Vector2 moveDir = Vector2.zero;
+        float turn = 0f;
+
+        if (Input.GetKey(KeyCode.W)) moveDir.y += 2;  // 전진
+        if (Input.GetKey(KeyCode.S)) moveDir.y -= 2;  // 후진
+        if (Input.GetKey(KeyCode.A)) 
+        {
+            moveDir.x -= 2;  // Player.cs로 회전 정보 전달
+            turn = -2f;      // InputManager에서도 직접 처리
+        }
+        if (Input.GetKey(KeyCode.D)) 
+        {
+            moveDir.x += 2f;  // Player.cs로 회전 정보 전달
+            turn = 2f;       // InputManager에서도 직접 처리
+        }
+
+        // GameManager로 이동+회전 정보 전달 (Player.cs에서 처리)
         if (Managers.Game != null)
         {
-            moveDir = moveDir.normalized;
             if (moveDir != Managers.Game.MoveDir)
             {
                 Managers.Game.MoveDir = moveDir;
             }
         }
+
+        // 백업 회전 처리 (InputManager에서 직접)
+        if (_playerTransform != null && turn != 0f)
+        {
+            _playerTransform.Rotate(0f, turn * rotationSpeed * Time.deltaTime, 0f);
+        }
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            Managers.Game.CustomerCreator._tableManager.DebugPrintAllTableOrders();
+        }
+        
         if (Input.GetKeyDown(KeyCode.B))
         {
             OnBackViewKey?.Invoke();
@@ -82,6 +144,10 @@ public class InputManager
         if (Input.GetKeyDown(KeyCode.T))
         {
             OnTopViewKey?.Invoke();
+        }
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            Managers.PublishAction(ActionType.Player_InteractKey);
         }
     }
 

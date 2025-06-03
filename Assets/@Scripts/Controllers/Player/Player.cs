@@ -14,7 +14,7 @@ public class Player : Unit
 
     public GameObject modelInstance;
     public Animator modelAnimator;
-    public float turnSpeed = 20f;
+    public float turnSpeed = 30f;
 
 
 
@@ -51,21 +51,28 @@ public class Player : Unit
         if (rb != null)
         {
             float speed = 5f;
-            Vector3 moveDir = new Vector3(_inputDir.x, 0, _inputDir.y);
-            // 이동
-            rb.linearVelocity = moveDir * speed;
-            // 회전 (입력 방향이 있을 때만)
-            if (moveDir.sqrMagnitude > 0.01f)
+            
+            // 전진/후진 처리 (Y축 입력)
+            Vector3 moveDir = Vector3.zero;
+            if (_inputDir.y != 0)
             {
-                    Quaternion targetRotation = Quaternion.LookRotation(moveDir, Vector3.up);
-                    rb.MoveRotation(Quaternion.Slerp(transform.rotation, targetRotation, turnSpeed * Time.deltaTime));
-                    Debug.Log("[Player] moveDir : " + moveDir);
+                moveDir = transform.forward * _inputDir.y;  // 로컬 forward 방향으로 이동
             }
+            
+            // 회전 처리 (X축 입력)
+            if (_inputDir.x != 0)
+            {
+                float rotationSpeed = turnSpeed * _inputDir.x;
+                rb.MoveRotation(rb.rotation * Quaternion.Euler(0, rotationSpeed * Time.fixedDeltaTime, 0));
+            }
+            
+            // 이동 적용
+            rb.linearVelocity = moveDir * speed;
 
             if (modelAnimator != null && action != null)
             {
                 Debug.Log("[Player] action : " + action);
-                if (moveDir.sqrMagnitude > 0.01f)
+                if (_inputDir.sqrMagnitude > 0.01f)
                 {
                     action.WalkIdle();
                 }
