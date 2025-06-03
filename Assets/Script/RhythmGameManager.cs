@@ -3,69 +3,122 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using System.Linq;
+using UnityEngine.UI;
+
+public enum RhythmResult
+{
+    Fail,
+    Good,
+    Perfect
+}
 
 public class RhythmGameManager : MonoBehaviour
 {
-    [Header("���� ����")]
+    [Header("Sound Setting")]
     public AudioClip soundClip;
     public AudioClip inputClip;
     public AudioSource audioSource;
 
-    [Header("��Ʈ�γ� ����")]
+    [Header("Metronome Setting")]
     public AudioClip metronomeClip;
     public AudioSource metronomeSource;
 
-    [Header("ī��Ʈ�ٿ� TMP �ؽ�Ʈ")]
+    [Header("Countdown TMP Text")]
     public TextMeshProUGUI Num;
 
-    [Header("���� ���� ����")]
+    [Header("Jundgment Range")]
     [SerializeField] private float perfectWindow = 0.15f;
     [SerializeField] private float goodWindow = 0.3f;
 
-    [Header("���� ����")]
+    [Header("Rythmn Key Setting")]
     [SerializeField] private float interval = 0.65f;
-    [SerializeField] private List<string> rhythmPattern = new List<string> { "A", "S", "AD", "0", "D", "0", "D", "A" };
+    [SerializeField] private List<string> rhythmPattern = new List<string> { "A", "S", "AD", "_", "D", "_", "D", "A" };
 
     private List<float> expectedTimes = new List<float>();
     private List<float> inputTimes = new List<float>();
     private List<string> inputKeys = new List<string>();
 
-    [Header("Ű �Է� �ȳ�")]
-    public TextMeshProUGUI keyText;
+    [Header("Key UI")]
+    public GameObject KeyUI;
+    public List<Sprite> keySprites; // 순서: A, S, D, E, Z (Z: Space)
+    public List<string> keyLabels = new List<string> { "A", "S", "D", "E", "Z" }; // Z: Space
+    public List<Image> keyImages; // T1~T8
+    private Dictionary<string, Sprite> keySpriteDict;
 
     private bool useMetronome = true;
 
+    public TextMeshProUGUI recipeName;
+
+    // 코루틴
     private Coroutine rhythmCoroutine;
     private Coroutine inputCoroutine;
     private Coroutine metronomeCoroutine;
 
+    private void Start()
+    {
+        KeyUI.SetActive(false);
+    }
+
+    private void InitKeySpriteDict()
+    {
+        if (keySpriteDict != null) return;
+
+        keySpriteDict = new Dictionary<string, Sprite>();
+        for (int i = 0; i < keyLabels.Count; i++)
+        {
+            keySpriteDict[keyLabels[i]] = keySprites[i];
+        }
+    }
+
+    public void ShowKeyCombinationUI(List<string> keys)
+    {
+        InitKeySpriteDict();
+
+        for (int i = 0; i < keyImages.Count; i++)
+        {
+            if (i < keys.Count && keys[i] != "_")
+            {
+                string key = keys[i].ToUpper();
+
+                if (keySpriteDict.ContainsKey(key))
+                {
+                    keyImages[i].sprite = keySpriteDict[key];
+                    keyImages[i].gameObject.SetActive(true);
+                }
+                else
+                {
+                    keyImages[i].gameObject.SetActive(false);
+                }
+            }
+            else
+            {
+                keyImages[i].gameObject.SetActive(false);
+            }
+        }
+    }
+
     public void StartRhythmSequence()
     {
-        TrimTrailingSilence();
         Data.RecipeData data = Managers.Ingame.getRandomRecipe();
         Debug.Log(data.RecipeName);
-        Debug.Log(data.KeyCombination);
-        Debug.Log(data.BasePrice);
-        Debug.Log(data.Tags);
-        Debug.Log(data.Category);
-        Debug.Log(data.RequiredIngredientsVisual);
-        Debug.Log(data.CompletedVisualResourceID);
-        Debug.Log(data.OpenOption);
+        Debug.Log(string.Join(", ", data.KeyCombination));
 
-        if (keyText != null) //Ű �ؽ�Ʈ�� ����
-        {
-            string patternText = string.Join("  ", rhythmPattern); // "0" ����
-            keyText.text = patternText;
-        }
+        rhythmPattern = new List<string>(data.KeyCombination);
+        Debug.Log("rhythmPattern:" + string.Join(", ", rhythmPattern));
 
+        recipeName.text = data.RecipeName;
+
+        ShowKeyCombinationUI(data.KeyCombination);
+        TrimTrailingSilence();
         rhythmCoroutine = StartCoroutine(InitAndStart());
+        KeyUI.SetActive(true);
     }
 
     private void TrimTrailingSilence()
     {
         for (int i = rhythmPattern.Count - 1; i >= 0; i--)
         {
-            if (rhythmPattern[i] != "0")
+            if (rhythmPattern[i] != "_")
             {
                 rhythmPattern = rhythmPattern.GetRange(0, i + 1);
                 break;
@@ -100,7 +153,7 @@ public class RhythmGameManager : MonoBehaviour
 
         for (int i = 0; i < rhythmPattern.Count; i++)
         {
-            if (rhythmPattern[i] != "0")
+            if (rhythmPattern[i] != "_")
                 audioSource.PlayOneShot(soundClip);
 
             yield return new WaitForSeconds(interval);
@@ -147,7 +200,12 @@ public class RhythmGameManager : MonoBehaviour
                     foreach (KeyCode k in System.Enum.GetValues(typeof(KeyCode)))
                     {
                         if (Input.GetKey(k))
-                            keysPressed.Add(k.ToString());
+                        {
+                            if (k == KeyCode.Space)
+                                keysPressed.Add("Z");
+                            else
+                                keysPressed.Add(k.ToString().ToUpper());
+                        }
                     }
 
                     if (keysPressed.Count > 0)
@@ -180,43 +238,54 @@ public class RhythmGameManager : MonoBehaviour
     private void JudgeResults()
     {
         bool allCorrect = true;
+        bool allPerfect = true;
 
         for (int i = 0; i < rhythmPattern.Count; i++)
         {
-            string expectedKey = SortString(rhythmPattern[i]);
-            string actualKey = SortString(inputKeys[i]);
+            string expectedKey = SortString(rhythmPattern[i].ToUpper());
+            string actualKey = SortString(inputKeys[i].ToUpper());
             float expectedTime = expectedTimes[i];
             float actualTime = inputTimes[i];
 
-            if (expectedKey == "0")
+            Debug.Log($"[{i}] expected: {expectedKey}, actual: {actualKey}");
+
+            if (expectedKey == "_")
             {
-                if (actualKey == "") continue;
+                if (actualKey != "") allCorrect = false;
+                continue;
+            }
+
+            if (actualKey == "" || actualKey != expectedKey)
+            {
+                allCorrect = false;
+                continue;
+            }
+
+            float diff = Mathf.Abs(actualTime - expectedTime);
+            if (diff > goodWindow)
+            {
                 allCorrect = false;
             }
-            else
+            else if (diff > perfectWindow)
             {
-                if (actualKey == "")
-                {
-                    allCorrect = false;
-                    continue;
-                }
-
-                if (actualKey != expectedKey)
-                {
-                    allCorrect = false;
-                    continue;
-                }
-
-                float diff = Mathf.Abs(actualTime - expectedTime);
-                if (diff > goodWindow)
-                {
-                    allCorrect = false;
-                }
+                allPerfect = false;
             }
         }
-        if (keyText != null)
-            keyText.text = "";
-        //InGameManager.Instance.OnRhythmResult(allCorrect);
+
+        Debug.Log("입력한 키 값: " + string.Join(", ", inputKeys));
+
+        if (!allCorrect)
+        {
+            InGameManager.Instance.EndRhythmGame(RhythmResult.Fail);
+        }
+        else if (allPerfect)
+        {
+            InGameManager.Instance.EndRhythmGame(RhythmResult.Perfect);
+        }
+        else
+        {
+            InGameManager.Instance.EndRhythmGame(RhythmResult.Good);
+        }
     }
 
     public void ForceStopAndFail()
@@ -226,6 +295,6 @@ public class RhythmGameManager : MonoBehaviour
         if (metronomeCoroutine != null) StopCoroutine(metronomeCoroutine);
 
         useMetronome = false;
-        //InGameManager.Instance.OnRhythmResult(false);
+        InGameManager.Instance.EndRhythmGame(RhythmResult.Fail);
     }
 }

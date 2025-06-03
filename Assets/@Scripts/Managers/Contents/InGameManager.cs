@@ -25,6 +25,10 @@ public class InGameManager : MonoBehaviour
     public RhythmGameManager rhythmGameManager;
     private int[] recipeIdList = { 200001, 200002, 200003, 200004, 200005 }; // 예시: 원하는 id들로 채우세요
 
+    //게임상태확인
+    private bool isInteracting = false;
+    private bool isRhythmGameStarted = false;
+
     private async void Awake()
     {
         if (Instance == null)
@@ -57,9 +61,9 @@ public class InGameManager : MonoBehaviour
     // }
 
 
-    private void SetInfo()
+    private void SetInfo() //게임 시작 전 필요한 데이터 준비
     {
-        //일단 이거 데이터 찾아서 넣어주는 로직 추가해야함
+        
     }
 
     public Data.RecipeData getRandomRecipe()
@@ -73,18 +77,16 @@ public class InGameManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && isInteracting && !isRhythmGameStarted)
         {
+            isRhythmGameStarted = true;
             StartText.SetActive(false);
-            if (rhythmGameManager != null)
-                rhythmGameManager.StartRhythmSequence();
+            rhythmGameManager?.StartRhythmSequence();
         }
 
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape) && isInteracting)
         {
-            if (rhythmGameManager != null)
-                rhythmGameManager.ForceStopAndFail();
-
+            rhythmGameManager?.ForceStopAndFail();
             Resume();
         }
     }
@@ -132,9 +134,11 @@ public class InGameManager : MonoBehaviour
 
     }
 
-    // FŰ ��ȣ�ۿ� ������Ʈ���� ȣ�� - ���� ����, �÷��̾� ����, UI ǥ��
-    public void InteractWith(InteractableObject obj)
+    // F키 눌렀을 때 실행
+    public void InteractWith() //InteractagleObject의 Interact에서 호출
     {
+        isInteracting = true;
+
         if (playerObj != null)
             playerObj.SetActive(false);
 
@@ -157,9 +161,11 @@ public class InGameManager : MonoBehaviour
             interactionCanvas.SetActive(true);
     }
 
-    //ESC�� ��������
-    public void Resume()
+    //ESC
+    public void Resume() //InteractableIObject의 Update문에서 상호작용중+ESC 눌렀을 때 호출
     {
+        isInteracting = false;
+
         if (StartText != null)
             StartText.SetActive(true);
 
@@ -176,18 +182,25 @@ public class InGameManager : MonoBehaviour
             interactionCanvas.SetActive(false);
     }
 
-    public void OnRhythmResult(bool isSuccess)
+    public void EndRhythmGame(RhythmResult result)
     {
-        Debug.Log("���� ���� ���: " + (isSuccess ? "����" : "����"));
+        switch (result)
+        {
+            case RhythmResult.Fail:
+                Debug.Log("리듬게임 결과: 실패");
+                break;
+            case RhythmResult.Good:
+                Debug.Log("리듬게임 결과: 굿");
+                break;
+            case RhythmResult.Perfect:
+                Debug.Log("리듬게임 결과: 퍼펙트");
+                break;
+        }
 
-        if (isSuccess)
-        {
-            // ���� �� ó��
-        }
-        else
-        {
-            // ���� �� ó��
-        }
+        isRhythmGameStarted = false;
+
+        // 기타 후처리 로직 추가 가능
     }
+
 }
 

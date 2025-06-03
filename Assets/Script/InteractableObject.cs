@@ -33,7 +33,7 @@ public class InteractableObject : MonoBehaviour
         if (canInteract && !interacted)
         {
             ShowText();
-            if (Input.GetKeyDown(KeyCode.E))
+            if (Input.GetKeyDown(KeyCode.F))
             {
                 interacted = true;
                 Interact();
@@ -56,7 +56,7 @@ public class InteractableObject : MonoBehaviour
     {
         if (interacted)
         {
-           Managers.Ingame.InteractWith(this);
+           Managers.Ingame.InteractWith();
            HideText();
         }
     }

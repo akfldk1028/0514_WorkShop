@@ -7,14 +7,14 @@
       "Diffic": 0,
       "Description": null,
       "KeyCombination": [
-        "space",
-        "None",
+        "z",
+        "_",
         "s",
-        "None",
-        "space",
-        "None",
-        "None",
-        "None"
+        "_",
+        "z",
+        "_",
+        "_",
+        "_"
       ],
       "BasePrice": 6500,
       "Tags": [
@@ -38,13 +38,13 @@
       "Description": null,
       "KeyCombination": [
         "a",
-        "None",
-        "None",
+        "_",
+        "_",
         "w",
-        "None",
-        "space",
-        "None",
-        "None"
+        "_",
+        "z",
+        "_",
+        "_"
       ],
       "BasePrice": 6000,
       "Tags": [
@@ -67,14 +67,14 @@
       "Diffic": 0,
       "Description": null,
       "KeyCombination": [
-        "None",
+        "_",
         "s",
-        "None",
-        "None",
-        "space",
-        "None",
+        "_",
+        "_",
+        "z",
+        "_",
         "w",
-        "None"
+        "_"
       ],
       "BasePrice": 7000,
       "Tags": [
@@ -97,14 +97,14 @@
       "Diffic": 0,
       "Description": null,
       "KeyCombination": [
-        "space",
-        "None",
+        "z",
+        "_",
         "a",
-        "None",
-        "None",
-        "None",
-        "space",
-        "None"
+        "_",
+        "_",
+        "_",
+        "z",
+        "_"
       ],
       "BasePrice": 7000,
       "Tags": [
@@ -128,13 +128,13 @@
       "Description": null,
       "KeyCombination": [
         "w",
-        "None",
+        "_",
         "w",
-        "None",
+        "_",
         "s",
-        "None",
-        "None",
-        "space"
+        "_",
+        "_",
+        "z"
       ],
       "BasePrice": 5500,
       "Tags": [
@@ -157,14 +157,14 @@
       "Diffic": 0,
       "Description": null,
       "KeyCombination": [
-        "None",
-        "None",
-        "space",
-        "None",
+        "_",
+        "_",
+        "z",
+        "_",
         "a",
-        "None",
+        "_",
         "d",
-        "None"
+        "_"
       ],
       "BasePrice": 9000,
       "Tags": [
@@ -188,13 +188,13 @@
       "Description": null,
       "KeyCombination": [
         "s",
-        "None",
-        "None",
-        "None",
-        "space",
+        "_",
+        "_",
+        "_",
+        "z",
         "w",
-        "None",
-        "None"
+        "_",
+        "_"
       ],
       "BasePrice": 8500,
       "Tags": [
@@ -217,12 +217,12 @@
       "Diffic": 0,
       "Description": null,
       "KeyCombination": [
-        "space",
+        "z",
         "w",
         "s",
         "w",
-        "space",
-        "None",
+        "z",
+        "_",
         "a",
         "w"
       ],
@@ -249,11 +249,11 @@
       "KeyCombination": [
         "a",
         "d",
-        "None",
+        "_",
         "s",
-        "space",
+        "z",
         "w",
-        "None",
+        "_",
         "w"
       ],
       "BasePrice": 7000,
@@ -277,14 +277,14 @@
       "Diffic": 0,
       "Description": null,
       "KeyCombination": [
-        "space",
-        "None",
+        "z",
+        "_",
         "s",
         "d",
         "w",
         "a",
-        "None",
-        "space"
+        "_",
+        "z"
       ],
       "BasePrice": 11500,
       "Tags": [
@@ -311,11 +311,11 @@
         "w",
         "s",
         "w",
-        "space",
-        "None",
+        "z",
+        "_",
         "a",
         "d",
-        "None"
+        "_"
       ],
       "BasePrice": 12000,
       "Tags": [
@@ -338,13 +338,13 @@
       "Diffic": 0,
       "Description": null,
       "KeyCombination": [
-        "space",
+        "z",
         "a",
         "s",
-        "None",
+        "_",
         "w",
-        "space",
-        "None",
+        "z",
+        "_",
         "d"
       ],
       "BasePrice": 10000,
@@ -368,14 +368,14 @@
       "Diffic": 0,
       "Description": null,
       "KeyCombination": [
-        "None",
+        "_",
         "w",
-        "space",
+        "z",
         "s",
         "w",
         "a",
         "w",
-        "space"
+        "z"
       ],
       "BasePrice": 11500,
       "Tags": [
@@ -401,11 +401,11 @@
         "a",
         "s",
         "d",
-        "space",
+        "z",
         "w",
-        "None",
+        "_",
         "s",
-        "None"
+        "_"
       ],
       "BasePrice": 12500,
       "Tags": [
@@ -429,11 +429,11 @@
       "Diffic": 0,
       "Description": null,
       "KeyCombination": [
-        "space",
+        "z",
         "a",
         "w",
         "s",
-        "space",
+        "z",
         "d",
         "w",
         "a"
@@ -462,11 +462,11 @@
         "s",
         "w",
         "d",
-        "space",
+        "z",
         "a",
         "w",
         "s",
-        "space"
+        "z"
       ],
       "BasePrice": 15000,
       "Tags": [
@@ -489,11 +489,11 @@
       "Diffic": 0,
       "Description": null,
       "KeyCombination": [
-        "space",
+        "z",
         "d",
         "a",
         "w",
-        "space",
+        "z",
         "s",
         "a",
         "w"
@@ -521,12 +521,12 @@
       "Description": null,
       "KeyCombination": [
         "w",
-        "space",
+        "z",
         "a",
         "s",
         "d",
         "w",
-        "space",
+        "z",
         "a"
       ],
       "BasePrice": 13000,
@@ -550,12 +550,12 @@
       "Diffic": 0,
       "Description": null,
       "KeyCombination": [
-        "space",
+        "z",
         "a",
         "s",
         "d",
         "w",
-        "space",
+        "z",
         "a",
         "s"
       ],
@@ -581,13 +581,13 @@
       "Diffic": 0,
       "Description": null,
       "KeyCombination": [
-        "space",
+        "z",
         "w",
         "a",
         "s",
-        "space",
+        "z",
         "d",
-        "space",
+        "z",
         "a"
       ],
       "BasePrice": 17000,
