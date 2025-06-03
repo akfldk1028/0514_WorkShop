@@ -14,16 +14,13 @@ public class InGameScene : BaseScene
 		SceneType = EScene.IngameScene;
 		Managers.Map.LoadMap("RestaurantBar");
         Managers.Game.CustomerCreator.StartAutoSpawn();
-		// Managers.Game.PlayerManager.SetInfo();
-		Vector3 playerPos = new Vector3(39.0f, 0.0f, 3.0f);
+
+		Vector3 playerPos = Managers.Map.PlayerPosition;
 		Player player = Managers.Object.Spawn<Player>(playerPos, 201000);
         Managers.Game.SetPlayer(player); // GameManager에 등록
-		Debug.Log("player : " + player);
-		    // 프리팹 로드
+	
     	GameObject highlightPrefab = Managers.Resource.Load<GameObject>("Quad");
-		// GameObject placeablePrefab = Managers.Resource.Load<GameObject>("Lock");
 		
-		// 그리드 컨트롤 초기화
 		Managers.Placement.InitGridControl(highlightPrefab);
 
 		UI_GameScene sceneUI = Managers.UI.ShowSceneUI<UI_GameScene>();

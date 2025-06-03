@@ -8,6 +8,10 @@ using static Define;
 
 public static class Util
 {
+
+
+
+	
 	public static T GetOrAddComponent<T>(GameObject go) where T : UnityEngine.Component
 	{
 		T component = go.GetComponent<T>();

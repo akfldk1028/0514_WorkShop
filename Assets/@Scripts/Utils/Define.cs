@@ -273,26 +273,17 @@ public static class Define
 	public const int HERO_DEFAULT_MOVE_DEPTH = 10;
 	public const int MONSTER_DEFAULT_MOVE_DEPTH = 3;
 
-	public const int HERO_WIZARD_ID = 201000;
-	public const int HERO_KNIGHT_ID = 201001;
-	public const int HERO_LION_ID = 201003;
 
 	public const int CUSTOMER_ID = 101000;
+	public const int CUSTOMER_ID_2 = 101001;
+	public const int CUSTOMER_ID_3 = 101002;
+	public const int CUSTOMER_ID_4 = 101003;
+	public const int CUSTOMER_ID_5 = 101004;
+	public const int CUSTOMER_ID_6 = 101005;
+	public const int CUSTOMER_ID_7 = 101006;
 
-	public const int MONSTER_SLIME_ID = 202001;
-	public const int MONSTER_SPIDER_COMMON_ID = 202002;
-	public const int MONSTER_WOOD_COMMON_ID = 202004;
-	public const int MONSTER_GOBLIN_ARCHER_ID = 202005;
-	public const int MONSTER_BEAR_ID = 202006;
-
-	public const int ENV_TREE1_ID = 300001;
-	public const int ENV_TREE2_ID = 301000;
-
-	public const char MAP_TOOL_WALL = '0';
-	public const char MAP_TOOL_NONE = '1';
-	public const char MAP_TOOL_SEMI_WALL = '2';
 }
-
+	
 public static class AnimName
 {
 	public const string ATTACK_A = "attack";

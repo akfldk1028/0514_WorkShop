@@ -74,7 +74,14 @@ namespace Data
 		public int GachaExpCount;
 		public string Order;
 
-
+		public int UnlockCondition;
+		public int OrderTendency;
+		public List<string> PreferredTags;
+		public string PreferredCocktail;
+		public int SatisfactionThresholds;
+		public string ReactionDialogueGroupID_Satisfied;
+		public string ReactionDialogueGroupID_Unsatisfied;
+		public int PatienceSeconds;
 	}
 
 	[Serializable]

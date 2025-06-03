@@ -34,27 +34,27 @@ public class InGameManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-        await StartLoadAssetsAsync();
+        await Managers.Data.StartLoadAssetsAsync();
         SetInfo();
 
         AutoAssign();
     }
 
-    private Task StartLoadAssetsAsync()
-    {
-        var tcs = new TaskCompletionSource<bool>();
-        Managers.Resource.LoadAllAsync<Object>("PreLoad", (key, count, totalCount) =>
-        {
-            Debug.Log($"<color=cyan>[UI_StartUpScene]</color> {key} {count}/{totalCount}");
+    // private Task StartLoadAssetsAsync()
+    // {
+    //     var tcs = new TaskCompletionSource<bool>();
+    //     Managers.Resource.LoadAllAsync<Object>("PreLoad", (key, count, totalCount) =>
+    //     {
+    //         Debug.Log($"<color=cyan>[UI_StartUpScene]</color> {key} {count}/{totalCount}");
 
-            if (count == totalCount)
-            {
-                Managers.Data.Init();
-                tcs.SetResult(true);
-            }
-        });
-        return tcs.Task;
-    }
+    //         if (count == totalCount)
+    //         {
+    //             Managers.Data.Init();
+    //             tcs.SetResult(true);
+    //         }
+    //     });
+    //     return tcs.Task;
+    // }
 
 
     private void SetInfo()

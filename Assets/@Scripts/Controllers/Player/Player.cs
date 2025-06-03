@@ -36,6 +36,12 @@ public class Player : Unit
             SetupCustomerModel(clientPlayer);
         }
      
+        CameraController cameraController = FindObjectOfType<CameraController>();
+        if (cameraController != null)
+        {
+            cameraController.Target = this;
+        }
+
     }
 
         void FixedUpdate()

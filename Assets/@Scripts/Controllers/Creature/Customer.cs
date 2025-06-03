@@ -50,7 +50,8 @@ public class Customer : Unit
     private ECustomerState _customerState = ECustomerState.None;
     private float _stateTimer;
     private float _sitTimer = 0f;
-    
+    private System.IDisposable _chairChangedSubscription;
+
     
     [SerializeField]
     public TextMeshProUGUI orderText; // 인스펙터에서 할당 or 코드에서 찾기
@@ -81,9 +82,10 @@ public class Customer : Unit
         
         // GameManager.Items에서 가장 가까운 Item을 골라 참조
         ItemqueueManager = Managers.Game.Items
-            .Where(item => item.ObjectType == Define.EObjectType.Chair)
+            .Where(item => item != null && item.gameObject != null && item.ObjectType == Define.EObjectType.Chair)
             .OrderBy(item => Vector3.Distance(transform.position, item.transform.position))
             .FirstOrDefault();
+         _chairChangedSubscription = Managers.Subscribe(ActionType.Chair_Changed, OnChairChanged);
 
 
         Debug.Log("[Customer] ItemqueueManager: " + ItemqueueManager);
@@ -112,8 +114,30 @@ public class Customer : Unit
         CustomerState = ECustomerState.EnteringRestaurant;
         
     }
+    private void OnChairChanged()
+    {
+        if (CustomerState == ECustomerState.WaitingForChair)
+        {
+            var found = FindEmptyChair();
+            if (found != null)
+            {
+                _chair = found;
+                _chair.Reserve(this);
+                placeToSit = found.placeToSit;
+                CustomerState = ECustomerState.WalkingToChair;
+            }
+        }
+    }
 
+// (옵션) 오브젝트 파괴 시 구독 해제
+private void OnDestroy()
+{
+    _chairChangedSubscription?.Dispose();
+}
     
+
+
+
     void Update()
     {
         HandleRootMotion();
@@ -400,7 +424,7 @@ public class Customer : Unit
     {
         transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
         modelInstance = Instantiate(clientCustomer.ModelPrefab, transform.position, Quaternion.identity);
-        
+        Debug.Log("modelInstance: " + clientCustomer.ModelPrefab.name);
 
         modelInstance.transform.SetParent(transform);
         // Relay 스크립트 추가 및 연결
@@ -409,9 +433,24 @@ public class Customer : Unit
         relay.customer = this;
 
         modelAnimator = modelInstance.GetComponent<Animator>();
+        Debug.Log("modelAnimator: " + clientCustomer.ModelPrefab.name);
+        if (modelAnimator == null)
+            Debug.LogError("modelAnimator가 null입니다! 프리팹에 Animator가 붙어있는지 확인하세요.");
+
         if (modelAnimator != null && clientCustomer.AnimatorController != null)
         {
             modelAnimator.runtimeAnimatorController = clientCustomer.AnimatorController;
+        }
+
+        if (action != null)
+        {
+            action.SetAnimator(modelAnimator);
+            if (modelAnimator == null)
+                Debug.LogError("SetAnimator에 null 전달됨!");
+        }
+        else
+        {
+            Debug.LogError("action이 null입니다!");
         }
     
         if (action != null)

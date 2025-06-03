@@ -23,10 +23,25 @@ public class TableManager
                 }
         });
     }
+
+    public void DebugPrintAllTableOrders()
+    {
+        Debug.Log("<color=magenta>===== 모든 테이블 주문 정보 출력 =====</color>");
+        foreach (var table in _tables)
+        {
+            table.DebugPrintOrders();
+        }
+    }
     public void RegisterTable(Table table)
     {
         if (!_tables.Contains(table))
+        {
             _tables.Add(table);
+        }
+
+            
+
+        Debug.Log($"<color=cyan>[TableManager] 테이블 등록: {table.tableId}</color>");
     }
 
     public void UnregisterTable(Table table)

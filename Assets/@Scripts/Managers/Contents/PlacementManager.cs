@@ -197,10 +197,16 @@ public class PlacementManager
                 bool isValid = Managers.Map.IsCellValid(cellPos);
                 Debug.Log($"Cell Valid: {isValid}");
                 
+   // EndDragFromUI() 내부
                 if (isValid)
                 {
                     GameObject placedObj = Managers.Map.PlaceObjectAtCell(_placeablePrefab, cellPos);
                     Debug.Log($"배치된 오브젝트: {placedObj}");
+                    // Chair 오브젝트면 Chair_Changed 이벤트 발행
+                    if (placedObj != null && placedObj.GetComponent<Chair>() != null)
+                    {
+                        Managers.PublishAction(ActionType.Chair_Changed);
+                    }
                 }
                 else
                 {
@@ -282,9 +288,13 @@ public class PlacementManager
         // 배치 가능한 위치인지 확인
         if (Managers.Map.IsCellValid(cellPos))
         {
-            // 맵 매니저를 통해 오브젝트 배치
-            Managers.Map.PlaceObjectAtCell(_placeablePrefab, cellPos);
+            GameObject placedObj = Managers.Map.PlaceObjectAtCell(_placeablePrefab, cellPos);
             Debug.Log("[GameManager] 드래그 완료, 오브젝트 배치");
+            // Chair 오브젝트면 Chair_Changed 이벤트 발행
+            if (placedObj != null && placedObj.GetComponent<Chair>() != null)
+            {
+                Managers.PublishAction(ActionType.Chair_Changed);
+            }
         }
         
         GameObject.Destroy(_ghostInstance);

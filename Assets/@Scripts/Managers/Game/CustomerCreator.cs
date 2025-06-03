@@ -25,6 +25,7 @@ public class CustomerCreator
     private IDisposable updateSubscription;
     private IDisposable customerSubscription;
     private bool isActive = false;
+    private int[] characterIdList = { CUSTOMER_ID_2, CUSTOMER_ID_3, CUSTOMER_ID_4, CUSTOMER_ID_5, CUSTOMER_ID_6, CUSTOMER_ID_7 }; // 예시: 원하는 id들로 채우세요
 
     public CustomerCreator()
     {
@@ -169,7 +170,6 @@ public class CustomerCreator
         customerSubscription?.Dispose();
     }
 
-
     private void SpawnCustomer()
     {
         var waitingCells = Managers.Map.WaitingCells;
@@ -196,7 +196,10 @@ public class CustomerCreator
         Debug.Log($"[CustomerCreator] NavMesh 위로 보정된 Spawn 위치: {spawnPos}");
 
         // (4) 이제 이 spawnPos를 사용해서 Customer를 생성한다
-        Customer customer = Managers.Object.Spawn<Customer>(spawnPos, CUSTOMER_ID, pooling: true);
+        int randomCharacterIndex = UnityEngine.Random.Range(0, characterIdList.Length - 1);
+        int randomCharacterId = characterIdList[randomCharacterIndex];
+
+        Customer customer = Managers.Object.Spawn<Customer>(spawnPos, randomCharacterId, pooling: true);
         if (customer == null)
         {
             Debug.LogWarning("[CustomerCreator] Customer 풀에서 가져오지 못했습니다.");
