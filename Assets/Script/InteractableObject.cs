@@ -3,7 +3,7 @@ using UnityEngine;
 public class InteractableObject : MonoBehaviour
 {
     public Transform player;
-    public float interactDistance = 2.5f; //»óÈ£ÀÛ¿ë °Å¸®
+    public float interactDistance = 2.5f; //ï¿½ï¿½È£ï¿½Û¿ï¿½ ï¿½Å¸ï¿½
 
     private bool canInteract = false;
     private bool interacted = false;
@@ -11,11 +11,12 @@ public class InteractableObject : MonoBehaviour
     public GameObject Text;
     public CanvasGroup cg;
 
-    //fÅ° »óÈ£ÀÛ¿ë ½Ã Å¾ºä °íÁ¤ ¹× ÇÃ·¹ÀÌ¾î ¿òÁ÷ÀÓ °íÁ¤
+    //fÅ° ï¿½ï¿½È£ï¿½Û¿ï¿½ ï¿½ï¿½ Å¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
     private void Awake()
     {
-        Managers.Init();
+        // Managers.Init();
+        player = Managers.Game.Player.transform;
     }
 
 
@@ -35,6 +36,7 @@ public class InteractableObject : MonoBehaviour
             ShowText();
             if (Input.GetKeyDown(KeyCode.F))
             {
+                Managers.UI.CloseSceneUI();
                 interacted = true;
                 Interact();
             }

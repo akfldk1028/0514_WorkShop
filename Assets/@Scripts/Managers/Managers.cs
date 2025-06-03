@@ -27,7 +27,7 @@ public class Managers : MonoBehaviour
     private InputManager _input = new InputManager();
     private ObjectManager _object = new ObjectManager();
     private MapManager _map = new MapManager();
-    private InGameManager _Ingame;
+    private InGameManager _Ingame = new InGameManager();
     //private RythmGameManager _Rythm;
 
     // 메시지 채널 접근자
@@ -38,7 +38,7 @@ public class Managers : MonoBehaviour
     public static MapManager Map { get { return Instance?._map; } }
     public static InputManager Input { get { Instance?._input.Init();  return Instance?._input; } }
 
-    public static InGameManager Ingame { get { return Instance?._Ingame; } }
+    public static InGameManager Ingame { get {Instance?._Ingame.Init(); return Instance?._Ingame; } }
 
     //public static RythmGameManager RythmGame { get { return Instance?._Rythm; } }
     #endregion
@@ -128,7 +128,7 @@ public class Managers : MonoBehaviour
             DontDestroyOnLoad(go);
 
             s_instance = go.GetComponent<Managers>();
-            s_instance._Ingame = go.AddComponent<InGameManager>();
+            // s_instance._Ingame = go.AddComponent<InGameManager>();
             //s_instance._Ingame = go.AddComponent<RythmGameManager>();
         }
     }

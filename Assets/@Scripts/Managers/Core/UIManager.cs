@@ -160,6 +160,16 @@ public class UIManager
 		return sceneUI;
 	}
 
+	public void CloseSceneUI()
+	{
+		if (_sceneUI != null)
+		{
+			GameObject go = _sceneUI.gameObject;
+			Managers.Resource.Destroy(go);
+			_sceneUI = null;
+		}
+	}
+
 	public void CachePopupUI(Type type)
 	{
 		string name = type.Name;

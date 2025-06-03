@@ -276,15 +276,15 @@ public class RhythmGameManager : MonoBehaviour
 
         if (!allCorrect)
         {
-            InGameManager.Instance.EndRhythmGame(RhythmResult.Fail);
+            Managers.Ingame.EndRhythmGame(RhythmResult.Fail);
         }
         else if (allPerfect)
         {
-            InGameManager.Instance.EndRhythmGame(RhythmResult.Perfect);
+            Managers.Ingame.EndRhythmGame(RhythmResult.Perfect);
         }
         else
         {
-            InGameManager.Instance.EndRhythmGame(RhythmResult.Good);
+            Managers.Ingame.EndRhythmGame(RhythmResult.Good);
         }
     }
 
@@ -295,6 +295,6 @@ public class RhythmGameManager : MonoBehaviour
         if (metronomeCoroutine != null) StopCoroutine(metronomeCoroutine);
 
         useMetronome = false;
-        InGameManager.Instance.EndRhythmGame(RhythmResult.Fail);
+        Managers.Ingame.EndRhythmGame(RhythmResult.Fail);
     }
 }

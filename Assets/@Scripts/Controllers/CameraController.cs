@@ -20,8 +20,13 @@ public class CameraController : InitBase
 	public Vector3 topViewPosition = new Vector3(35.3f, 113.5f, 124.7f); // 예시: 주점 위쪽/뒤쪽
 	public Vector3 topViewRotation = new Vector3(45f, -147.18f, 0f);     // 예시: 약간 기울어진 각도
 
+
+	public Vector3 fixedCameraPosition = new Vector3(-12.3f, 3.1f, 29f);
+	public Vector3 fixedCameraRotation = new Vector3(70f, -90f, 0f);
+
+
 	private Vector3 currentOffset;
-	private enum ViewMode { BackView, TopView }
+	private enum ViewMode { BackView, TopView, FixedView }
 	private ViewMode currentViewMode = ViewMode.BackView;
     public float positionSmoothSpeed = 0.125f;  // 0.05f에서 증가 (더 부드럽게)
     public float rotationSmoothSpeed = 2f;      // 7f에서 감소 (너무 빠른 회전 방지)
@@ -53,7 +58,26 @@ public class CameraController : InitBase
 		return true;
 	}
 
-	
+	public void SetFixedView(bool enable)
+	{
+		if (enable)
+		{
+			currentViewMode = ViewMode.FixedView;
+		}
+		else
+		{
+			currentViewMode = ViewMode.BackView; // 또는 이전 모드로 복원
+		}
+	}
+
+	// 또는 더 유연하게
+	public void SetFixedView(Vector3 position, Vector3 rotation)
+	{
+		fixedCameraPosition = position;
+		fixedCameraRotation = rotation;
+		currentViewMode = ViewMode.FixedView;
+	}
+
 	void LateUpdate()
 	{
 		if (currentViewMode == ViewMode.BackView)
@@ -82,6 +106,12 @@ public class CameraController : InitBase
 			// 주점 전체가 보이도록 고정 위치/회전
 			transform.position = topViewPosition;
 			transform.rotation = Quaternion.Euler(topViewRotation);
+		}
+
+		else if (currentViewMode == ViewMode.FixedView)
+		{
+			transform.position = fixedCameraPosition;
+			transform.rotation = Quaternion.Euler(fixedCameraRotation);
 		}
 	}
 }

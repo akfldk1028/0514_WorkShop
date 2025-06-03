@@ -149,6 +149,23 @@ public class InputManager
         {
             Managers.PublishAction(ActionType.Player_InteractKey);
         }
+
+
+       if (Input.GetKeyDown(KeyCode.Space) && Managers.Ingame.isInteracting && !Managers.Ingame.isRhythmGameStarted)
+        {
+            Managers.Ingame.isRhythmGameStarted = true;
+            Managers.Ingame.StartText.SetActive(false);
+            Managers.Ingame.rhythmGameManager?.StartRhythmSequence();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape) && Managers.Ingame.isInteracting)
+        {
+            Managers.Ingame.rhythmGameManager?.ForceStopAndFail();
+            Managers.Ingame.Resume();
+        }
+
+
+
     }
 
     private void HandleMouseInput()
