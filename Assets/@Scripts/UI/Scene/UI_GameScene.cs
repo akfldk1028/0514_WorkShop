@@ -1,22 +1,20 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using System; // IDisposable 사용을 위해 추가
 
 public class UI_GameScene : UI_Scene
 {
     enum Buttons
     {
-        GoldPlusButton,
         DiaPlusButton,
-        HeroesListButton,
-        SetHeroesButton,
         SettingButton,
-        InventoryButton,
-        WorldMapButton,
         QuestButton,
         ChallengeButton,
-        PortalButton,
-        CampButton,
+       
         CheatButton,
+        shopButton,
+
+        
     }
 
     enum Texts
@@ -28,6 +26,7 @@ public class UI_GameScene : UI_Scene
         MeatCountText,
         WoodCountText,
         MineralCountText,
+        OrderButtonText,
     }
 
     enum Sliders
@@ -36,6 +35,9 @@ public class UI_GameScene : UI_Scene
         WoodSlider,
         MineralSlider,
     }
+
+    private IDisposable _orderTextSubscription;
+    private string _lastOrderText = ""; // 마지막 주문 텍스트 캐시
 
     public override bool Init()
     {
@@ -46,19 +48,18 @@ public class UI_GameScene : UI_Scene
         BindTexts(typeof(Texts));
         BindSliders(typeof(Sliders));
 
-        GetButton((int)Buttons.GoldPlusButton).gameObject.BindEvent(OnClickGoldPlusButton);
-        GetButton((int)Buttons.DiaPlusButton).gameObject.BindEvent(OnClickDiaPlusButton);
-        GetButton((int)Buttons.HeroesListButton).gameObject.BindEvent(OnClickHeroesListButton);
-        GetButton((int)Buttons.SetHeroesButton).gameObject.BindEvent(OnClickSetHeroesButton);
+        // GetButton((int)Buttons.GoldPlusButton).gameObject.BindEvent(OnClickGoldPlusButton);
+        // GetButton((int)Buttons.DiaPlusButton).gameObject.BindEvent(OnClickDiaPlusButton);
         GetButton((int)Buttons.SettingButton).gameObject.BindEvent(OnClickSettingButton);
-        GetButton((int)Buttons.InventoryButton).gameObject.BindEvent(OnClickInventoryButton);
-        GetButton((int)Buttons.WorldMapButton).gameObject.BindEvent(OnClickWorldMapButton);
+        // GetButton((int)Buttons.InventoryButton).gameObject.BindEvent(OnClickInventoryButton);
         GetButton((int)Buttons.QuestButton).gameObject.BindEvent(OnClickQuestButton);
         GetButton((int)Buttons.ChallengeButton).gameObject.BindEvent(OnClickChallengeButton);
-        GetButton((int)Buttons.PortalButton).gameObject.BindEvent(OnClickPortalButton);
-        GetButton((int)Buttons.CampButton).gameObject.BindEvent(OnClickCampButton);
         GetButton((int)Buttons.CheatButton).gameObject.BindEvent(OnClickCheatButton);
-
+        GetButton((int)Buttons.shopButton).gameObject.BindEvent(OnClickShopButton);
+        
+        // 주문 텍스트 업데이트 액션 구독
+        _orderTextSubscription = Managers.Subscribe(ActionType.GameScene_UpdateOrderText, OnUpdateOrderText);
+        
         Refresh();
         
         return true;
@@ -91,6 +92,14 @@ public class UI_GameScene : UI_Scene
     {
         if (_init == false)
             return;
+    }
+
+    void OnClickShopButton(PointerEventData evt)
+    {
+        Debug.Log("<color=magenta>[UI_GameScene]</color> OnClickShopButton");
+        UI_TableSetting popup = Managers.UI.ShowPopupUI<UI_TableSetting>();
+        popup.GetComponent<Canvas>().sortingOrder = 101;
+        popup.SetInfo();
     }
 
     void OnClickGoldPlusButton(PointerEventData evt)
@@ -152,5 +161,36 @@ public class UI_GameScene : UI_Scene
     {
 		Debug.Log("OnClickCheatButton");
 	}
+
+    private void OnDestroy() // Scene이 파괴될 때 구독 해제
+    {
+        _orderTextSubscription?.Dispose(); // IDisposable을 사용하여 구독 해제
+    }
+
+    private void OnUpdateOrderText()
+    {
+        // TableManager에 접근하여 LastOrderSummary 가져오기 (TableManager가 GameManager에 등록되어 있다고 가정)
+        if (Managers.Game != null && Managers.Game.CustomerCreator.TableManager != null) 
+        {
+            string newOrderText = Managers.Game.CustomerCreator.TableManager.LastOrderSummary;
+            
+            // 텍스트가 변경된 경우에만 업데이트
+            if (_lastOrderText != newOrderText)
+            {
+                _lastOrderText = newOrderText;
+                GetText((int)Texts.OrderButtonText).text = newOrderText;
+                Debug.Log($"<color=cyan>[UI_GameScene]</color> 주문 텍스트 업데이트됨: {newOrderText}");
+            }
+        }
+        else
+        {
+            if (_lastOrderText != "주문 정보 없음")
+            {
+                _lastOrderText = "주문 정보 없음";
+                GetText((int)Texts.OrderButtonText).text = _lastOrderText;
+                Debug.LogWarning("[UI_GameScene] GameManager 또는 TableManager에 접근할 수 없습니다.");
+            }
+        }
+    }
 
 }

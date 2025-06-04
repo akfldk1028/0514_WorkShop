@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -28,7 +29,7 @@ public class UI_StartUpScene : UI_Scene
 		GetObject((int)GameObjects.StartImage).BindEvent((evt) =>
 		{
 			Debug.Log("ChangeScene");
-			Managers.Scene.LoadScene(EScene.GameScene);
+			Managers.Scene.LoadScene(EScene.IngameScene);
 		});
 
 		GetObject((int)GameObjects.StartImage).gameObject.SetActive(false);
@@ -36,29 +37,37 @@ public class UI_StartUpScene : UI_Scene
 		Debug.Log($"<color=cyan>[UI_StartUpScene]</color> Asset Load 합니다.");
 		StartLoadAssets();
 
+
+
 		return true;
     }
 
-	void StartLoadAssets()
-	{
-		Managers.Resource.LoadAllAsync<Object>("PreLoad", (key, count, totalCount) =>
-		{
-			Debug.Log($"<color=cyan>[UI_StartUpScene]</color> {key} {count}/{totalCount}");
-
-			if (count == totalCount)
-			{
-				Managers.Data.Init();
-
-				// // 데이터 있는지 확인
-				// if (Managers.Game.LoadGame() == false)
-				// {
-				// 	Managers.Game.InitGame();
-				// 	Managers.Game.SaveGame();
-				// }
-
-				GetObject((int)GameObjects.StartImage).gameObject.SetActive(true);
-				GetText((int)Texts.DisplayText).text = "Touch To Start";
-			}
-		});
+	async void StartLoadAssets() {
+		await Managers.Data.StartLoadAssetsAsync();
+		GetObject((int)GameObjects.StartImage).gameObject.SetActive(true);
+		GetText((int)Texts.DisplayText).text = "Touch To Start";
 	}
+
+	// void StartLoadAssets()
+	// {
+	// 	Managers.Resource.LoadAllAsync<Object>("PreLoad", (key, count, totalCount) =>
+	// 	{
+	// 		Debug.Log($"<color=cyan>[UI_StartUpScene]</color> {key} {count}/{totalCount}");
+
+	// 		if (count == totalCount)
+	// 		{
+	// 			Managers.Data.Init();
+
+	// 			// // 데이터 있는지 확인
+	// 			// if (Managers.Game.LoadGame() == false)
+	// 			// {
+	// 			// 	Managers.Game.InitGame();
+	// 			// 	Managers.Game.SaveGame();
+	// 			// }
+
+	// 			GetObject((int)GameObjects.StartImage).gameObject.SetActive(true);
+	// 			GetText((int)Texts.DisplayText).text = "Touch To Start";
+	// 		}
+	// 	});
+	// }
 }

@@ -12,6 +12,7 @@
 using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public interface ILoader<Key, Value>
@@ -28,6 +29,7 @@ public class DataManager
 	
 	public Dictionary<int, Data.CustomerData> CustomerDic { get; private set; } = new Dictionary<int, Data.CustomerData>();
 	public Dictionary<int, Data.PlayerData> PlayerDic { get; private set; } = new Dictionary<int, Data.PlayerData>();
+	public Dictionary<int, Data.RecipeData> RecipeDic { get; private set; } = new Dictionary<int, Data.RecipeData>();
 	// public Dictionary<int, Data.MonsterData> MonsterDic { get; private set; } = new Dictionary<int, Data.MonsterData>();
 	// public Dictionary<int, Data.HeroData> HeroDic { get; private set; } = new Dictionary<int, Data.HeroData>();
 	// public Dictionary<int, Data.HeroInfoData> HeroInfoDic { get; private set; } = new Dictionary<int, Data.HeroInfoData>();
@@ -44,16 +46,21 @@ public class DataManager
 	{
 		CustomerDic = LoadJson<Data.CustomerDataLoader, int, Data.CustomerData>("CustomerData").MakeDict();
 		PlayerDic = LoadJson<Data.PlayerDataLoader, int, Data.PlayerData>("PlayerData").MakeDict();
+		RecipeDic = LoadJson<Data.RecipeDataLoader, int, Data.RecipeData>("RecipeData").MakeDict();
 		Debug.Log($"<color=magenta>[DataManager]</color> CustomerDic {CustomerDic}");
-		foreach (var item in CustomerDic)
-		{
-			Debug.Log($"<color=magenta>[DataManager]</color> CustomerDic {item.Key} {item.Value}");
-		}
-		Debug.Log($"<color=magenta>[DataManager]</color> PlayerDic {PlayerDic}");
-		foreach (var item in PlayerDic)
-		{
-			Debug.Log($"<color=magenta>[DataManager]</color> PlayerDic {item.Key} {item.Value}");
-		}
+		// foreach (var item in CustomerDic)
+		// {
+		// 	Debug.Log($"<color=magenta>[DataManager]</color> CustomerDic {item.Key} {item.Value}");
+		// }
+		// Debug.Log($"<color=magenta>[DataManager]</color> PlayerDic {PlayerDic}");
+		// foreach (var item in PlayerDic)
+		// {
+		// 	Debug.Log($"<color=magenta>[DataManager]</color> PlayerDic {item.Key} {item.Value}");
+		// }
+		// foreach (var item in RecipeDic)
+		// {
+		// 	Debug.Log($"<color=magenta>[DataManager]</color> RecipeDic {item.Key} {item.Value}");
+		// }
 		// MonsterDic = LoadJson<Data.MonsterDataLoader, int, Data.MonsterData>("MonsterData").MakeDict();
 		// HeroDic = LoadJson<Data.HeroDataLoader, int, Data.HeroData>("HeroData").MakeDict();
 		// SkillDic = LoadJson<Data.SkillDataLoader, int, Data.SkillData>("SkillData").MakeDict();
@@ -76,4 +83,22 @@ public class DataManager
 		TextAsset textAsset = Managers.Resource.Load<TextAsset>(path);
 		return JsonConvert.DeserializeObject<Loader>(textAsset.text);
 	}
+
+    public Task StartLoadAssetsAsync()
+    {
+        var tcs = new TaskCompletionSource<bool>();
+        Managers.Resource.LoadAllAsync<Object>("PreLoad", (key, count, totalCount) =>
+        {
+            Debug.Log($"<color=cyan>[UI_StartUpScene]</color> {key} {count}/{totalCount}");
+
+            if (count == totalCount)
+            {
+                Managers.Data.Init();
+                tcs.SetResult(true);
+            }
+        });
+        return tcs.Task;
+    }
+
+
 }

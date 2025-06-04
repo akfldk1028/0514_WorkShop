@@ -39,6 +39,9 @@ public class GameManager
 	public GameManager()
 	{
 		Debug.Log("<color=yellow>[GameManager]</color> 생성됨");
+
+
+
 	}
  	#region Move
 	private Vector2 _moveDir;
@@ -48,7 +51,7 @@ public class GameManager
         set
         {
             _moveDir = value;
-            Debug.Log($"[GameManager] MoveDir: {_moveDir}");
+            //Debug.Log($"[GameManager] MoveDir: {_moveDir}"); 미안!
             _player?.Move(_moveDir); // Player.cs의 Move 함수 호출
             Managers.PublishAction(ActionType.MoveDirChanged);
         }
@@ -72,9 +75,18 @@ public class GameManager
     public void RegisterItem(Item item)
     {
         if (!_items.Contains(item))
-        {
             _items.Add(item);
-			Debug.Log($"[RegisterItem] _items.Count: {_items.Count}");
+
+        // ObjectType 또는 타입 체크로 분기
+        switch (item.ObjectType)
+        {
+            case Define.EObjectType.Table:
+                Managers.Game.CustomerCreator.TableManager.RegisterTable(item as Table);
+                break;
+            case Define.EObjectType.Chair:
+                // ChairManager.RegisterChair(item as Chair); // 필요시
+                break;
+            // ... 다른 타입도 필요시 추가
         }
     }
 
@@ -84,6 +96,18 @@ public class GameManager
         {
             _items.Remove(item);
 			Debug.Log($"[UnregisterItem] _items.Count: {_items.Count}");
+        }
+
+        // ObjectType 또는 타입 체크로 분기
+        switch (item.ObjectType)
+        {
+            case Define.EObjectType.Table:
+                Managers.Game.CustomerCreator.TableManager.UnregisterTable(item as Table);
+                break;
+            case Define.EObjectType.Chair:
+                // ChairManager.UnregisterChair(item as Chair); // 필요시
+                break;
+            // ... 다른 타입도 필요시 추가
         }
     }
   

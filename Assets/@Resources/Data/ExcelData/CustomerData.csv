@@ -1,2 +1,15 @@
-﻿DataId,DescriptionTextID,Label,ClientPrefab,IconImage,DefaultSkill,EnvSkill,SkillA,SkillB,IsValidTarget,IsNpc,MovSpeed,Rarity,GachaSpawnWeight,GachaWeight,GachaExpCount,Order
-101000,기본손님,HeroPrefab,ClientCustomer,002.sprite,10002,0,0,0,FALSE,FALSE,5,SR,3,3,10,""""""
+﻿DataId,DescriptionTextID,Label,ClientPrefab,IconImage,DefaultSkill,EnvSkill,SkillA,SkillB,IsValidTarget,IsNpc,MovSpeed,Rarity,GachaSpawnWeight,GachaWeight,GachaExpCount,Order,UnlockCondition,OrderTendency,PreferredTags,PrefferredCocktail,SatisfactionThresholds,ReactionDialogueGroupID_Satisfied,ReactionDialogueGroupID_Unsatisfied,PatienceSeconds
+101000,일반인1,HeroPrefab,ClientCustomer,002.sprite,10002,0,0,0,FALSE,FALSE,5,SR,3,3,10,"""""",1,1,"[""한국스타일"", ""폭탄주"", ""회식용"", ""인기조합""]",somaek,60,dlg_gen_happy,dlg_gen_sad,70
+101001,일반인2,HeroPrefab,Clientbarbarian,3.sprite,10002,0,0,0,FALSE,FALSE,6,SR,3,3,10,"""""",1,1,"[""한국스타일"", ""폭탄주"", ""회식용"", ""인기조합""]",somaek,60,dlg_gen_happy,dlg_gen_sad,75
+101002,일반인3,HeroPrefab,Clientdruid,4.sprite,10002,0,0,0,FALSE,FALSE,7,SR,3,3,10,"""""",1,1,"[""한국스타일"", ""폭탄주"", ""회식용"", ""인기조합""]",somaek,60,dlg_gen_happy_friendly,dlg_gen_sad_blunt,80
+101003,김대리,HeroPrefab,Clientengineer,5.sprite,10002,0,0,0,FALSE,FALSE,8,SR,3,3,10,"""""",2,2,"[""한국스타일"", ""폭탄주"", ""회식용"", ""인기조합""]",somaek,60,dlg_office_happy,dlg_office_sad,60
+101004,이팀장,HeroPrefab,Clientknight,6.sprite,10002,0,0,0,FALSE,FALSE,9,SR,3,3,10,"""""",3,2,"[""한국스타일"", ""달콤한"", ""청량한"", ""막걸리베이스""]",maksa,60,dlg_leader_happy,dlg_leader_sad,90
+101005,박새내기,HeroPrefab,Clientmage,7.sprite,10002,0,0,0,FALSE,FALSE,10,SR,3,3,10,"""""",1,2,"[""익숙한맛"", ""콜라"", ""위스키베이스"", ""달콤한""]",jack_and_coke,60,dlg_student_happy,dlg_student_sad,75
+101006,최학생회장,HeroPrefab,Clientrogue,8.sprite,10002,0,0,0,FALSE,FALSE,11,SR,3,3,10,"""""",8,2,"[""한국스타일"", ""폭탄주"", ""의식주"", ""재미있는"", ""인생의맛""]",gojingamrae,60,dlg_std_group_happy,dlg_std_group_sad,100
+101007,윤작가,HeroPrefab,Clientrogue_hooded,9.sprite,10002,0,0,0,FALSE,FALSE,12,SR,3,3,10,"""""",6,2,"[""따뜻한"", ""커피맛"", ""부드러운크림"", ""위스키베이스""]",irish_coffee,60,dlg_solo_happy,dlg_solo_sad,120
+101008,강미식,HeroPrefab,Clientbarbarian,10.sprite,10002,0,0,0,FALSE,FALSE,13,SR,3,3,10,"""""",9,2,"[""강한도수"", ""여러가지술"", ""아이스티맛"", ""반전매력""]",long_island_iced_tea,60,dlg_foodie_happy,dlg_foodie_sad,90
+101009,애밀리,HeroPrefab,Clientdruid,11.sprite,10002,0,0,0,FALSE,FALSE,14,SR,3,3,10,"""""",7,2,"[""클래식한"", ""깊은맛"", ""위스키베이스"", ""역사있는""]",old_fashioned,60,dlg_tourist_happy,dlg_tourist_sad,80
+101010,한커플,HeroPrefab,Clientengineer,12.sprite,10002,0,0,0,FALSE,FALSE,15,SR,3,3,10,"""""",4,2,"[""아름다운"", ""달콤한"", ""과일맛"", ""데킬라베이스""]",tequila_sunrise,60,dlg_couple_happy,dlg_couple_sad,100
+101011,조텐더,HeroPrefab,Clientknight,13.sprite,10002,0,0,0,FALSE,FALSE,16,SR,3,3,10,"""""",7,2,"[""세련된"", ""상큼한"", ""크랜베리"", ""보드카베이스"", ""꽤독함""]",cosmopolitan,60,dlg_aspirant_happy,dlg_aspirant_sad,110
+101012,빨리 아저씨,HeroPrefab,Clientmage,14.sprite,10002,0,0,0,FALSE,FALSE,17,SR,3,3,10,"""""",0,2,"[""매우달콤한"", ""코코넛"", ""파인애플"", ""럼베이스"", ""부드러운""]",pina_colada,60,dlg_hurried_happy,dlg_hurried_sad,30
+101013,최젠틀맨,HeroPrefab,Clientrogue,15.sprite,10002,0,0,0,FALSE,FALSE,18,SR,3,3,10,"""""",8,2,"[""한국스타일"", ""폭탄주"", ""의식주"", ""재미있는"", ""인생의맛""]",gojingamrae,60,dlg_elderly_happy,dlg_elderly_sad,100

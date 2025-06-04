@@ -110,8 +110,11 @@ public class ResourceManager
 		var asyncOperation = Addressables.LoadAssetAsync<T>(loadKey);
 		asyncOperation.Completed += (op) =>
 		{
-			_resources.Add(key, op.Result);
-			_handles.Add(key, asyncOperation);
+			if (!_resources.ContainsKey(key))
+			{
+				_resources.Add(key, op.Result);
+				_handles.Add(key, asyncOperation);
+			}
 			callback?.Invoke(op.Result);
 		};
 	}

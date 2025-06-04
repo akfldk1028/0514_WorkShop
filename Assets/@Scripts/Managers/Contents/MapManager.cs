@@ -37,13 +37,27 @@ public class MapManager
 	private int MinY;
 	private int MaxY;
 
-	public Vector3Int World2Cell(Vector3 worldPos) { return CellGrid.WorldToCell(worldPos); }
-	public Vector3 Cell2World(Vector3Int cellPos) { return CellGrid.CellToWorld(cellPos); }
-    List<Vector3> _waitingCells = new List<Vector3>();
+	public Vector3Int World2Cell(Vector3 worldPos)
+	{
+		// Floor의 스케일 때문에 복잡해진 계산을 단순화
+		return CellGrid.WorldToCell(worldPos);
+	}
+
+	public Vector3 Cell2World(Vector3Int cellPos)
+	{
+		// 셀의 중심점을 반환
+		return CellGrid.GetCellCenterWorld(cellPos);
+	}    
+	List<Vector3> _waitingCells = new List<Vector3>();
+
+	
 	public IReadOnlyList<Vector3> WaitingCells => _waitingCells;
 	public Vector3 DoorPosition { get; private set; }
+	public Vector3 PlayerPosition { get; private set; }
 
+	Vector3 _waitingCellPos;
 
+	public Vector3 WaitingCellPos => _waitingCellPos;
 	
 	public void LoadMap(string mapName)
 	{
@@ -52,8 +66,16 @@ public class MapManager
 			Managers.Resource.Destroy(Map);
 		}
 
-		GameObject map = Managers.Resource.Instantiate(mapName);
-		map.transform.position = Vector3.zero;
+		// GameObject map = Managers.Resource.Instantiate(mapName);
+		GameObject map = GameObject.Find("Restaurant");
+		if (map == null)
+		{
+			Debug.LogError("RestaurantBar 오브젝트를 찾을 수 없습니다.");
+			return;
+		}
+
+	
+
 		map.name = $"@Map_{mapName}";
 
 		// Door 위치 캐싱
@@ -64,10 +86,28 @@ public class MapManager
 			Debug.Log("Door Pos: " + DoorPosition);
 		}
 
+		GameObject playerObj = GameObject.Find("Transform/Player");
+		if (playerObj.IsValid())
+		{
+			PlayerPosition = playerObj.GetPosition();
+			Debug.Log("Player Pos: " + PlayerPosition);
+		}
+
 
 		Map = map;
 		MapName = mapName;
 		CellGrid = map.GetComponent<Grid>();
+		// CellGrid = Util.FindChild<Grid>(map, "Floor", true);
+		// CellGrid = map.GetComponentInChildren<Grid>(true); // true면 비활성화 포함
+
+		// CellGrid = GameObject.Find("Floor").GetComponent<Grid>();
+
+		
+		if (CellGrid == null)
+		{
+			Debug.LogError("Grid 컴포넌트를 찾을 수 없습니다.");
+		}
+
 		CacheWaitingPlaces();
 	}
 
@@ -75,12 +115,17 @@ public class MapManager
 	{
 		_waitingCells.Clear();
 
-		Transform waitingRoot = Map.transform.Find("WaitingPlaces");
-		if (waitingRoot == null)
+
+		GameObject WaitingObj = GameObject.Find("WaitingPlaces");
+		if (WaitingObj == null)
 		{
 			Debug.LogWarning("WaitingPlaces 오브젝트를 찾을 수 없습니다.");
 			return;
 		}
+
+		Transform waitingRoot = WaitingObj.transform;
+
+        _waitingCellPos = WaitingObj.transform.position;
 
 		Debug.Log($"[MapManager] WaitingPlaces found, childCount = {waitingRoot.childCount}");
 		foreach (Transform place in waitingRoot)
@@ -89,7 +134,7 @@ public class MapManager
 			Debug.Log($"  └─ place: {place.name} @ worldPos={place.position}");
 
 			// 2) 월드→셀 좌표 변환
-			_waitingCells.Add(Vector3Int.RoundToInt(place.position));
+			_waitingCells.Add(place.position);
 
 			// 3) 변환된 셀좌표도 찍어보기
 			// Debug.Log($"     → cellPos: {cellPos}");
@@ -105,13 +150,13 @@ public class MapManager
 	
     public Vector3 GetCellCenterWorld(Vector3Int cellPos)
     {
-        return CellGrid.GetCellCenterWorld(cellPos);
+        return CellGrid.GetCellCenterLocal(cellPos);
     }
 
     public bool IsCellValid(Vector3Int cellPos)
     {
-        if (cellPos.x < MinX || cellPos.x > MaxX || cellPos.y < MinY || cellPos.y > MaxY)
-            return false;
+        // if (cellPos.x < MinX || cellPos.x > MaxX || cellPos.y < MinY || cellPos.y > MaxY)
+        //     return false;
         return !_cells.ContainsKey(cellPos);
     }
 		// 오브젝트 배치

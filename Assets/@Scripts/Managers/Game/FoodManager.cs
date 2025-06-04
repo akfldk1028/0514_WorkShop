@@ -10,62 +10,89 @@ public class FoodManager
         Debug.Log("<color=orange>[FoodManager]</color> 생성됨");
     }
 
-    // 음식 데이터 초기화
     public void SetInfo()
     {
         _foods.Clear();
-        _foods.Add(new Food("A!", 5000, 2000, new List<string>{"소주", "맥주"}, "국민조합 술", 2.5f, 1, true));
-        _foods.Add(new Food("B!", 7000, 3000, new List<string>{"잭다니엘", "콜라"}, "위스키 칵테일", 3.0f, 2, true));
-        _foods.Add(new Food("C!", 6000, 2500, new List<string>{"떡", "고추장", "어묵"}, "매콤한 분식", 4.0f, 1, true));
-        // ... 등등
+        
+        if (Managers.Data.RecipeDic == null)
+        {
+            Debug.LogError("[FoodManager] Managers.Data.RecipeDic이 null입니다!");
+            return;
+        }
+        Debug.Log($"[FoodManager] RecipeDic에서 Food 객체 변환 시작. 총 {Managers.Data.RecipeDic.Count}개의 레시피 데이터.");
+
+        foreach (Data.RecipeData rd in Managers.Data.RecipeDic.Values)
+        {
+            Food newFood = new Food(
+                no: rd.NO,
+                recipeID_eng: rd.RecipeID_eng,
+                recipeName: rd.RecipeName,
+                diffic: rd.Diffic,
+                description: rd.Description,
+                keyCombination: rd.KeyCombination,
+                basePrice: rd.BasePrice,
+                tags: rd.Tags,
+                category: rd.Category,
+                requiredIngredientsVisual: rd.RequiredIngredientsVisual,
+                completedVisualResourceID: rd.CompletedVisualResourceID,
+                openOption: rd.OpenOption
+            );
+
+            AddFood(newFood);
+        }
+        Debug.Log($"[FoodManager] Food 객체 변환 완료. 총 {_foods.Count}개의 Food가 로드됨.");
     }
 
-    // 음식 추가
     public void AddFood(Food food)
     {
-        _foods.Add(food);
+        if (!_foods.Exists(f => f.NO == food.NO || f.RecipeID_eng == food.RecipeID_eng))
+        {
+            _foods.Add(food);
+        }
     }
 
-    // 음식 삭제
-    public void RemoveFood(Food food)
-    {
-        _foods.Remove(food);
-    }
-
-    // 랜덤 음식 반환 (unlock된 것만)
     public Food GetRandomFood()
     {
-        var unlocked = _foods.FindAll(f => f.isUnlocked);
-        if (unlocked.Count == 0) return null;
-        return unlocked[UnityEngine.Random.Range(0, unlocked.Count)];
+        var unlocked = _foods.FindAll(f => f.IsUnlocked);
+        if (unlocked.Count == 0) 
+        {
+            return null;
+        }
+        return unlocked[Random.Range(0, unlocked.Count)];
     }
 
-    // 이름으로 음식 찾기
     public Food GetFoodByName(string name)
     {
-        return _foods.Find(f => f.foodName == name);
+        return _foods.Find(f => f.RecipeName == name);
     }
 
-    // 태그로 음식 리스트 반환
     public List<Food> GetFoodsByTag(string tag)
     {
-        return _foods.FindAll(f => f.tags.Contains(tag));
+        return _foods.FindAll(f => f.Tags != null && f.Tags.Contains(tag));
     }
 
-    // unlock/lock 관리
-    public void UnlockFood(string name)
+    public void UnlockFood(string recipeNameOrId)
     {
-        var food = GetFoodByName(name);
-        if (food != null) food.isUnlocked = true;
+        var food = GetFoodByName(recipeNameOrId); 
+        if (food != null)
+        {
+            if (food.OpenOption == "LOCKED") 
+            {
+                food.OpenOption = "UNLOCKED"; 
+            }
+        }
     }
-    public void LockFood(string name)
+    public void LockFood(string recipeNameOrId)
     {
-        var food = GetFoodByName(name);
-        if (food != null) food.isUnlocked = false;
+        var food = GetFoodByName(recipeNameOrId);
+        if (food != null)
+        {
+            if (food.OpenOption != "LOCKED")
+            {
+                food.OpenOption = "LOCKED";
+            }
+        }
     }
-
-    // 전체 음식 리스트 반환
+    
     public List<Food> GetAllFoods() => _foods;
-
-  
 }

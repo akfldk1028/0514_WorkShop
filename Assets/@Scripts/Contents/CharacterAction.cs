@@ -59,6 +59,11 @@ public class CharacterAction : MonoBehaviour
     }
     public void CustomerWalk()
     {
+        if (animator == null)
+        {
+            Debug.Log("[CharacterAction] animator가 할당되지 않았습니다! (CustomerWalk)");
+            return;
+        }
         animator.SetBool("ayaktaIdle",false);
         animator.SetBool("yuru",true);
         animator.SetBool("eating",false);
@@ -106,6 +111,11 @@ public class CharacterAction : MonoBehaviour
     }
     public void CustomerStandIdle()
     {
+        if (animator == null)
+        {
+            Debug.Log("[CharacterAction] animator가 할당되지 않았습니다! (CustomerStandIdle)");
+            return;
+        }
         animator.SetBool("ayaktaIdle",true); 
         animator.SetBool("idle",false); 
         animator.SetBool("yuru",false);

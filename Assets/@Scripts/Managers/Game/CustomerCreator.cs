@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using static Define;
 
+// TODO 의자 지속적  찾기 로직추가해야함
 public class CustomerCreator
 {    
     private static CustomerCreator s_instance;
@@ -10,30 +12,26 @@ public class CustomerCreator
 
     private FoodManager _foodManager = new FoodManager();
     private OrderManager _orderManager = new OrderManager();
+    public TableManager _tableManager = new TableManager();
+
     public  FoodManager FoodManager { get { Instance._foodManager.SetInfo(); return Instance._foodManager; } }
     public  OrderManager OrderManager { get { Instance._orderManager.SetInfo(); return Instance._orderManager; } }
-        // 손님 리스트 (전체 관리)
+    public TableManager TableManager { get { Instance._tableManager.SetInfo(); return Instance._tableManager; } }
     private List<Customer> _customers = new List<Customer>();
     public IReadOnlyList<Customer> Customers => _customers;
-
-    // 주문 대기 큐 (플레이어가 클릭한 순서대로)
-    private Queue<Order> _orderQueue = new Queue<Order>();
-    public IReadOnlyCollection<Order> OrderQueue => _orderQueue;
-
-  
-
 
     public float spawnInterval = 2.0f;
     private float lastSpawnTime = 0f;
     private IDisposable updateSubscription;
     private IDisposable customerSubscription;
     private bool isActive = false;
-
+    private int[] characterIdList = { CUSTOMER_ID_2, CUSTOMER_ID_3, CUSTOMER_ID_4, CUSTOMER_ID_5, CUSTOMER_ID_6, CUSTOMER_ID_7 }; // 예시: 원하는 id들로 채우세요
 
     public CustomerCreator()
     {
         s_instance = this; // 싱글톤 인스턴스 할당
         Debug.Log("<color=orange>[CustomerCreator]</color> 생성됨");
+
     }
     
     public void StartAutoSpawn()
@@ -54,9 +52,6 @@ public class CustomerCreator
         Debug.Log("[CustomerCreator] 자동 스폰 중지");
     }
     
-
-
-
 
     private void OnUpdate()
     {
@@ -86,36 +81,14 @@ public class CustomerCreator
         );
     }
     // 플레이어가 손님을 클릭해서 주문을 받는 함수
-    public void OnPlayerTakeOrder(Customer customer)
+    public void OnPlayerTakeOrder(Table table)
     {
-        // 손님이 주문한 모든 음식(orderedFoods) → Order 객체로 변환해서 큐에 추가
-        foreach (var kvp in customer.orderedFoods)
+        var orders = table.CollectOrdersFromSeatedCustomers();
+        foreach (var order in orders)
         {
-            var food = kvp.Key;
-            var info = kvp.Value;
-            var order = new Order
-            {
-                customer = customer,
-                recipeName = food.foodName,
-                requestText = info.specialRequest,
-                isRecommendation = info.isRecommended,
-                orderTime = DateTime.Now
-            };
-            _orderQueue.Enqueue(order);
-            _orderManager.AddOrder(order); // 주문 매니저에도 추가
+            _orderManager.AddOrder(order); // OrderManager의 주문 큐에 추가
         }
-        // UI 갱신, 알림 등
-        _orderManager.UpdateOrderUI();
     }
-
-    // 플레이어가 제조/서빙할 때 주문을 꺼내는 함수
-    public Order GetNextOrder()
-    {
-        if (_orderQueue.Count > 0)
-            return _orderQueue.Dequeue();
-        return null;
-    }
-
 
     private void OnCustomerAction(ActionType actionType)
     {
@@ -139,14 +112,21 @@ public class CustomerCreator
                 // Managers.UI.HighlightTable();
                 // Managers.UI.ShowMessage("손님이 자리에 앉으러 이동 중!");
                 break;
+                
             case ActionType.Customer_Seated:
                 Debug.Log("[GameManager] 고객이 자리에 앉음!");
                 // TODO: 착석 효과음, 착석 수 카운트, 테이블 UI 갱신, 업적/퀘스트 체크 등
                 // Managers.Sound.Play("Seat");
                 // Managers.Game.IncrementSeatedCount();
                 break;
+            case ActionType.Customer_TableFullyOccupied:
+                Debug.Log("[GameManager] 테이블 만석!");
+                // TODO: 테이블 만석 알림, 주문 버튼 활성화, UI 갱신 등
+                // Managers.UI.ShowTableFullMessage();
+                break;
             case ActionType.Customer_Ordered:
                 Debug.Log("[GameManager] 고객이 주문함!");
+                _orderManager.UpdateOrderUI();
                 // TODO: 전체 주문 리스트 UI 갱신, 주문 알림, 사운드, 통계 등
                 // Managers.OrderManager.AddOrder(...);
                 // Managers.UI.UpdateOrderList();
@@ -188,25 +168,89 @@ public class CustomerCreator
     void OnDestroy()
     {
         customerSubscription?.Dispose();
+        _tableManager?.Dispose(); // TableManager 구독 해제 추가
     }
-
 
     private void SpawnCustomer()
     {
         var waitingCells = Managers.Map.WaitingCells;
-        if (waitingCells.Count > 0)
+        if (waitingCells.Count == 0) return;
+
+        // (1) 랜덤으로 대기 지점 하나를 선택
+        int randomIndex = UnityEngine.Random.Range(0, waitingCells.Count);
+        Vector3 desiredPos = waitingCells[randomIndex];
+
+        // (2) 원하는 y 높이를 대략 0으로 맞추되, 실제 NavMesh 높이를 곧바로 취득할 것이므로 아래 코드에서 덮어씌워질 예정
+        desiredPos.y = 0f;
+
+        // (3) 먼저 NavMesh.SamplePosition으로 "진짜 NavMesh 위" 좌표를 구한다
+        NavMeshHit hit;
+        float sampleRadius = 10.0f; // 반경을 넉넉하게 잡는다 (필요에 따라 조정)
+        if (!NavMesh.SamplePosition(desiredPos, out hit, sampleRadius, NavMesh.AllAreas))
         {
-            int randomIndex = UnityEngine.Random.Range(0, waitingCells.Count);
-            Vector3 cellPos = waitingCells[randomIndex];
-            // Vector3 worldPos = Managers.Map.GetCellCenterWorld(cellPos);
-            cellPos.y = 0f;
-            
-            Customer customer = Managers.Object.Spawn<Customer>(cellPos, CUSTOMER_ID, pooling: true);
-            Debug.Log("[CustomerCreator] 고객 생성: " + customer);
-            if (customer != null)
-            {
-                Managers.PublishAction(ActionType.Customer_Spawned);
-            }
+            Debug.LogWarning("[CustomerCreator] NavMesh.SamplePosition 실패: NavMesh 위에 놓을 수 없습니다.");
+            return;
         }
+
+        // hit.position이 곧 "NavMesh 위에 유효한 좌표"가 된다
+        Vector3 spawnPos = hit.position;
+        Debug.Log($"[CustomerCreator] NavMesh 위로 보정된 Spawn 위치: {spawnPos}");
+
+        // (4) 이제 이 spawnPos를 사용해서 Customer를 생성한다
+        int randomCharacterIndex = UnityEngine.Random.Range(0, characterIdList.Length - 1);
+        int randomCharacterId = characterIdList[randomCharacterIndex];
+
+        Customer customer = Managers.Object.Spawn<Customer>(spawnPos, randomCharacterId, pooling: true);
+        if (customer == null)
+        {
+            Debug.LogWarning("[CustomerCreator] Customer 풀에서 가져오지 못했습니다.");
+            return;
+        }
+
+        // (5) Spawn 이후, NavMeshAgent 컴포넌트를 꺼내서 이동 기능을 바로 사용할 준비를 한다
+        NavMeshAgent agent = customer.GetComponent<NavMeshAgent>();
+        if (agent == null)
+        {
+            Debug.LogWarning("[CustomerCreator] Customer에 NavMeshAgent 컴포넌트가 없습니다!");
+        }
+        else
+        {
+
+        }
+
+        Managers.PublishAction(ActionType.Customer_Spawned);
     }
+
+    // private void SpawnCustomer()
+    // {
+    //     var waitingCells = Managers.Map.WaitingCells;
+    //     var waitingCellPos = Managers.Map.WaitingCellPos;
+
+    //     Debug.Log("[CustomerCreator] 고객 생성: " + waitingCellPos);
+    //     waitingCellPos.y = 0f;
+    //     Customer customer = Managers.Object.Spawn<Customer>(waitingCellPos, CUSTOMER_ID, pooling: true);
+    //     Debug.Log("[CustomerCreator] 고객 생성: " + customer);
+    //     if (customer != null)
+    //     {
+    //         Managers.PublishAction(ActionType.Customer_Spawned);
+    //     }
+
+
+    //     // if (waitingCells.Count > 0)
+    //     // {
+    //     //     int randomIndex = UnityEngine.Random.Range(0, waitingCells.Count);
+    //     //     Vector3 cellPos = waitingCells[randomIndex];
+    //     //     Debug.Log("[CustomerCreator] 고객 생성: " + cellPos);
+    //     //     // Vector3 worldPos = Managers.Map.GetCellCenterWorld(cellPos);
+    //     //     cellPos.y = 0f;
+            
+    //     //     Customer customer = Managers.Object.Spawn<Customer>(cellPos, CUSTOMER_ID, pooling: true);
+    //     //     Debug.Log("[CustomerCreator] 고객 생성: " + customer);
+    //     //     if (customer != null)
+    //     //     {
+    //     //         Managers.PublishAction(ActionType.Customer_Spawned);
+    //     //     }
+    //     // }
+    // }
+
 }

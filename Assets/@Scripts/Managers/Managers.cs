@@ -11,6 +11,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Threading.Tasks;
 
 public class Managers : MonoBehaviour
 {
@@ -20,21 +21,26 @@ public class Managers : MonoBehaviour
     private static Managers Instance { get { Init(); return s_instance; } }
 
     #region Contents
-	private MessageManager<ActionType> _action_message = new MessageManager<ActionType>();
+    private MessageManager<ActionType> _action_message = new MessageManager<ActionType>();
     private GameManager _game = new GameManager();
-    private GameManagerDK _game_dk = new GameManagerDK();
+    private PlacementManager _placement = new PlacementManager();
     private InputManager _input = new InputManager();
-    private Keyboard _keyboard = new Keyboard();
     private ObjectManager _object = new ObjectManager();
     private MapManager _map = new MapManager();
+    private InGameManager _Ingame = new InGameManager();
+    //private RythmGameManager _Rythm;
 
+    // 메시지 채널 접근자
     public static MessageManager<ActionType> ActionMessage { get { return Instance?._action_message; } }
     public static GameManager Game { get { return Instance?._game; } }
-    public static GameManagerDK Game_DK { get { return Instance?._game_dk; } }
+    public static PlacementManager Placement { get { return Instance?._placement; } }
     public static ObjectManager Object { get { return Instance?._object; } }
     public static MapManager Map { get { return Instance?._map; } }
     public static InputManager Input { get { Instance?._input.Init();  return Instance?._input; } }
-    public static Keyboard Keyboard { get { Instance?._keyboard.SetInfo();  return Instance?._keyboard; } }
+
+    public static InGameManager Ingame { get {Instance?._Ingame.Init(); return Instance?._Ingame; } }
+
+    //public static RythmGameManager RythmGame { get { return Instance?._Rythm; } }
     #endregion
 
     #region Core
@@ -59,22 +65,23 @@ public class Managers : MonoBehaviour
 
     // public static Action UpdateHandler;  // static으로 변경
 
-	// private void Update()
-	// {
-	// 	UpdateHandler?.Invoke();
-	// }
+    // private void Update()
+    // {
+    //     UpdateHandler?.Invoke();
+    // }
+
+ 
 
     void Update()
     {
-        _keyboard.Update(); // 키보드 입력 체크
-		_action_message.Publish(ActionType.Managers_Update);
+        _action_message.Publish(ActionType.Managers_Update);
     }
     
-  
+    
     #endregion
 
     #region Public Methods
-   
+    
     public static IDisposable Subscribe(ActionType actionType, Action handler)
     {
         return ActionMessage?.Subscribe(type => 
@@ -121,6 +128,8 @@ public class Managers : MonoBehaviour
             DontDestroyOnLoad(go);
 
             s_instance = go.GetComponent<Managers>();
+            // s_instance._Ingame = go.AddComponent<InGameManager>();
+            //s_instance._Ingame = go.AddComponent<RythmGameManager>();
         }
     }
 

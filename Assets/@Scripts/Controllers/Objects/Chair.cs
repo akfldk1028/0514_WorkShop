@@ -4,7 +4,8 @@ using static Define;
 
 public class Chair : Item
 {
-    private Customer _currentCustomer;
+    public Table table; // Table과 연동
+    public Customer _currentCustomer;
     public Customer _reservedBy;
     public bool IsOccupied => _currentCustomer != null;
     public bool IsReserved => _reservedBy != null;
@@ -23,8 +24,8 @@ public class Chair : Item
     public override bool Init()
     {
         if (!base.Init()) return false;
-        Managers.Game.RegisterItem(this);
         ObjectType = EObjectType.Chair;
+        Managers.Game.RegisterItem(this);
         return true;
     }
 
@@ -35,13 +36,18 @@ public class Chair : Item
         Unreserve(); // 예약 해제
         customer.transform.position = placeToSit.position;
         // customer.transform.LookAt(platePlace);
+        Managers.PublishAction(ActionType.Chair_OccupiedChanged); // chair 자신을 넘김
+
     }
 
     // 손님 일어나기
     public void VacateSeat()
     {
-        if (_currentCustomer != null)
-            _currentCustomer = null;
+    if (_currentCustomer != null)
+    {
+        _currentCustomer = null;
+        Managers.PublishAction(ActionType.Chair_OccupiedChanged);
+    }
     }
 }
 
