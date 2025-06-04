@@ -135,7 +135,7 @@ public class PlacementManager
             ApplyTransparency(_ghostInstance, 0.5f);
             
             // 하이라이트 생성
-            CreateHighlight(cellCenter);
+            // CreateHighlight(cellCenter);
         }
     }
     // UI 드래그 중 업데이트 (Update에서 호출)
@@ -163,7 +163,7 @@ public class PlacementManager
                 
                 // 하이라이트 업데이트
                 ClearHighlight();
-                CreateHighlight(cellCenter);
+                // CreateHighlight(cellCenter);
                 
                 // 배치 가능 여부에 따라 색상 변경
                 bool isValid = Managers.Map.IsCellValid(cellPos);
@@ -243,7 +243,7 @@ public class PlacementManager
         ClearHighlight();
         
         // 새 하이라이트 생성
-        CreateHighlight(cellCenter);
+        // CreateHighlight(cellCenter);
     }
     
     // 드래그 시작/드래그 중 처리
