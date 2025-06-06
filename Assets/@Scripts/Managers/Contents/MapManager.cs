@@ -116,7 +116,7 @@ public class MapManager
 		_waitingCells.Clear();
 
 
-		GameObject WaitingObj = GameObject.Find("WaitingPlaces");
+		GameObject WaitingObj = GameObject.Find("WaitingPlaces/WaitingPlacesForCustomer");
 		if (WaitingObj == null)
 		{
 			Debug.LogWarning("WaitingPlaces 오브젝트를 찾을 수 없습니다.");

@@ -17,8 +17,8 @@ public class CameraController : InitBase
 	public Vector3 backViewPosition = new Vector3(5f, -20f, 0f); // 더 뒤로 (Z값 증가)
 	public Vector3 backViewRotation = new Vector3(0f, 0f, 0f);     // X값 5도로 올림
 	// 투시적 탑뷰: 주점 전체가 잘 보이도록 실제 카메라 위치/회전값 적용
-	public Vector3 topViewPosition = new Vector3(35.3f, 113.5f, 124.7f); // 예시: 주점 위쪽/뒤쪽
-	public Vector3 topViewRotation = new Vector3(45f, -147.18f, 0f);     // 예시: 약간 기울어진 각도
+	private Vector3 topViewPosition = new Vector3(91.6f, 120.5f, -57.9f); // 예시: 주점 위쪽/뒤쪽
+	private Vector3 topViewRotation = new Vector3(52f, -48f, -4f);     // 예시: 약간 기울어진 각도
 
 
 	public Vector3 fixedCameraPosition = new Vector3(-12.3f, 3.1f, 29f);
