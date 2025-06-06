@@ -151,7 +151,7 @@ public class InputManager
         }
 
 
-       if (Input.GetKeyDown(KeyCode.Space) && Managers.Ingame.isInteracting && !Managers.Ingame.isRhythmGameStarted)
+       if (Input.GetKeyDown(KeyCode.Space) && Managers.Ingame.isInteracting && !Managers.Ingame.isRhythmGameStarted) //Start Rhythm Game
         {
             Managers.Ingame.isRhythmGameStarted = true;
             Managers.Ingame.StartText.SetActive(false);
