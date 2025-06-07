@@ -6,12 +6,12 @@ public class UI_GameScene : UI_Scene
 {
     enum Buttons
     {
-        DiaPlusButton,
-        SettingButton,
-        QuestButton,
-        ChallengeButton,
+        // DiaPlusButton,
+        // SettingButton,
+        // QuestButton,
+        // ChallengeButton,
        
-        CheatButton,
+        // CheatButton,
         shopButton,
 
         
@@ -19,13 +19,13 @@ public class UI_GameScene : UI_Scene
 
     enum Texts
     {
-        LevelText,
-        BattlePowerText,
-        GoldCountText,
-        DiaCountText,
-        MeatCountText,
-        WoodCountText,
-        MineralCountText,
+        // LevelText,
+        // BattlePowerText,
+        // GoldCountText,
+        // DiaCountText,
+        // MeatCountText,
+        // WoodCountText,
+        // MineralCountText,
         OrderButtonText,
     }
 
@@ -50,15 +50,19 @@ public class UI_GameScene : UI_Scene
 
         // GetButton((int)Buttons.GoldPlusButton).gameObject.BindEvent(OnClickGoldPlusButton);
         // GetButton((int)Buttons.DiaPlusButton).gameObject.BindEvent(OnClickDiaPlusButton);
-        GetButton((int)Buttons.SettingButton).gameObject.BindEvent(OnClickSettingButton);
+        // GetButton((int)Buttons.SettingButton).gameObject.BindEvent(OnClickSettingButton);
         // GetButton((int)Buttons.InventoryButton).gameObject.BindEvent(OnClickInventoryButton);
-        GetButton((int)Buttons.QuestButton).gameObject.BindEvent(OnClickQuestButton);
-        GetButton((int)Buttons.ChallengeButton).gameObject.BindEvent(OnClickChallengeButton);
-        GetButton((int)Buttons.CheatButton).gameObject.BindEvent(OnClickCheatButton);
+        // GetButton((int)Buttons.QuestButton).gameObject.BindEvent(OnClickQuestButton);
+        // GetButton((int)Buttons.ChallengeButton).gameObject.BindEvent(OnClickChallengeButton);
+        // GetButton((int)Buttons.CheatButton).gameObject.BindEvent(OnClickCheatButton);
         GetButton((int)Buttons.shopButton).gameObject.BindEvent(OnClickShopButton);
         
         // 주문 텍스트 업데이트 액션 구독
         _orderTextSubscription = Managers.Subscribe(ActionType.GameScene_UpdateOrderText, OnUpdateOrderText);
+        
+        // 카메라 뷰 전환 액션 구독
+        Managers.Subscribe(ActionType.Camera_TopViewActivated, OnTopViewActivated);
+        Managers.Subscribe(ActionType.Camera_BackViewActivated, OnBackViewActivated);
         
         Refresh();
         
@@ -77,7 +81,7 @@ public class UI_GameScene : UI_Scene
             float fps = 1.0f / Time.deltaTime;
             float ms = Time.deltaTime * 1000.0f;
             string text = string.Format("{0:N1} FPS ({1:N1}ms)", fps, ms);
-            GetText((int)Texts.GoldCountText).text = text;
+            // GetText((int)Texts.GoldCountText).text = text;
 
             _elapsedTime = 0;
         }
@@ -165,6 +169,24 @@ public class UI_GameScene : UI_Scene
     private void OnDestroy() // Scene이 파괴될 때 구독 해제
     {
         _orderTextSubscription?.Dispose(); // IDisposable을 사용하여 구독 해제
+    }
+
+    private void OnTopViewActivated()
+    {
+        Debug.Log("<color=green>[UI_GameScene]</color> 탑뷰 활성화 - 테이블 설정 팝업 표시");
+        UI_TableSetting popup = Managers.UI.ShowPopupUI<UI_TableSetting>();
+        popup.GetComponent<Canvas>().sortingOrder = 101;
+        popup.SetInfo();
+    }
+
+    private void OnBackViewActivated()
+    {
+        Debug.Log("<color=yellow>[UI_GameScene]</color> 백뷰 활성화 - 테이블 설정 팝업 숨김");
+        // 현재 열려있는 테이블 설정 팝업이 있다면 닫기
+        if (Managers.UI.GetPopupCount() > 0)
+        {
+            Managers.UI.ClosePopupUI(); // 가장 최근 팝업 닫기
+        }
     }
 
     private void OnUpdateOrderText()

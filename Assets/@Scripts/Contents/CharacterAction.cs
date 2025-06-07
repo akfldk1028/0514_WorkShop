@@ -97,6 +97,7 @@ public class CharacterAction : MonoBehaviour
     {
         animator.SetBool("ayaktaIdle",false);
         animator.SetTrigger("kalk");
+        animator.SetBool("kalk", true);
         animator.SetBool("yuru",false);
         animator.SetBool("eating",false);
         animator.SetBool("idle",false); 

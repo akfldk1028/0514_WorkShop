@@ -488,7 +488,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7679526581544062779, guid: 0d2d836e2e83b754fa1a1c4022d6d65d, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7679526581544062779, guid: 0d2d836e2e83b754fa1a1c4022d6d65d, type: 3}
       propertyPath: m_Center.y
@@ -549,6 +549,8 @@ MonoBehaviour:
   door: {fileID: 0}
   eatingTime: 0
   gainGoldClip: {fileID: 0}
+  lookAtSpeed: 2
+  lookAtPlayerDuration: 2
   orderText: {fileID: 3599230607586972823}
 --- !u!114 &1443951394609758018
 MonoBehaviour:

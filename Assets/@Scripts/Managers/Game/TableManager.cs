@@ -45,8 +45,8 @@ public class TableManager
                 }
                 else
                 {
-                    // 테이블이 비면 무조건 숨김
-                    table.HideOrderUI(); // 테이블 비면 UI 숨김
+                    // 테이블이 비면 리셋 처리
+                    table.ResetTableAfterCustomerLeave(); // 테이블 리셋 메서드 호출
                 }
             }
         });
@@ -115,7 +115,7 @@ public class TableManager
         foreach (var order in orders)
         {
             Managers.Game.CustomerCreator.OrderManager.AddOrder(order);
-            string orderString = $"{order.recipeName} x{order.Quantity}";
+            string orderString = $"{order.RecipeName} x{order.Quantity}";
             _accumulatedOrders.Add(orderString);
             Debug.Log($"<color=cyan>[TableManager] 누적 주문 추가: {orderString}</color>");
         }
@@ -149,6 +149,55 @@ public class TableManager
         this.LastOrderSummary = "";
         Managers.PublishAction(ActionType.GameScene_UpdateOrderText);
         Debug.Log("<color=orange>[TableManager] 모든 주문 초기화</color>");
+    }
+
+    /// <summary>
+    /// 특정 고객들의 주문을 누적 목록에서 제거
+    /// </summary>
+    /// <param name="customers">주문을 제거할 고객들</param>
+    public void RemoveOrdersByCustomers(List<Customer> customers)
+    {
+        if (customers == null || customers.Count == 0) return;
+        
+        // OrderManager에서 주문 제거
+        int removedFromQueue = Managers.Game.CustomerCreator.OrderManager.RemoveOrdersByCustomers(customers);
+        
+        // 누적 주문 목록에서도 제거 (간단히 해당 고객들의 주문 패턴 제거)
+        List<string> ordersToRemove = new List<string>();
+        
+        foreach (var customer in customers)
+        {
+            // Customer의 주문 데이터에서 주문 문자열 생성하여 누적 목록에서 찾아 제거
+            if (customer.orderedFoods != null)
+            {
+                foreach (var tableOrders in customer.orderedFoods.Values)
+                {
+                    foreach (var food in tableOrders)
+                    {
+                        string orderString = $"{food.RecipeName} x{food.Quantity}";
+                        if (_accumulatedOrders.Contains(orderString))
+                        {
+                            ordersToRemove.Add(orderString);
+                        }
+                    }
+                }
+            }
+        }
+        
+        // 누적 목록에서 제거
+        foreach (var orderToRemove in ordersToRemove)
+        {
+            if (_accumulatedOrders.Remove(orderToRemove))
+            {
+                Debug.Log($"<color=red>[TableManager]</color> 누적 주문에서 제거됨: {orderToRemove}");
+            }
+        }
+        
+        // UI 업데이트
+        this.LastOrderSummary = string.Join("\n", _accumulatedOrders);
+        Managers.PublishAction(ActionType.GameScene_UpdateOrderText);
+        
+        Debug.Log($"<color=orange>[TableManager]</color> {customers.Count}명의 고객 주문 정리됨. 큐에서 {removedFromQueue}개, 누적에서 {ordersToRemove.Count}개 제거");
     }
 
     public void DebugPrintAllTableOrders()

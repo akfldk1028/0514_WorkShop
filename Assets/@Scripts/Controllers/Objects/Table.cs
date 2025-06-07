@@ -15,7 +15,7 @@ public class Table : Item
     // public GameObject orderButton;   // 기존 버튼, 필요하면 유지
 
     public Image readyToOrderImage; // 손님 꽉 찼을 때 (주문 가능) 이미지
-    public Image waitingForFoodImage; // 주문 받고 음식 기다릴 때 이미지
+    public UI_TimeCountdownSlider waitingForFoodSlider; // 주문 받고 음식 기다릴 때 타이머 슬라이더
 
     public enum ETableUIState 
     {
@@ -40,8 +40,12 @@ public class Table : Item
 
         if (readyToOrderImage != null)
             readyToOrderImage.gameObject.SetActive(false);
-        if (waitingForFoodImage != null)
-            waitingForFoodImage.gameObject.SetActive(false);
+        if (waitingForFoodSlider != null)
+        {
+            waitingForFoodSlider.gameObject.SetActive(false);
+            // 슬라이더 이벤트 연결
+            waitingForFoodSlider.OnTimeUp += OnFoodWaitingTimeUp;
+        }
         
         currentUIState = ETableUIState.Hidden;
         return true;
@@ -52,12 +56,33 @@ public class Table : Item
         if (tableOrderCanvas == null) return;
 
         currentUIState = newState;
+        
+        // Canvas 활성화/비활성화
         tableOrderCanvas.gameObject.SetActive(newState != ETableUIState.Hidden);
 
+        // 모든 UI 요소를 먼저 비활성화
         if (readyToOrderImage != null)
-            readyToOrderImage.gameObject.SetActive(newState == ETableUIState.ReadyToOrder);
-        if (waitingForFoodImage != null)
-            waitingForFoodImage.gameObject.SetActive(newState == ETableUIState.WaitingForFood);
+            readyToOrderImage.gameObject.SetActive(false);
+        if (waitingForFoodSlider != null)
+            waitingForFoodSlider.gameObject.SetActive(false);
+
+        // 현재 상태에 맞는 UI만 활성화
+        switch (newState)
+        {
+            case ETableUIState.ReadyToOrder:
+                if (readyToOrderImage != null)
+                    readyToOrderImage.gameObject.SetActive(true);
+                break;
+                
+            case ETableUIState.WaitingForFood:
+                if (waitingForFoodSlider != null)
+                    waitingForFoodSlider.gameObject.SetActive(true);
+                break;
+                
+            case ETableUIState.Hidden:
+                // 이미 위에서 모든 UI를 비활성화했으므로 추가 작업 없음
+                break;
+        }
     }
 
     public void ShowReadyToOrderUI() // 기존 ShowOrderUI에서 변경
@@ -73,9 +98,84 @@ public class Table : Item
     {
         if (currentUIState != ETableUIState.WaitingForFood)
         {
+            // 타이머 슬라이더를 먼저 설정 (비활성화 상태에서)
+            if (waitingForFoodSlider != null)
+            {
+                waitingForFoodSlider.SetTotalTime(10f); // 음식 대기 시간 15초로 설정
+                waitingForFoodSlider.ResetTimer();
+            }
+            
             UpdateUIState(ETableUIState.WaitingForFood);
-            Debug.Log($"<color=blue>[Table {tableId}] UI: 음식 대기 상태로 변경!</color>");
+            
+            // UI 활성화 후 바로 타이머 시작 (InitializeSlider에서 덮어쓰지 않음)
+            if (waitingForFoodSlider != null)
+            {
+                waitingForFoodSlider.StartCountdown();
+                Debug.Log($"<color=cyan>[Table {tableId}] 타이머 카운트다운 바로 시작!</color>");
+            }
+            
+            Debug.Log($"<color=blue>[Table {tableId}] UI: 음식 대기 상태로 변경! ({waitingForFoodSlider?.GetTotalTime()}초 타이머 시작)</color>");
         }
+    }
+    
+    /// <summary>
+    /// 음식 대기 시간이 끝났을 때 호출되는 메서드
+    /// </summary>
+    private void OnFoodWaitingTimeUp()
+    {
+        Debug.Log($"<color=red>[Table {tableId}] 음식 대기 시간 종료! 고객들이 불만을 표시하고 떠납니다.</color>");
+        
+        // 1. 불만 고객들 수집
+        List<Customer> complainingCustomers = new List<Customer>();
+        
+        // 앉아있는 고객들을 불만 상태로 만들고 떠나게 함
+        foreach (var chair in chairs)
+        {
+            if (chair.IsOccupied && chair._currentCustomer != null)
+            {
+                var customer = chair._currentCustomer;
+                complainingCustomers.Add(customer);
+                
+                Debug.Log($"<color=orange>[Table {tableId}] 고객 {customer.name}이 음식을 너무 오래 기다려서 불만스럽게 떠납니다!</color>");
+                Debug.Log($"<color=cyan>[Table {tableId}] 고객 {customer.name} 현재 상태: {customer.CustomerState}</color>");
+                Debug.Log($"<color=cyan>[Table {tableId}] Agent 상태: {(customer.agent != null ? customer.agent.enabled.ToString() : "null")}</color>");
+                
+                // 고객을 불만 상태로 변경 - Customer 클래스가 알아서 처리
+                customer.CustomerState = ECustomerState.StandingUp;
+                Debug.Log($"<color=yellow>[Table {tableId}] 고객 {customer.name} 상태를 StandingUp으로 변경 완료</color>");
+            }
+        }
+        
+        // 2. 불만 고객들의 주문 데이터 정리
+        if (complainingCustomers.Count > 0)
+        {
+            Debug.Log($"<color=red>[Table {tableId}] {complainingCustomers.Count}명의 불만 고객 주문 데이터 정리 시작</color>");
+            
+            // TableManager를 통해 주문 데이터 정리
+            Managers.Game.CustomerCreator.TableManager.RemoveOrdersByCustomers(complainingCustomers);
+            
+            Debug.Log($"<color=orange>[Table {tableId}] 불만 고객들의 주문 데이터 정리 완료</color>");
+        }
+        
+        // 3. 테이블 UI 숨김
+        HideOrderUI();
+        
+        Debug.Log($"<color=magenta>[Table {tableId}] 불만 고객 처리 완료 - 총 {complainingCustomers.Count}명 처리됨</color>");
+    }
+    
+    /// <summary>
+    /// 음식이 서빙되었을 때 타이머를 중지하는 메서드
+    /// </summary>
+    public void OnFoodServed()
+    {
+        if (waitingForFoodSlider != null && waitingForFoodSlider.IsCountingDown())
+        {
+            waitingForFoodSlider.PauseCountdown();
+            Debug.Log($"<color=green>[Table {tableId}] 음식이 서빙되어 타이머를 중지했습니다.</color>");
+        }
+        
+        // 음식 서빙 후 상태 변경 (필요시)
+        // HideOrderUI(); // 또는 다른 상태로 변경
     }
 
     public void HideOrderUI() // 기존 HideOrderUI에서 변경
@@ -126,7 +226,7 @@ public class Table : Item
                         collectedOrders.Add(new Order
                         {
                             customer = customer,
-                            recipeName = foodItem.RecipeName,
+                            recipeId = foodItem.NO, // recipeName 대신 recipeId(NO) 사용
                             Quantity = foodItem.Quantity,
                         });
                     }
@@ -149,7 +249,7 @@ public class Table : Item
         foreach (var order in orders)
         {
             string customerClass = order.customer != null ? order.customer.GetType().Name : "Unknown";
-            string foodName = order.recipeName;
+            string foodName = order.RecipeName; // 편의 프로퍼티 사용
             string color = "cyan";
             Debug.Log($"<color={color}>[주문] 음식: {foodName}, 주문자: {customerClass}, 요청: {order.requestText}, 추천: {order.isRecommendation}</color>");
         }
@@ -158,17 +258,42 @@ public class Table : Item
     // 고객이 떠날 때 테이블 상태 리셋
     public void ResetTableAfterCustomerLeave()
     {
-        // 테이블에 앉은 고객이 없으면 UI 숨김
+        Debug.Log($"<color=cyan>[Table {tableId}] 고객 이탈 후 테이블 상태 확인 중...</color>");
+        
+        // 테이블에 앉은 고객이 없으면 완전 리셋
         if (!IsOccupied)
         {
+            // UI 상태 리셋
             HideOrderUI();
-            Debug.Log($"<color=yellow>[Table {tableId}] 고객이 모두 떠나서 테이블 상태 리셋</color>");
+            
+            // 음식 대기 타이머가 실행 중이면 중지
+            if (waitingForFoodSlider != null && waitingForFoodSlider.IsCountingDown())
+            {
+                waitingForFoodSlider.PauseCountdown();
+                waitingForFoodSlider.ResetTimer();
+                Debug.Log($"<color=yellow>[Table {tableId}] 음식 대기 타이머 중지 및 리셋</color>");
+            }
+            
+            Debug.Log($"<color=yellow>[Table {tableId}] 고객이 모두 떠나서 테이블 완전 리셋 완료</color>");
         }
-        // 테이블이 다시 꽉 차면 주문 가능 상태로 변경
-        else if (IsFullyOccupied && currentUIState == ETableUIState.WaitingForFood)
+        // 테이블이 다시 꽉 차면 주문 가능 상태로 변경 (새로운 고객들이 앉은 경우)
+        else if (IsFullyOccupied)
         {
-            // 음식을 다 먹었으면 다시 주문 가능 상태로 (필요시)
-            // ShowReadyToOrderUI();
+            // 현재 음식 대기 중이 아니라면 주문 가능 상태로 변경
+            if (currentUIState != ETableUIState.WaitingForFood)
+            {
+                ShowReadyToOrderUI();
+                Debug.Log($"<color=green>[Table {tableId}] 새로운 고객들로 테이블이 다시 꽉 참 - 주문 가능 상태로 변경</color>");
+            }
+        }
+        // 일부 고객만 있는 경우 - UI만 숨김
+        else
+        {
+            if (currentUIState == ETableUIState.ReadyToOrder)
+            {
+                HideOrderUI();
+                Debug.Log($"<color=orange>[Table {tableId}] 테이블이 부분적으로 비어서 주문 UI 숨김</color>");
+            }
         }
     }
 } 

@@ -56,17 +56,9 @@ public class InGameScene : BaseScene
 		PlayerObj = Managers.Game.Player.gameObject;
 		if (PlayerObj == null)
 			Debug.Log("<color=magenta>[InGameScene]</color> Player 못 찾음");
-		else
-			Debug.Log("<color=magenta>[InGameScene]</color> Player 찾음");
-
 		// CameraController 찾기
 		if (CameraController == null)
         	CameraController = FindObjectOfType<CameraController>();
-		if (CameraController != null)
-			Debug.Log("<color=magenta>[InGameScene]</color> CameraController 찾음");
-		else
-			Debug.Log("<color=magenta>[InGameScene]</color> CameraController 못 찾음");
-			
 		// InteractionCanvas 찾기
 		if (interactionCanvas == null)
             {
@@ -92,8 +84,6 @@ public class InGameScene : BaseScene
 		// Static 프로퍼티에 할당
 		InteractionCanvas = interactionCanvas;
 		StartTextObj = StartText;
-		
-		// RhythmManager 찾기
 		if (RhythmGameManager == null)
 		{
 			GameObject obj = GameObject.Find("RhythmManager");
@@ -102,8 +92,6 @@ public class InGameScene : BaseScene
 				RhythmGameManager = obj.GetComponent<RhythmGameManager>();
 				Debug.Log("<color=magenta>[InGameScene]</color> RhythmManager 찾음");
 			}
-			else
-				Debug.Log("<color=magenta>[InGameScene]</color> RhythmManager 못 찾음");
 		}
 	}
 

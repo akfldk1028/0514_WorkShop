@@ -137,13 +137,20 @@ public class InputManager
             Managers.Game.CustomerCreator._tableManager.DebugPrintAllTableOrders();
         }
         
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            Managers.Map.DebugPrintWaitingQueue();
+        }
+        
         if (Input.GetKeyDown(KeyCode.B))
         {
             OnBackViewKey?.Invoke();
+            Managers.PublishAction(ActionType.Camera_BackViewActivated);
         }
         if (Input.GetKeyDown(KeyCode.T))
         {
             OnTopViewKey?.Invoke();
+            Managers.PublishAction(ActionType.Camera_TopViewActivated);
         }
         if (Input.GetKeyDown(KeyCode.K))
         {
