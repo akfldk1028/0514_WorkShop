@@ -409,18 +409,18 @@ private void OnDestroy()
 
         Debug.Log($"[Customer {this.name}] 테이블 ID: {currentTable.tableId} (객체 InstanceID: {currentTable.GetInstanceID()}) 에서 주문 생성을 시도합니다.");
 
-        // 예시: 1~2개의 랜덤 음식 주문
-        // int numberOfItemsToOrder = Random.Range(1, 2);
+        // 예시: 1개의 랜덤 음식 주문
         int numberOfItemsToOrder = 1;
         List<Food> foodsForThisOrder = new List<Food>();
 
         for (int i = 0; i < numberOfItemsToOrder; i++)
         {
-            var foodTemplate = foodList[Random.Range(0, foodList.Count -1)];
-            var orderedFoodInstance = foodTemplate.Clone(); // 복제
+            // 단순 랜덤 선택
+            var selectedFood = foodList[Random.Range(0, foodList.Count)];
+            var orderedFoodInstance = selectedFood.Clone(); // 복제
             
             foodsForThisOrder.Add(orderedFoodInstance);
-            Debug.Log($"[Customer {this.name}] 테이블 ID: {currentTable.tableId}에 {orderedFoodInstance.RecipeName} (수량: {orderedFoodInstance.Quantity}) 추가 시도.");
+            Debug.Log($"[Customer {this.name}] 테이블 ID: {currentTable.tableId}에 {orderedFoodInstance.RecipeName} (ID: {orderedFoodInstance.NO}, 수량: {orderedFoodInstance.Quantity}) 추가 시도.");
         }
         orderedFoods[currentTable] = foodsForThisOrder; // 현재 테이블에 주문 목록 할당
         UpdateOrderText(); // 주문 텍스트 UI 업데이트

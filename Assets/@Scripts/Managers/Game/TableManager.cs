@@ -115,7 +115,7 @@ public class TableManager
         foreach (var order in orders)
         {
             Managers.Game.CustomerCreator.OrderManager.AddOrder(order);
-            string orderString = $"{order.recipeName} x{order.Quantity}";
+            string orderString = $"{order.RecipeName} x{order.Quantity}";
             _accumulatedOrders.Add(orderString);
             Debug.Log($"<color=cyan>[TableManager] 누적 주문 추가: {orderString}</color>");
         }

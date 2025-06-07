@@ -58,6 +58,7 @@ public class RhythmGameManager : MonoBehaviour
     [Header("Rhythm Game UI")]
     public TextMeshProUGUI recipeName;
     public TextMeshProUGUI resultText;
+    public TextMeshProUGUI orderText;
 
     // Coroutine references
     private Coroutine rhythmCoroutine;
@@ -129,9 +130,29 @@ public class RhythmGameManager : MonoBehaviour
     {
         WaitASecond();
 
-        // 이전에 실패한 레시피가 없을 경우에만 새로운 레시피 가져오기
-        if (currentRecipe == null)
+        // OrderManager에서 다음 주문을 확인만 하기 (꺼내지 않음)
+        Order nextOrder = Managers.Game.CustomerCreator.OrderManager.PeekNextOrder();
+        Debug.Log($"[RhythmGameManager] 다음 주문 확인: {(nextOrder != null ? nextOrder.RecipeName : "없음")}");
+        
+        if (nextOrder != null)
         {
+            // 주문된 레시피 ID로 레시피 데이터 가져오기
+            if (Managers.Data.RecipeDic.ContainsKey(nextOrder.recipeId))
+            {
+                currentRecipe = Managers.Data.RecipeDic[nextOrder.recipeId];
+                Debug.Log($"<color=green>[RhythmGameManager]</color> 주문된 레시피로 게임 시작: {currentRecipe.RecipeName} (ID: {nextOrder.recipeId})");
+            }
+            else
+            {
+                Debug.LogError($"<color=red>[RhythmGameManager]</color> 레시피 ID {nextOrder.recipeId}를 찾을 수 없습니다!");
+                // 폴백으로 랜덤 레시피 사용
+                currentRecipe = Managers.Ingame.getRandomRecipe();
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"<color=yellow>[RhythmGameManager]</color> 대기 중인 주문이 없습니다. 랜덤 레시피 사용.");
+            // 주문이 없으면 랜덤 레시피 사용
             currentRecipe = Managers.Ingame.getRandomRecipe();
         }
 
@@ -141,7 +162,8 @@ public class RhythmGameManager : MonoBehaviour
         rhythmPattern = new List<string>(currentRecipe.KeyCombination);
         Debug.Log("rhythmPattern:" + string.Join(", ", rhythmPattern));
 
-        recipeName.text = currentRecipe.RecipeName;
+        // 현재 레시피와 대기 중인 주문들을 UI에 표시
+        UpdateRecipeNameUI();
 
         ShowKeyCombinationUI(currentRecipe.KeyCombination);
         TrimTrailingSilence();
@@ -403,17 +425,32 @@ public class RhythmGameManager : MonoBehaviour
             resultText.text = "Bad";
             resultText.color = Color.red;
             
-            // Restart rhythm game if fail
+            // 실패 시 주문은 그대로 유지 (다시 시도)
             yield return WaitASecond();  // Show result text briefly
             RestoreKeyUI();
             resultText.gameObject.SetActive(false);
-            StartRhythmSequence();  // Restart with same recipe
+            
+            // UI 업데이트 (주문은 그대로, 현재 레시피도 유지)
+            UpdateRecipeNameUI();
+            
+            StartRhythmSequence();  // Restart with same order
         }
         else
         {
             resultText.text = "Clear";
             resultText.color = Color.blue;
-            currentRecipe = null;  // Clear current recipe on success
+            
+            // 성공 시에만 주문 제거
+            var completedOrder = Managers.Game.CustomerCreator.OrderManager.GetNextOrder();
+            if (completedOrder != null)
+            {
+                Debug.Log($"<color=green>[RhythmGameManager]</color> 주문 완료: {completedOrder.RecipeName}");
+            }
+            
+            currentRecipe = null;  // Clear current recipe on success only
+            
+            // UI 업데이트 (주문 제거됨, 현재 레시피 클리어)
+            UpdateRecipeNameUI();
             
             // Wait for space input only on success
             while (!Input.GetKeyDown(KeyCode.Space))
@@ -429,6 +466,54 @@ public class RhythmGameManager : MonoBehaviour
             // Send result to game manager
             Managers.Ingame.EndRhythmGame(result);
         }
+    }
+
+    private void UpdateRecipeNameUI()
+    {
+        // 현재 제작 중인 레시피만 표시
+        UpdateCurrentRecipeUI();
+        // 대기 중인 주문들만 표시
+        UpdateOrderQueueUI();
+    }
+
+    private void UpdateCurrentRecipeUI()
+    {
+        if (currentRecipe != null)
+        {
+            recipeName.text = $"🔥 제작 중: {currentRecipe.RecipeName}";
+            Debug.Log($"[RhythmGameManager] 현재 레시피: {currentRecipe.RecipeName}");
+        }
+        else
+        {
+            recipeName.text = "🔥 제작 중: 없음";
+            Debug.Log("[RhythmGameManager] 현재 제작 중인 레시피 없음");
+        }
+    }
+
+    private void UpdateOrderQueueUI()
+    {
+        var allOrders = Managers.Game.CustomerCreator.OrderManager.GetAllOrders();
+        Debug.Log($"[RhythmGameManager] 대기 중인 주문 수: {allOrders.Count}");
+        
+        string orderDisplayText = "";
+        
+        if (allOrders.Count > 0)
+        {
+            orderDisplayText = $"📋 대기 주문 ({allOrders.Count}개):\n";
+            for (int i = 0; i < allOrders.Count; i++)
+            {
+                orderDisplayText += $"{i + 1}. {allOrders[i].RecipeName} x{allOrders[i].Quantity}\n";
+                Debug.Log($"[RhythmGameManager] 주문 {i+1}: {allOrders[i].RecipeName} x{allOrders[i].Quantity}");
+            }
+        }
+        else
+        {
+            orderDisplayText = "📋 대기 주문: 없음";
+            Debug.Log("[RhythmGameManager] 대기 중인 주문이 없습니다.");
+        }
+        
+        orderText.text = orderDisplayText.TrimEnd('\n');
+        Debug.Log($"[RhythmGameManager] 주문 UI 업데이트 완료: {orderText.text}");
     }
 
 }

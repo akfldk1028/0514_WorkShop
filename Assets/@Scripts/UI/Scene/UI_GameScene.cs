@@ -6,12 +6,12 @@ public class UI_GameScene : UI_Scene
 {
     enum Buttons
     {
-        DiaPlusButton,
-        SettingButton,
-        QuestButton,
-        ChallengeButton,
+        // DiaPlusButton,
+        // SettingButton,
+        // QuestButton,
+        // ChallengeButton,
        
-        CheatButton,
+        // CheatButton,
         shopButton,
 
         
@@ -19,13 +19,13 @@ public class UI_GameScene : UI_Scene
 
     enum Texts
     {
-        LevelText,
-        BattlePowerText,
-        GoldCountText,
-        DiaCountText,
-        MeatCountText,
-        WoodCountText,
-        MineralCountText,
+        // LevelText,
+        // BattlePowerText,
+        // GoldCountText,
+        // DiaCountText,
+        // MeatCountText,
+        // WoodCountText,
+        // MineralCountText,
         OrderButtonText,
     }
 
@@ -50,11 +50,11 @@ public class UI_GameScene : UI_Scene
 
         // GetButton((int)Buttons.GoldPlusButton).gameObject.BindEvent(OnClickGoldPlusButton);
         // GetButton((int)Buttons.DiaPlusButton).gameObject.BindEvent(OnClickDiaPlusButton);
-        GetButton((int)Buttons.SettingButton).gameObject.BindEvent(OnClickSettingButton);
+        // GetButton((int)Buttons.SettingButton).gameObject.BindEvent(OnClickSettingButton);
         // GetButton((int)Buttons.InventoryButton).gameObject.BindEvent(OnClickInventoryButton);
-        GetButton((int)Buttons.QuestButton).gameObject.BindEvent(OnClickQuestButton);
-        GetButton((int)Buttons.ChallengeButton).gameObject.BindEvent(OnClickChallengeButton);
-        GetButton((int)Buttons.CheatButton).gameObject.BindEvent(OnClickCheatButton);
+        // GetButton((int)Buttons.QuestButton).gameObject.BindEvent(OnClickQuestButton);
+        // GetButton((int)Buttons.ChallengeButton).gameObject.BindEvent(OnClickChallengeButton);
+        // GetButton((int)Buttons.CheatButton).gameObject.BindEvent(OnClickCheatButton);
         GetButton((int)Buttons.shopButton).gameObject.BindEvent(OnClickShopButton);
         
         // 주문 텍스트 업데이트 액션 구독
@@ -77,7 +77,7 @@ public class UI_GameScene : UI_Scene
             float fps = 1.0f / Time.deltaTime;
             float ms = Time.deltaTime * 1000.0f;
             string text = string.Format("{0:N1} FPS ({1:N1}ms)", fps, ms);
-            GetText((int)Texts.GoldCountText).text = text;
+            // GetText((int)Texts.GoldCountText).text = text;
 
             _elapsedTime = 0;
         }

@@ -25,21 +25,7 @@ public class InGameManager
     public bool isInteracting = false;
     public bool isRhythmGameStarted = false;
 
-    // private async void Awake()
-    // {
-    //     if (Instance == null)
-    //         Instance = this;
-    //     else
-    //     {
-    //         Destroy(gameObject);
-    //         return;
-    //     }
-    //     SetInfo();
-
-    //     AutoAssign();
-    // }
-
-
+  
 
     public Data.RecipeData getRandomRecipe()
     {
@@ -50,22 +36,7 @@ public class InGameManager
     }
 
 
-    // void Update()
-    // {
-    //     if (Input.GetKeyDown(KeyCode.Space) && isInteracting && !isRhythmGameStarted)
-    //     {
-    //         isRhythmGameStarted = true;
-    //         StartText.SetActive(false);
-    //         rhythmGameManager?.StartRhythmSequence();
-    //     }
-
-    //     if (Input.GetKeyDown(KeyCode.Escape) && isInteracting)
-    //     {
-    //         rhythmGameManager?.ForceStopAndFail();
-    //         Resume();
-    //     }
-    // }
-
+ 
     public void Init()
     {
         // InGameScene에서 찾은 오브젝트들 참조
@@ -76,32 +47,7 @@ public class InGameManager
         rhythmGameManager = InGameScene.RhythmGameManager;
     }
 
-    // F키 눌렀을 때 실행
-    // public void InteractWith() //InteractagleObject의 Interact에서 호출
-    // {
-    //     isInteracting = true;
 
-    //     if (playerObj != null)
-    //         playerObj.SetActive(false);
-
-    //     if (playerMove != null)
-    //         playerMove.enabled = false;
-
-    //     if (cameraControl != null)
-    //         cameraControl.enabled = false;
-
-    //     if (cameraTransform != null)
-    //     {
-    //         fixedCameraPosition = new Vector3(-6.38f, 4.5f, 9.5f);
-    //         fixedCameraRotation = new Vector3(70f, -90f, 0f);
-
-    //         cameraTransform.position = fixedCameraPosition;
-    //         cameraTransform.rotation = Quaternion.Euler(fixedCameraRotation);
-    //     }
-
-    //     if (interactionCanvas != null)
-    //         interactionCanvas.SetActive(true);
-    // }
 
 
     public void InteractWith()
@@ -153,26 +99,6 @@ public class InGameManager
 }
 
 
-    //ESC
-    // public void Resume() //InteractableIObject의 Update문에서 상호작용중+ESC 눌렀을 때 호출
-    // {
-    //     isInteracting = false;
-
-    //     if (StartText != null)
-    //         StartText.SetActive(true);
-
-    //     if (playerObj != null)
-    //         playerObj.SetActive(true);
-
-    //     if (playerMove != null)
-    //         playerMove.enabled = true;
-
-    //     // if (cameraControl != null)
-    //     //     cameraControl.enabled = true;
-
-    //     if (interactionCanvas != null)
-    //         interactionCanvas.SetActive(false);
-    // }
 
     public void EndRhythmGame(RhythmResult result)
     {

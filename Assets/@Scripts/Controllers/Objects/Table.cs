@@ -126,7 +126,7 @@ public class Table : Item
                         collectedOrders.Add(new Order
                         {
                             customer = customer,
-                            recipeName = foodItem.RecipeName,
+                            recipeId = foodItem.NO, // recipeName 대신 recipeId(NO) 사용
                             Quantity = foodItem.Quantity,
                         });
                     }
@@ -149,7 +149,7 @@ public class Table : Item
         foreach (var order in orders)
         {
             string customerClass = order.customer != null ? order.customer.GetType().Name : "Unknown";
-            string foodName = order.recipeName;
+            string foodName = order.RecipeName; // 편의 프로퍼티 사용
             string color = "cyan";
             Debug.Log($"<color={color}>[주문] 음식: {foodName}, 주문자: {customerClass}, 요청: {order.requestText}, 추천: {order.isRecommendation}</color>");
         }
