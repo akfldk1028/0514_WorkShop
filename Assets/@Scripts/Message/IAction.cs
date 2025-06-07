@@ -43,6 +43,10 @@ public enum ActionType
     MoveDirChanged,
     JoystickStateChanged,
 
+    // 카메라 뷰 이벤트
+    Camera_TopViewActivated,    // 탑뷰로 전환됨
+    Camera_BackViewActivated,   // 백뷰로 전환됨
+
     // 기타 커스텀 이벤트
     CustomEvent
 }

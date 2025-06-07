@@ -119,4 +119,105 @@ public class OrderManager
             orderTime = DateTime.Now
         };
     }
+    
+    /// <summary>
+    /// 특정 고객의 모든 주문을 제거
+    /// </summary>
+    /// <param name="customer">주문을 제거할 고객</param>
+    /// <returns>제거된 주문 수</returns>
+    public int RemoveOrdersByCustomer(Customer customer)
+    {
+        if (customer == null) return 0;
+        
+        var ordersToRemove = orderQueue.Where(order => order.customer == customer).ToList();
+        int removedCount = 0;
+        
+        // 큐에서 해당 고객의 주문들을 제거
+        var tempQueue = new Queue<Order>();
+        while (orderQueue.Count > 0)
+        {
+            var order = orderQueue.Dequeue();
+            if (order.customer != customer)
+            {
+                tempQueue.Enqueue(order);
+            }
+            else
+            {
+                removedCount++;
+                Debug.Log($"<color=red>[OrderManager]</color> {customer.name}의 주문 제거됨: {order.RecipeName} x{order.Quantity}");
+            }
+        }
+        
+        // 큐 재구성
+        orderQueue = tempQueue;
+        
+        if (removedCount > 0)
+        {
+            Debug.Log($"<color=orange>[OrderManager]</color> {customer.name}의 주문 {removedCount}개 제거됨 (남은 주문: {orderQueue.Count})");
+            // UI 업데이트 액션 호출
+            Managers.PublishAction(ActionType.GameScene_UpdateOrderText);
+        }
+        
+        return removedCount;
+    }
+    
+    /// <summary>
+    /// 특정 고객들의 모든 주문을 제거
+    /// </summary>
+    /// <param name="customers">주문을 제거할 고객들</param>
+    /// <returns>제거된 주문 수</returns>
+    public int RemoveOrdersByCustomers(List<Customer> customers)
+    {
+        if (customers == null || customers.Count == 0) return 0;
+        
+        int totalRemovedCount = 0;
+        foreach (var customer in customers)
+        {
+            totalRemovedCount += RemoveOrdersByCustomer(customer);
+        }
+        
+        // 다중 고객 주문 제거 시에도 UI 업데이트 (이미 개별적으로 호출되지만 확실히 하기 위해)
+        if (totalRemovedCount > 0)
+        {
+            Managers.PublishAction(ActionType.GameScene_UpdateOrderText);
+        }
+        
+        return totalRemovedCount;
+    }
+    
+    /// <summary>
+    /// 특정 레시피 ID의 주문들을 제거
+    /// </summary>
+    /// <param name="recipeId">제거할 레시피 ID</param>
+    /// <returns>제거된 주문 수</returns>
+    public int RemoveOrdersByRecipeId(int recipeId)
+    {
+        var tempQueue = new Queue<Order>();
+        int removedCount = 0;
+        
+        while (orderQueue.Count > 0)
+        {
+            var order = orderQueue.Dequeue();
+            if (order.recipeId != recipeId)
+            {
+                tempQueue.Enqueue(order);
+            }
+            else
+            {
+                removedCount++;
+                Debug.Log($"<color=red>[OrderManager]</color> 레시피 ID {recipeId}의 주문 제거됨: {order.RecipeName} x{order.Quantity}");
+            }
+        }
+        
+        orderQueue = tempQueue;
+        
+        if (removedCount > 0)
+        {
+            Debug.Log($"<color=orange>[OrderManager]</color> 레시피 ID {recipeId}의 주문 {removedCount}개 제거됨");
+            // UI 업데이트 액션 호출
+            Managers.PublishAction(ActionType.GameScene_UpdateOrderText);
+        }
+        
+        return removedCount;
+    }
 }

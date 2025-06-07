@@ -41,10 +41,10 @@ public class UI_StartUpScene : UI_Scene
 		Debug.Log($"<color=cyan>[UI_StartUpScene]</color> Asset Load 합니다.");
 		
 		// BGM 재생
-		PlayBGM();
+		
 		
 		StartLoadAssets();
-
+// PlayBGM();
 		return true;
     }
 
