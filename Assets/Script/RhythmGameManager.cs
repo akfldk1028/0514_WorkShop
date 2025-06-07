@@ -39,7 +39,7 @@ public class RhythmGameManager : MonoBehaviour
     [SerializeField] private float goodWindow = 0.3f;
 
     [Header("Rhythm Key Setting")]
-    [SerializeField] private float interval = 0.65f;
+    [SerializeField] private float interval = 0.4615f;
     [SerializeField] private List<string> rhythmPattern = new List<string> { "A", "S", "AD", "_", "D", "_", "D", "A" };
 
     private List<float> expectedTimes = new List<float>();
@@ -208,9 +208,11 @@ public class RhythmGameManager : MonoBehaviour
         inputTimes.Clear();
         inputKeys.Clear();
 
-
         for (int i = 0; i < rhythmPattern.Count; i++)
         {
+            // 모든 패턴에 대해 UI 흐리게 처리 (빈 입력 '_'도 포함)
+            DimKeyUI(i);
+
             if (rhythmPattern[i] != "_")
             {
                 string keyString = rhythmPattern[i][0].ToString().ToUpper();
@@ -222,6 +224,9 @@ public class RhythmGameManager : MonoBehaviour
 
             yield return new WaitForSeconds(interval);
         }
+
+        // 입력 시작 전에 모든 키 UI 원래대로 복구
+        RestoreKeyUI();
 
         yield return StartCoroutine(PlayCountdownBeats());
 
@@ -347,8 +352,6 @@ public class RhythmGameManager : MonoBehaviour
     {
         return new string(input.ToCharArray().OrderBy(c => c).ToArray());
     }
-
-
 
     private void JudgeResults()
     {
