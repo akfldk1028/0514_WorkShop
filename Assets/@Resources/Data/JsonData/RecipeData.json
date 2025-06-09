@@ -86,7 +86,7 @@
         "달콤한"
       ],
       "Category": "위스키 기반 칵테일",
-      "BPM": 130.0,
+      "BPM": 180.0,
       "RequiredIngredientsVisual": [
         "잭 다니엘 병 아이콘, 콜라 병 아이콘"
       ],
@@ -117,7 +117,7 @@
         "우유"
       ],
       "Category": "리큐르 기반 칵테일",
-      "BPM": 130.0,
+      "BPM": 150.0,
       "RequiredIngredientsVisual": [
         "깔루아 병, 우유 팩 아이콘"
       ],

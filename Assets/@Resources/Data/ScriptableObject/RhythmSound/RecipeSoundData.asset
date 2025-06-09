@@ -15,13 +15,25 @@ MonoBehaviour:
   recipeSounds:
   - recipeId: 200001
     soundA: {fileID: 8300000, guid: ca97bd32f3b467a4d809773cce98ee48, type: 3}
-    soundS: {fileID: 8300000, guid: 4a9fee0e3e1d4ac4c80e2e5d25ff400a, type: 3}
-    soundD: {fileID: 8300000, guid: 8b44776444956ce44bada003bfcdc49d, type: 3}
+    soundS: {fileID: 8300000, guid: 8b44776444956ce44bada003bfcdc49d, type: 3}
+    soundD: {fileID: 8300000, guid: 4a9fee0e3e1d4ac4c80e2e5d25ff400a, type: 3}
     soundW: {fileID: 8300000, guid: 4b04a69e0ff71464482a5b3cc04e43b4, type: 3}
     soundZ: {fileID: 8300000, guid: 4f806446354a3ea429861927250c27b2, type: 3}
   - recipeId: 200002
     soundA: {fileID: 8300000, guid: ca26b530e651bb04c825e73fc231b4ea, type: 3}
-    soundS: {fileID: 8300000, guid: 99383a113305f5b43b68037d820112d3, type: 3}
-    soundD: {fileID: 8300000, guid: 614738833a75fb44e9de557d0b5d14e6, type: 3}
+    soundS: {fileID: 8300000, guid: 614738833a75fb44e9de557d0b5d14e6, type: 3}
+    soundD: {fileID: 8300000, guid: 99383a113305f5b43b68037d820112d3, type: 3}
     soundW: {fileID: 8300000, guid: ba9a4a0ee99819444a5c3baacd160a72, type: 3}
     soundZ: {fileID: 8300000, guid: 5626fce89e2786b408e9910cc4ce7c6e, type: 3}
+  - recipeId: 200003
+    soundA: {fileID: 8300000, guid: 86a2ed67f2a7b5947a5206c18d57ac77, type: 3}
+    soundS: {fileID: 8300000, guid: 1f5a4696b151dc54f99e7fe2639d283e, type: 3}
+    soundD: {fileID: 8300000, guid: edfce379b9b4bf144b1c9ba19fc66a49, type: 3}
+    soundW: {fileID: 8300000, guid: 06bd66a46f2f2fe4c8cc0d0cf2a0eaa4, type: 3}
+    soundZ: {fileID: 8300000, guid: aeea94d4485cf694c96871f93b137a76, type: 3}
+  - recipeId: 200004
+    soundA: {fileID: 8300000, guid: 6a564f1e90401e34eab38355be99a427, type: 3}
+    soundS: {fileID: 8300000, guid: 50fff6a084a25cb44a08cfad43cce1cb, type: 3}
+    soundD: {fileID: 8300000, guid: 7e04053a2bdb5f647af73d88b578c28b, type: 3}
+    soundW: {fileID: 8300000, guid: c53b3ed80e89aec4e9dc0f7ff6db551a, type: 3}
+    soundZ: {fileID: 8300000, guid: a4f0ab3ab7531004fa9f58bdd01bd6fc, type: 3}

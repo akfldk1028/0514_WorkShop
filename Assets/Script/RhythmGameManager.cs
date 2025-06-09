@@ -320,7 +320,7 @@ public class RhythmGameManager : MonoBehaviour
             if (Num != null) Num.text = c;
             yield return new WaitForSeconds(interval);
         }
-        metronomeSource.volume = 0.15f; //플레이어 입력 시 메트로놈 볼륨 낮춤
+        metronomeSource.volume = 0f; //플레이어 입력 시 메트로놈 볼륨 낮춤
         if (Num != null) Num.text = "";
     }
 
