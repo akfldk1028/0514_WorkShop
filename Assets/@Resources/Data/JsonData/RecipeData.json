@@ -24,6 +24,7 @@
         "깔끔한맛"
       ],
       "Category": "클래식 칵테일",
+      "BPM": 130.0,
       "RequiredIngredientsVisual": [
         "진 병, 토닉워터 병, 라임 조각 아이콘"
       ],
@@ -54,6 +55,7 @@
         "인기있는"
       ],
       "Category": "주스 기반 칵테일",
+      "BPM": 130.0,
       "RequiredIngredientsVisual": [
         "보드카 병, 오렌지 주스 팩 아이콘"
       ],
@@ -84,6 +86,7 @@
         "달콤한"
       ],
       "Category": "위스키 기반 칵테일",
+      "BPM": 130.0,
       "RequiredIngredientsVisual": [
         "잭 다니엘 병 아이콘, 콜라 병 아이콘"
       ],
@@ -114,6 +117,7 @@
         "우유"
       ],
       "Category": "리큐르 기반 칵테일",
+      "BPM": 130.0,
       "RequiredIngredientsVisual": [
         "깔루아 병, 우유 팩 아이콘"
       ],
@@ -144,6 +148,7 @@
         "막걸리베이스"
       ],
       "Category": "K-Mix",
+      "BPM": 130.0,
       "RequiredIngredientsVisual": [
         "막걸리병 아이콘, 사이다캔 아이콘, 막걸리잔 아이콘"
       ],
@@ -174,6 +179,7 @@
         "데킬라베이스"
       ],
       "Category": "데킬라 기반 칵테일",
+      "BPM": 130.0,
       "RequiredIngredientsVisual": [
         "데킬라 병, 오렌지 주스 팩, 석류 시럽 병 아이콘"
       ],
@@ -204,6 +210,7 @@
         "인기있는"
       ],
       "Category": "리큐르 기반 칵테일",
+      "BPM": 130.0,
       "RequiredIngredientsVisual": [
         "복숭아 리큐르 병, 샤워믹스 아이콘, 크랜베리 주스 병"
       ],
@@ -234,6 +241,7 @@
         "강한여운"
       ],
       "Category": "보드카 기반 칵테일",
+      "BPM": 130.0,
       "RequiredIngredientsVisual": [
         "보드카, 커피 리큐르 (깔루아 등)"
       ],
@@ -264,6 +272,7 @@
         "인기조합"
       ],
       "Category": "K-Mix",
+      "BPM": 130.0,
       "RequiredIngredientsVisual": [
         "소주병 아이콘, 맥주병/캔 아이콘, 맥주잔 아이콘"
       ],
@@ -295,6 +304,7 @@
         "인기있는"
       ],
       "Category": "럼 기반 칵테일",
+      "BPM": 130.0,
       "RequiredIngredientsVisual": [
         "럼 병, 민트 잎 아이콘, 라임 조각, 탄산수 병"
       ],
@@ -325,6 +335,7 @@
         "럼베이스"
       ],
       "Category": "럼 기반 칵테일",
+      "BPM": 130.0,
       "RequiredIngredientsVisual": [
         "라이트럼, 블루큐라소, 코코넛럼(또는크림), 파인애플주스"
       ],
@@ -355,6 +366,7 @@
         "보드카베이스"
       ],
       "Category": "보드카 기반 칵테일",
+      "BPM": 130.0,
       "RequiredIngredientsVisual": [
         "보드카, 피치 리큐르, 크랜베리 주스, 오렌지 주스"
       ],
@@ -385,6 +397,7 @@
         "열대과일"
       ],
       "Category": "리큐르 기반 칵테일",
+      "BPM": 130.0,
       "RequiredIngredientsVisual": [
         "메론리큐르, 코코넛럼, 바나나리큐르, 파인애플주스, (스윗앤사워)"
       ],
@@ -416,6 +429,7 @@
         "부드러운"
       ],
       "Category": "럼 기반 칵테일",
+      "BPM": 130.0,
       "RequiredIngredientsVisual": [
         "라이트럼, 코코넛크림, 파인애플주스"
       ],
@@ -446,6 +460,7 @@
         "소금"
       ],
       "Category": "데킬라 기반 칵테일",
+      "BPM": 130.0,
       "RequiredIngredientsVisual": [
         "데킬라 병, 트리플섹 병, 라임 주스 병, 소금 아이콘"
       ],
@@ -476,6 +491,7 @@
         "역사있는"
       ],
       "Category": "위스키 기반 칵테일",
+      "BPM": 130.0,
       "RequiredIngredientsVisual": [
         "위스키 병, 각설탕 아이콘, 비터스 병, 오렌지 껍질 아이콘"
       ],
@@ -507,6 +523,7 @@
         "꽤독함"
       ],
       "Category": "보드카 기반 칵테일",
+      "BPM": 130.0,
       "RequiredIngredientsVisual": [
         "보드카(레몬), 트리플섹, 라임주스, 크랜베리주스"
       ],
@@ -537,6 +554,7 @@
         "위스키베이스"
       ],
       "Category": "위스키 기반 칵테일",
+      "BPM": 130.0,
       "RequiredIngredientsVisual": [
         "아이리쉬 위스키, 뜨거운 커피, 설탕, 휘핑크림"
       ],
@@ -568,6 +586,7 @@
         "인생의맛"
       ],
       "Category": "K-Mix",
+      "BPM": 130.0,
       "RequiredIngredientsVisual": [
         "콜라캔, 소주병, 맥주병, 빈 맥주잔 2개, 빈 소주잔 1개 아이콘"
       ],
@@ -598,6 +617,7 @@
         "반전매력"
       ],
       "Category": "스페셜 칵테일",
+      "BPM": 130.0,
       "RequiredIngredientsVisual": [
         "보드카, 진, 럼, 데킬라, 트리플섹 병 아이콘, 콜라 병"
       ],

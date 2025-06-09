@@ -20,6 +20,7 @@ namespace Data
 		public int BasePrice;
 		public List<string> Tags;
 		public string Category;
+		public float BPM;
 		public List<string> RequiredIngredientsVisual;
 		public string CompletedVisualResourceID;
 		public string OpenOption;

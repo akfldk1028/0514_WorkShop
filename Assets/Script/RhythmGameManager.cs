@@ -17,19 +17,21 @@ public class RhythmGameManager : MonoBehaviour
     // Sound related variables
     [Header("Sound Setting")]
     public AudioClip soundClip;
-    public AudioSource audioSource;
+    public AudioSource audioSource;  // 키 사운드용 (기존 AudioSource)
 
     [Header("Key Sound Settings")]
-    public AudioClip soundA;  // Sound for key A
-    public AudioClip soundS;  // Sound for key S
-    public AudioClip soundD;  // Sound for key D
-    public AudioClip soundW;  // Sound for key W
-    public AudioClip soundZ;  // Sound for Space key
-    private Dictionary<string, AudioClip> keySoundDict;
+    public AudioClip soundA;  // Default Sound for key A
+    public AudioClip soundS;  // Default Sound for key S
+    public AudioClip soundD;  // Default Sound for key D
+    public AudioClip soundW;  // Default Sound for key W
+    public AudioClip soundZ;  // Default Sound for Space key
+
+    [Header("Recipe Sound Settings")]
+    public RecipeSoundData recipeSoundData;
 
     [Header("Metronome Setting")]
     public AudioClip metronomeClip;
-    public AudioSource metronomeSource;
+    public AudioSource metronomeSource;  // 메트로놈 전용 (새로 추가한 AudioSource)
 
     [Header("Countdown TMP Text")]
     public TextMeshProUGUI Num;
@@ -39,7 +41,7 @@ public class RhythmGameManager : MonoBehaviour
     [SerializeField] private float goodWindow = 0.3f;
 
     [Header("Rhythm Key Setting")]
-    [SerializeField] private float interval = 0.4615f;
+    [SerializeField] private float interval = 0.4615f;  // 기본값으로 130 BPM에 해당하는 interval 설정
     [SerializeField] private List<string> rhythmPattern = new List<string> { "A", "S", "AD", "_", "D", "_", "D", "A" };
 
     private List<float> expectedTimes = new List<float>();
@@ -52,6 +54,9 @@ public class RhythmGameManager : MonoBehaviour
     public List<string> keyLabels = new List<string> { "A", "S", "D", "W", "Z" };  // Z represents Space
     public List<Image> keyImages;  // T1~T8
     private Dictionary<string, Sprite> keySpriteDict;
+
+    [Header("Cocktail Visual")]
+    public List<GameObject> cocktailStepObjects;  // 8개의 칵테일 제작 단계 이미지
 
     private bool useMetronome = true;
 
@@ -68,14 +73,43 @@ public class RhythmGameManager : MonoBehaviour
     // Current recipe being played
     private Data.RecipeData currentRecipe;
 
+    private Dictionary<string, AudioClip> keySoundDict;
+
     private void Start()
     {
         KeyUI.SetActive(false);
-        resultText.gameObject.SetActive(false);  // 시작할 때 결과 텍스트 숨기기
+        resultText.gameObject.SetActive(false);
         InitKeySoundDict();
     }
 
-    private void InitKeySoundDict() // Initialize dictionary for key sounds
+    private void SetupAudioSources()
+    {
+        // 메트로놈용 AudioSource 설정
+        if (metronomeSource == null)
+        {
+            // 기존 AudioSource가 있다면 그것을 메트로놈용으로 사용
+            metronomeSource = GetComponent<AudioSource>();
+            
+            // 없다면 새로 생성
+            if (metronomeSource == null)
+            {
+                metronomeSource = gameObject.AddComponent<AudioSource>();
+            }
+            metronomeSource.playOnAwake = false;
+        }
+
+        // 키 사운드용 AudioSource 생성
+        if (audioSource == null)
+        {
+            // 새로운 AudioSource 컴포넌트 추가
+            audioSource = gameObject.AddComponent<AudioSource>();
+            audioSource.playOnAwake = false;
+        }
+
+        Debug.Log("Audio Sources setup completed - Metronome: " + (metronomeSource != null) + ", KeySound: " + (audioSource != null));
+    }
+
+    private void InitKeySoundDict()
     {
         keySoundDict = new Dictionary<string, AudioClip>
         {
@@ -126,6 +160,16 @@ public class RhythmGameManager : MonoBehaviour
         yield return new WaitForSeconds(1f);
     }
 
+    private void UpdateRecipeTempo()
+    {
+        if (currentRecipe != null)
+        {
+            // BPM을 interval로 변환 (60초 / BPM = 한 비트당 시간)
+            interval = 60f / currentRecipe.BPM;
+            Debug.Log($"레시피 {currentRecipe.RecipeName}의 BPM: {currentRecipe.BPM}, interval: {interval}");
+        }
+    }
+
     public void StartRhythmSequence()
     {
         WaitASecond();
@@ -140,6 +184,7 @@ public class RhythmGameManager : MonoBehaviour
             if (Managers.Data.RecipeDic.ContainsKey(nextOrder.recipeId))
             {
                 currentRecipe = Managers.Data.RecipeDic[nextOrder.recipeId];
+                UpdateRecipeTempo();  // BPM에 따라 interval 업데이트
                 Debug.Log($"<color=green>[RhythmGameManager]</color> 주문된 레시피로 게임 시작: {currentRecipe.RecipeName} (ID: {nextOrder.recipeId})");
             }
             else
@@ -147,6 +192,7 @@ public class RhythmGameManager : MonoBehaviour
                 Debug.LogError($"<color=red>[RhythmGameManager]</color> 레시피 ID {nextOrder.recipeId}를 찾을 수 없습니다!");
                 // 폴백으로 랜덤 레시피 사용
                 currentRecipe = Managers.Ingame.getRandomRecipe();
+                UpdateRecipeTempo();  // BPM에 따라 interval 업데이트
             }
         }
         else
@@ -154,6 +200,7 @@ public class RhythmGameManager : MonoBehaviour
             Debug.LogWarning($"<color=yellow>[RhythmGameManager]</color> 대기 중인 주문이 없습니다. 랜덤 레시피 사용.");
             // 주문이 없으면 랜덤 레시피 사용
             currentRecipe = Managers.Ingame.getRandomRecipe();
+            UpdateRecipeTempo();  // BPM에 따라 interval 업데이트
         }
 
         Debug.Log(currentRecipe.RecipeName);
@@ -202,34 +249,65 @@ public class RhythmGameManager : MonoBehaviour
         }
     }
 
+    private AudioClip GetRecipeSound(string key)
+    {
+        if (currentRecipe == null)
+            return keySoundDict[key];
+
+        var soundSet = recipeSoundData.GetSoundSet(currentRecipe.NO);
+        if (soundSet == null)
+            return keySoundDict[key];
+
+        switch (key)
+        {
+            case "A": return soundSet.soundA ?? keySoundDict[key];
+            case "S": return soundSet.soundS ?? keySoundDict[key];
+            case "D": return soundSet.soundD ?? keySoundDict[key];
+            case "W": return soundSet.soundW ?? keySoundDict[key];
+            case "Z": return soundSet.soundZ ?? keySoundDict[key];
+            default: return keySoundDict[key];
+        }
+    }
+
     private IEnumerator PlayRhythm()
     {
+        metronomeSource.volume = 0.7f;
+
         expectedTimes.Clear();
         inputTimes.Clear();
         inputKeys.Clear();
 
+        // 모든 칵테일 이미지 비활성화
+        foreach (var obj in cocktailStepObjects)
+        {
+            if (obj != null) obj.SetActive(false);
+        }
+
         for (int i = 0; i < rhythmPattern.Count; i++)
         {
-            // 모든 패턴에 대해 UI 흐리게 처리 (빈 입력 '_'도 포함)
             DimKeyUI(i);
 
             if (rhythmPattern[i] != "_")
             {
-                string keyString = rhythmPattern[i][0].ToString().ToUpper();
-                if (keySoundDict.ContainsKey(keyString) && keySoundDict[keyString] != null)
+                // 키 입력이 있는 경우 해당 인덱스의 칵테일 이미지 활성화
+                if (i < cocktailStepObjects.Count && cocktailStepObjects[i] != null)
                 {
-                    audioSource.PlayOneShot(keySoundDict[keyString]);
+                    cocktailStepObjects[i].SetActive(true);
+                }
+
+                string keyString = rhythmPattern[i][0].ToString().ToUpper();
+                AudioClip soundToPlay = GetRecipeSound(keyString);
+                if (soundToPlay != null)
+                {
+                    audioSource.PlayOneShot(soundToPlay);
                 }
             }
 
             yield return new WaitForSeconds(interval);
         }
 
-        // 입력 시작 전에 모든 키 UI 원래대로 복구
         RestoreKeyUI();
-
         yield return StartCoroutine(PlayCountdownBeats());
-
         inputCoroutine = StartCoroutine(WaitForInputs());
     }
 
@@ -242,7 +320,7 @@ public class RhythmGameManager : MonoBehaviour
             if (Num != null) Num.text = c;
             yield return new WaitForSeconds(interval);
         }
-
+        metronomeSource.volume = 0.15f; //플레이어 입력 시 메트로놈 볼륨 낮춤
         if (Num != null) Num.text = "";
     }
 
@@ -293,9 +371,11 @@ public class RhythmGameManager : MonoBehaviour
                         {
                             string key = (k == KeyCode.Space) ? "Z" : k.ToString().ToUpper();
                             keysPressed.Add(key);
-                            if (keySoundDict.ContainsKey(key) && keySoundDict[key] != null)
+                            
+                            AudioClip soundToPlay = GetRecipeSound(key);
+                            if (soundToPlay != null)
                             {
-                                audioSource.PlayOneShot(keySoundDict[key]);
+                                audioSource.PlayOneShot(soundToPlay);  // 키 사운드는 기존 AudioSource 사용
                             }
                         }
                     }
@@ -345,6 +425,7 @@ public class RhythmGameManager : MonoBehaviour
         }
 
         useMetronome = false;
+        metronomeSource.volume = 0.7f;  // 메트로놈 볼륨만 원래대로 복구
         JudgeResults();
     }
 
