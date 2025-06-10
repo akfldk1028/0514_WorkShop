@@ -21,8 +21,8 @@ public class CameraController : InitBase
 	private Vector3 topViewRotation = new Vector3(52f, -48f, -4f);     // 예시: 약간 기울어진 각도
 
 
-	public Vector3 fixedCameraPosition = new Vector3(-12.3f, 3.1f, 29f);
-	public Vector3 fixedCameraRotation = new Vector3(70f, -90f, 0f);
+	public Vector3 fixedCameraPosition = new Vector3(33f, 4.77f, -15.9f);
+	public Vector3 fixedCameraRotation = new Vector3(7.87f, -90f, 0f);
 
 
 	private Vector3 currentOffset;

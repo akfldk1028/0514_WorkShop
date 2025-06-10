@@ -4,6 +4,9 @@ using UnityEngine;
 using TMPro;
 using System.Linq;
 using UnityEngine.UI;
+using UnityEditor;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 public enum RhythmResult
 {
@@ -57,6 +60,9 @@ public class RhythmGameManager : MonoBehaviour
 
     [Header("Cocktail Visual")]
     public List<GameObject> cocktailStepObjects;  // 8개의 칵테일 제작 단계 이미지
+    private List<GameObject> cocktailFinalObjects; // 2_Final 하위의 완성된 모습
+    private GameObject currentCocktailPrefab;     // 현재 생성된 칵테일 프리팹 인스턴스
+    public Transform cocktailSpawnPoint;          // 칵테일이 생성될 위치
 
     private bool useMetronome = true;
 
@@ -185,6 +191,7 @@ public class RhythmGameManager : MonoBehaviour
             {
                 currentRecipe = Managers.Data.RecipeDic[nextOrder.recipeId];
                 UpdateRecipeTempo();  // BPM에 따라 interval 업데이트
+                
                 Debug.Log($"<color=green>[RhythmGameManager]</color> 주문된 레시피로 게임 시작: {currentRecipe.RecipeName} (ID: {nextOrder.recipeId})");
             }
             else
@@ -204,6 +211,7 @@ public class RhythmGameManager : MonoBehaviour
         }
 
         Debug.Log(currentRecipe.RecipeName);
+        LoadAndSpawnCocktailPrefab(currentRecipe.NO.ToString());
         Debug.Log(string.Join(", ", currentRecipe.KeyCombination));
 
         rhythmPattern = new List<string>(currentRecipe.KeyCombination);
@@ -213,7 +221,7 @@ public class RhythmGameManager : MonoBehaviour
         UpdateRecipeNameUI();
 
         ShowKeyCombinationUI(currentRecipe.KeyCombination);
-        TrimTrailingSilence();
+        //TrimTrailingSilence();
         rhythmCoroutine = StartCoroutine(InitAndStart());
         KeyUI.SetActive(true);
     }
@@ -287,14 +295,15 @@ public class RhythmGameManager : MonoBehaviour
         {
             DimKeyUI(i);
 
+            // 칵테일 스텝 이미지는 항상 활성화 (쉼표에서도)
+            if (i < cocktailStepObjects.Count && cocktailStepObjects[i] != null)
+            {
+                cocktailStepObjects[i].SetActive(true);
+            }
+
+            // 키 입력이 있는 경우에만 사운드 재생
             if (rhythmPattern[i] != "_")
             {
-                // 키 입력이 있는 경우 해당 인덱스의 칵테일 이미지 활성화
-                if (i < cocktailStepObjects.Count && cocktailStepObjects[i] != null)
-                {
-                    cocktailStepObjects[i].SetActive(true);
-                }
-
                 string keyString = rhythmPattern[i][0].ToString().ToUpper();
                 AudioClip soundToPlay = GetRecipeSound(keyString);
                 if (soundToPlay != null)
@@ -524,6 +533,18 @@ public class RhythmGameManager : MonoBehaviour
             resultText.text = "Clear";
             resultText.color = Color.blue;
             
+            // 성공 시 Final 오브젝트 활성화
+            if (cocktailFinalObjects != null)
+            {
+                foreach (var finalObj in cocktailFinalObjects)
+                {
+                    if (finalObj != null)
+                    {
+                        finalObj.SetActive(true);
+                    }
+                }
+            }
+            
             // 성공 시에만 주문 제거
             var completedOrder = Managers.Game.CustomerCreator.OrderManager.GetNextOrder();
             if (completedOrder != null)
@@ -598,6 +619,73 @@ public class RhythmGameManager : MonoBehaviour
         
         orderText.text = orderDisplayText.TrimEnd('\n');
         Debug.Log($"[RhythmGameManager] 주문 UI 업데이트 완료: {orderText.text}");
+    }
+
+    private async void LoadAndSpawnCocktailPrefab(string recipeId)
+    {
+        // 이전 프리팹이 있다면 제거
+        if (currentCocktailPrefab != null)
+        {
+            Destroy(currentCocktailPrefab);
+        }
+
+        try
+        {
+            // Addressables를 통해 프리팹 로드
+            var loadOperation = Addressables.LoadAssetAsync<GameObject>(recipeId);
+            var prefab = await loadOperation.Task;
+
+            if (prefab != null)
+            {
+                Debug.Log($"<color=green>[LoadAndSpawnCocktailPrefab]</color> 프리팹 로드 성공: {recipeId}");
+                
+                // 프리팹 생성
+                currentCocktailPrefab = Instantiate(prefab, cocktailSpawnPoint.position, cocktailSpawnPoint.rotation);
+                
+                // 모든 Steps와 Final 오브젝트 비활성화 (Base는 활성화 상태 유지)
+                Transform stepsTransform = currentCocktailPrefab.transform.Find("1_Steps");
+                Transform finalTransform = currentCocktailPrefab.transform.Find("2_Final");
+
+                if (stepsTransform != null)
+                {
+                    foreach (Transform child in stepsTransform)
+                    {
+                        child.gameObject.SetActive(false);
+                    }
+                    //Debug.Log($"<color=green>[LoadAndSpawnCocktailPrefab]</color> Steps 비활성화 완료");
+                }
+
+                if (finalTransform != null)
+                {
+                    // Final 오브젝트들 저장
+                    cocktailFinalObjects = new List<GameObject>();
+                    foreach (Transform child in finalTransform)
+                    {
+                        child.gameObject.SetActive(false);
+                        cocktailFinalObjects.Add(child.gameObject);
+                    }
+                    //Debug.Log($"<color=green>[LoadAndSpawnCocktailPrefab]</color> Final 비활성화 완료");
+                }
+
+                // Steps 오브젝트들의 참조 저장 (나중에 순차적 활성화를 위해)
+                if (stepsTransform != null)
+                {
+                    cocktailStepObjects.Clear();
+                    foreach (Transform child in stepsTransform)
+                    {
+                        cocktailStepObjects.Add(child.gameObject);
+                    }
+                   // Debug.Log($"<color=green>[LoadAndSpawnCocktailPrefab]</color> {cocktailStepObjects.Count}개의 Step 오브젝트 참조 저장됨");
+                }
+
+                // 프리팹 레퍼런스 해제
+                Addressables.Release(loadOperation);
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"<color=red>[LoadAndSpawnCocktailPrefab]</color> 프리팹 로드 실패: {recipeId}\n{e.Message}");
+        }
     }
 
 }

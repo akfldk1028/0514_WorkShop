@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Cocktail
+  m_EditorClassIdentifier: 
+  m_GroupName: Cocktail
+  m_GUID: f952b443c423e2f458ffafb933b45f2a
+  m_SerializeEntries:
+  - m_GUID: 14579011fbb68894fb15018b52f6f79b
+    m_Address: 200019
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PreLoad
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 42380f244b2bc72459e7b705efa45661
+    m_Address: 200001
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PreLoad
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4574737b7b975ec42a17d395dc2b6d91
+    m_Address: 200004
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PreLoad
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6230776b12043aa4eabcd91a37835097
+    m_Address: 200003
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PreLoad
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6df0f3cadc143b0478739a5880228aa8
+    m_Address: 200002
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PreLoad
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: edcb69cfef977374cbd886e9fd72f223
+    m_Address: 200010
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PreLoad
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 3b34cd1d0f58d714b8b4fcf9c86bdbb4, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 3a9badfb65d8b2f4a9aaa6711516d664, type: 2}
+    - {fileID: 11400000, guid: 18212c01b6d3da04aa5c535043fb9172, type: 2}

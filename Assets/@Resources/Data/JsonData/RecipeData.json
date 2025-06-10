@@ -24,7 +24,7 @@
         "깔끔한맛"
       ],
       "Category": "클래식 칵테일",
-      "BPM": 130.0,
+      "BPM": 100.0,
       "RequiredIngredientsVisual": [
         "진 병, 토닉워터 병, 라임 조각 아이콘"
       ],
@@ -304,7 +304,7 @@
         "인기있는"
       ],
       "Category": "럼 기반 칵테일",
-      "BPM": 130.0,
+      "BPM": 150.0,
       "RequiredIngredientsVisual": [
         "럼 병, 민트 잎 아이콘, 라임 조각, 탄산수 병"
       ],
@@ -586,7 +586,7 @@
         "인생의맛"
       ],
       "Category": "K-Mix",
-      "BPM": 130.0,
+      "BPM": 160.0,
       "RequiredIngredientsVisual": [
         "콜라캔, 소주병, 맥주병, 빈 맥주잔 2개, 빈 소주잔 1개 아이콘"
       ],

@@ -19,7 +19,7 @@ public class InGameManager
 
     [Header("         ")]
     public RhythmGameManager rhythmGameManager;
-    private int[] recipeIdList = { 200003, 200004 }; // 예시: 원하는 id들로 채우세요
+    private int[] recipeIdList = { 200001, 200010, 200019 }; // 예시: 원하는 id들로 채우세요
 
     //게임상태확인
     public bool isInteracting = false;

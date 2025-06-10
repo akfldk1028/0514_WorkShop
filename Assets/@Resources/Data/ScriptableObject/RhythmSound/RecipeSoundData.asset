@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recipeSounds:
   - recipeId: 200001
-    soundA: {fileID: 8300000, guid: ca97bd32f3b467a4d809773cce98ee48, type: 3}
-    soundS: {fileID: 8300000, guid: 8b44776444956ce44bada003bfcdc49d, type: 3}
-    soundD: {fileID: 8300000, guid: 4a9fee0e3e1d4ac4c80e2e5d25ff400a, type: 3}
-    soundW: {fileID: 8300000, guid: 4b04a69e0ff71464482a5b3cc04e43b4, type: 3}
-    soundZ: {fileID: 8300000, guid: 4f806446354a3ea429861927250c27b2, type: 3}
+    soundA: {fileID: 8300000, guid: 5a9d75a9089eef841a8107112ec7b1b5, type: 3}
+    soundS: {fileID: 8300000, guid: 89f8cf8c35441874391f06f5a9ca59c9, type: 3}
+    soundD: {fileID: 8300000, guid: b8845ba1faf46e94692a8dde88fa6c59, type: 3}
+    soundW: {fileID: 8300000, guid: 8770c8106e02c4d45967f47681c1ca32, type: 3}
+    soundZ: {fileID: 8300000, guid: f3c097b1db94f5949a8a851b9ad37732, type: 3}
   - recipeId: 200002
     soundA: {fileID: 8300000, guid: ca26b530e651bb04c825e73fc231b4ea, type: 3}
     soundS: {fileID: 8300000, guid: 614738833a75fb44e9de557d0b5d14e6, type: 3}
@@ -37,3 +37,15 @@ MonoBehaviour:
     soundD: {fileID: 8300000, guid: 7e04053a2bdb5f647af73d88b578c28b, type: 3}
     soundW: {fileID: 8300000, guid: c53b3ed80e89aec4e9dc0f7ff6db551a, type: 3}
     soundZ: {fileID: 8300000, guid: a4f0ab3ab7531004fa9f58bdd01bd6fc, type: 3}
+  - recipeId: 200010
+    soundA: {fileID: 8300000, guid: 874fcc107bbddb74ab77b2971f5afd11, type: 3}
+    soundS: {fileID: 8300000, guid: e96f0864648d2df419fede5161cce9af, type: 3}
+    soundD: {fileID: 8300000, guid: 5e7872aa285844e48b5bef38b07b924d, type: 3}
+    soundW: {fileID: 8300000, guid: a047fd975aa4f934b9ea352fc2521b46, type: 3}
+    soundZ: {fileID: 8300000, guid: ceab0ffb018b3d646985b0306381c7e6, type: 3}
+  - recipeId: 200019
+    soundA: {fileID: 8300000, guid: f41865010a05f0a4489d12a289422540, type: 3}
+    soundS: {fileID: 8300000, guid: 7d2e9bef4727c9b4190c8add1d8dfdcf, type: 3}
+    soundD: {fileID: 8300000, guid: 238c3b712c316134ba619c57ecabc280, type: 3}
+    soundW: {fileID: 8300000, guid: 6dc8bc2e774331d489584a3f130e0056, type: 3}
+    soundZ: {fileID: 8300000, guid: 29de45ec01d2beb4cacbef24672cfa63, type: 3}

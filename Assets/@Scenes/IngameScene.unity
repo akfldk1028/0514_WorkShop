@@ -119,6 +119,37 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &4425555
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4425556}
+  m_Layer: 0
+  m_Name: CocktailSpawnpoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4425556
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4425555}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 29.48, y: 3.705, z: -15.978}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &36113359
 GameObject:
   m_ObjectHideFlags: 0
@@ -2827,8 +2858,8 @@ MonoBehaviour:
   backViewOffset: {x: 0, y: 3, z: -7}
   backViewPosition: {x: 5, y: -25, z: 0}
   backViewRotation: {x: 0, y: -3, z: 0}
-  fixedCameraPosition: {x: -6.38, y: 4.5, z: 9.5}
-  fixedCameraRotation: {x: 70, y: -90, z: 0}
+  fixedCameraPosition: {x: 33.6, y: 5.03, z: -15.8}
+  fixedCameraRotation: {x: 7.87, y: -90, z: 0}
   positionSmoothSpeed: 0.05
   rotationSmoothSpeed: 7
 --- !u!1 &731216808
@@ -7992,7 +8023,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1776461891
 RectTransform:
   m_ObjectHideFlags: 0
@@ -16119,19 +16150,19 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 7331103411177197214, guid: 5acb6db1a97d367478664c82fea3a82d, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1570.02
+      value: -1576.79
       objectReference: {fileID: 0}
     - target: {fileID: 7331103411177197214, guid: 5acb6db1a97d367478664c82fea3a82d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -924.03
+      value: -924.18
       objectReference: {fileID: 0}
     - target: {fileID: 7331103411177197214, guid: 5acb6db1a97d367478664c82fea3a82d, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 13.3
+      value: -9.23
       objectReference: {fileID: 0}
     - target: {fileID: 7331103411177197214, guid: 5acb6db1a97d367478664c82fea3a82d, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7331103411177197214, guid: 5acb6db1a97d367478664c82fea3a82d, type: 3}
       propertyPath: m_LocalRotation.x
@@ -16139,7 +16170,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7331103411177197214, guid: 5acb6db1a97d367478664c82fea3a82d, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7331103411177197214, guid: 5acb6db1a97d367478664c82fea3a82d, type: 3}
       propertyPath: m_LocalRotation.z
@@ -16151,7 +16182,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7331103411177197214, guid: 5acb6db1a97d367478664c82fea3a82d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 180
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7331103411177197214, guid: 5acb6db1a97d367478664c82fea3a82d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -19659,6 +19690,7 @@ MonoBehaviour:
   - {fileID: 1763395285}
   - {fileID: 1288277030}
   - {fileID: 1243091247}
+  cocktailSpawnPoint: {fileID: 4425556}
   recipeName: {fileID: 2053086405796816154}
   resultText: {fileID: 2061116280}
   orderText: {fileID: 5321195317851242307}
@@ -23362,3 +23394,4 @@ SceneRoots:
   - {fileID: 855907674754927463}
   - {fileID: 872990220}
   - {fileID: 8271462564931778530}
+  - {fileID: 4425556}
