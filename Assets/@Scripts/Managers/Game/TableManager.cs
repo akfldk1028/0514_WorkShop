@@ -223,4 +223,182 @@ public class TableManager
         if (_tables.Contains(table))
             _tables.Remove(table);
     }
+
+    #region 서빙 관련 기능
+    
+    /// <summary>
+    /// 플레이어 위치에서 가장 가까운 서빙 가능한 테이블을 찾습니다.
+    /// </summary>
+    /// <param name="playerPos">플레이어 위치</param>
+    /// <returns>서빙 가능한 테이블 (없으면 null)</returns>
+    public Table GetNearestServableTable(Vector3 playerPos)
+    {
+        Table nearestTable = null;
+        float nearestDistance = interactionDistance;
+
+        foreach (var table in _tables)
+        {
+            if (table.CurrentUIState == Table.ETableUIState.WaitingForFood)
+            {
+                float distance = Vector3.Distance(playerPos, table.transform.position);
+                
+                if (distance <= nearestDistance)
+                {
+                    nearestDistance = distance;
+                    nearestTable = table;
+                }
+            }
+        }
+        return nearestTable;
+    }
+    
+    /// <summary>
+    /// 테이블에 서빙을 시도합니다.
+    /// </summary>
+    /// <param name="table">서빙할 테이블</param>
+    /// <returns>서빙 성공 여부</returns>
+    public bool TryServeTable(Table table)
+    {
+        if (table == null)
+        {
+            Debug.LogError("[TableManager] 테이블이 null입니다!");
+            return false;
+        }
+        
+        var tableOrders = table.CollectOrdersFromSeatedCustomers();
+        if (tableOrders?.Count == 0)
+        {
+            Debug.Log("<color=yellow>[TableManager] 테이블에 주문이 없습니다.</color>");
+            return false;
+        }
+        
+        Debug.Log($"<color=cyan>[TableManager] 테이블 {table.tableId}에 {tableOrders.Count}개의 주문 항목이 있습니다.</color>");
+        
+        int servedCount = 0;
+        
+        // 모든 주문에 대해 서빙 시도
+        foreach (var order in tableOrders)
+        {
+            if (TryServeOrder(table, order))
+            {
+                servedCount++;
+            }
+        }
+        
+        if (servedCount == 0)
+        {
+            Debug.Log("<color=yellow>[TableManager] 플레이어가 이 테이블의 주문에 맞는 음식을 가지고 있지 않습니다.</color>");
+            return false;
+        }
+        
+        // 서빙 완료 후 고객 상태 업데이트
+        UpdateCustomersToEating(table);
+        
+        Debug.Log($"<color=green>[TableManager] 총 {servedCount}개의 주문을 서빙했습니다.</color>");
+        return true;
+    }
+    
+    /// <summary>
+    /// 개별 주문을 서빙합니다.
+    /// </summary>
+    private bool TryServeOrder(Table table, Order order)
+    {
+        Debug.Log($"<color=cyan>[TableManager] 주문 확인: {order.RecipeName} x{order.Quantity} (ID: {order.recipeId})</color>");
+        
+        if (!Managers.Game.HasRecipe(order.recipeId))
+        {
+            Debug.Log($"<color=yellow>[TableManager] 플레이어가 {order.RecipeName}을(를) 가지고 있지 않습니다.</color>");
+            return false;
+        }
+        
+        var recipe = Managers.Game.GetRecipe(order.recipeId);
+        if (!recipe.HasValue)
+        {
+            Debug.LogError($"[TableManager] 레시피 정보를 가져올 수 없습니다: {order.recipeId}");
+            return false;
+        }
+        
+        // OrderManager에게 주문 처리 위임
+        bool orderProcessed = Managers.Game.CustomerCreator.OrderManager.ProcessServedOrder(recipe.Value, order);
+        
+        if (orderProcessed)
+        {
+            // 테이블에 음식 스폰
+            SpawnFoodOnTable(table, recipe.Value.prefabName, order.Quantity);
+            Debug.Log($"<color=green>[TableManager] 주문 서빙 완료: {order.RecipeName} x{order.Quantity}</color>");
+        }
+        
+        return orderProcessed;
+    }
+    
+    /// <summary>
+    /// 테이블에 음식을 스폰합니다.
+    /// </summary>
+    private void SpawnFoodOnTable(Table table, string prefabName, int quantity)
+    {
+        for (int i = 0; i < quantity; i++)
+        {
+            if (string.IsNullOrEmpty(prefabName))
+            {
+                Debug.LogError("[TableManager] prefabName이 비어있습니다!");
+                continue;
+            }
+            
+            // 테이블 위에서 랜덤 위치에 1.5f 격차로 배치
+            float randomX = UnityEngine.Random.Range(-1.5f, 1.5f);
+            float randomZ = UnityEngine.Random.Range(-1.5f, 1.5f);
+            Vector3 offset = new Vector3(randomX, 0, randomZ);
+            Vector3 spawnPos = table.transform.position + Vector3.up * 1.5f + offset;
+            
+            // 리소스 매니저를 통해 prefab 스폰 (테이블을 부모로 설정)
+            GameObject spawnedFood = Managers.Resource.Instantiate(prefabName, spawnPos, Quaternion.identity, table.transform);
+            
+            if (spawnedFood != null)
+            {
+                // 스케일을 1.3배로 키우기
+                spawnedFood.transform.localScale = Vector3.one * 1.5f;
+                Debug.Log($"<color=cyan>[TableManager] 음식 스폰 완료: {prefabName} at {spawnPos} (#{i + 1})</color>");
+            }
+            else
+            {
+                Debug.LogError($"<color=red>[TableManager] 음식 스폰 실패: {prefabName}</color>");
+            }
+        }
+    }
+    
+    /// <summary>
+    /// 테이블의 고객들을 식사 상태로 업데이트합니다.
+    /// </summary>
+    private void UpdateCustomersToEating(Table table)
+    {
+        if (table?.chairs == null) return;
+        
+        int customersServed = 0;
+        
+        // 테이블에 앉은 모든 고객을 Eating 상태로 전환
+        foreach (var chair in table.chairs)
+        {
+            var customer = chair?._currentCustomer;
+            if (customer == null || !chair.IsOccupied) continue;
+            
+            if (customer.CustomerState == ECustomerState.WaitingForFood)
+            {
+                // 음식 받음 액션 발행
+                Managers.PublishAction(ActionType.Customer_ReceivedFood);
+                
+                // 식사 시작 상태로 전환
+                customer.CustomerState = ECustomerState.Eating;
+                customersServed++;
+                
+                Debug.Log($"<color=green>[TableManager] 고객 {customer.name}이 음식을 받고 식사를 시작합니다.</color>");
+            }
+        }
+        
+        if (customersServed > 0)
+        {
+            Debug.Log($"<color=cyan>[TableManager] 테이블 {table.tableId}에서 총 {customersServed}명의 고객이 식사를 시작했습니다.</color>");
+        }
+    }
+    
+    #endregion
 }

@@ -22,6 +22,9 @@ public class InputManager
     private Transform _playerTransform;
     public float moveSpeed = 7f;
     public float rotationSpeed = 200f;
+    
+    // 서빙 관련 변수
+    public float interactionDistance = 5f;  // 인터랙션 가능 거리
 
     public InputManager()
     {
@@ -180,6 +183,12 @@ public class InputManager
         {
             Managers.Ingame.rhythmGameManager?.SkipCurrentRecipe();
         }
+        
+        // F키로 음식 서빙 (리듬게임 중이 아닐 때만)
+        if (Input.GetKeyDown(KeyCode.F) && !Managers.Ingame.isInteracting)
+        {
+            HandleFoodServing();
+        }
     }
 
     private void HandleMouseInput()
@@ -235,6 +244,36 @@ public class InputManager
             }
 
             _isDragging = false;
+        }
+    }
+
+    private void HandleFoodServing()
+    {
+        if (Managers.Game?.Player == null) return;
+        
+        Vector3 playerPos = Managers.Game.Player.transform.position;
+        
+        // TableManager에게 서빙 처리 위임
+        Table nearestTable = Managers.Game.CustomerCreator.TableManager.GetNearestServableTable(playerPos);
+        
+        if (nearestTable != null)
+        {
+            Debug.Log($"<color=green>[InputManager] 테이블 {nearestTable.tableId}에 음식 서빙 시도!</color>");
+            
+            bool serveSuccess = Managers.Game.CustomerCreator.TableManager.TryServeTable(nearestTable);
+            
+            if (serveSuccess)
+            {
+                Debug.Log($"<color=green>[InputManager] 테이블 {nearestTable.tableId} 서빙 완료!</color>");
+            }
+            else
+            {
+                Debug.Log($"<color=yellow>[InputManager] 테이블 {nearestTable.tableId} 서빙 실패!</color>");
+            }
+        }
+        else
+        {
+            Debug.Log("<color=yellow>[InputManager] 근처에 서빙 가능한 테이블이 없습니다.</color>");
         }
     }
 }

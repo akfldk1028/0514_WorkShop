@@ -71,6 +71,9 @@ public class UI_GameScene : UI_Scene
         // 완료된 레시피 아이콘 추가 액션 구독
         Managers.Subscribe(ActionType.GameScene_AddCompletedRecipe, OnAddCompletedRecipe);
         
+        // 완료된 레시피 아이콘 제거 액션 구독 추가
+        Managers.Subscribe(ActionType.GameScene_RemoveCompletedRecipe, OnRemoveCompletedRecipe);
+        
         // 카메라 뷰 전환 액션 구독
         Managers.Subscribe(ActionType.Camera_TopViewActivated, OnTopViewActivated);
         Managers.Subscribe(ActionType.Camera_BackViewActivated, OnBackViewActivated);
@@ -271,6 +274,61 @@ public class UI_GameScene : UI_Scene
         // 크기 및 위치 설정
         rectTransform.sizeDelta = new Vector2(100, 100);
         rectTransform.anchoredPosition = new Vector2(index * 110, 0);
+    }
+
+    private void OnRemoveCompletedRecipe()
+    {
+        // CompletedOrderData에서 제거할 레시피 ID 가져오기
+        int recipeIdToRemove = InGameManager.CompletedOrderData.LastCompletedRecipeId;
+        
+        var readyToServeParent = GetObject((int)GameObjects.ReadyToServeItem);
+        if (readyToServeParent == null)
+        {
+            Debug.LogError("[UI_GameScene] ReadyToServeItem을 찾을 수 없습니다!");
+            return;
+        }
+        
+        // 해당 레시피 ID의 아이콘 찾아서 제거
+        Transform targetIcon = null;
+        for (int i = 0; i < readyToServeParent.transform.childCount; i++)
+        {
+            var child = readyToServeParent.transform.GetChild(i);
+            if (child.name == $"CompletedRecipe_{recipeIdToRemove}")
+            {
+                targetIcon = child;
+                break;
+            }
+        }
+        
+        if (targetIcon != null)
+        {
+            // 아이콘 제거
+            Destroy(targetIcon.gameObject);
+            completedRecipeCount--;
+            
+            // 남은 아이콘들의 위치 재정렬
+            ReorganizeIcons(readyToServeParent);
+            
+            Debug.Log($"<color=orange>[UI_GameScene]</color> 레시피 아이콘 제거됨: {recipeIdToRemove}");
+        }
+        else
+        {
+            Debug.LogWarning($"[UI_GameScene] 제거할 레시피 아이콘을 찾을 수 없습니다: {recipeIdToRemove}");
+        }
+    }
+    
+    private void ReorganizeIcons(GameObject parent)
+    {
+        // 남은 아이콘들을 왼쪽부터 다시 정렬
+        for (int i = 0; i < parent.transform.childCount; i++)
+        {
+            var child = parent.transform.GetChild(i);
+            var rectTransform = child.GetComponent<RectTransform>();
+            if (rectTransform != null)
+            {
+                rectTransform.anchoredPosition = new Vector2(i * 110, 0);
+            }
+        }
     }
 
 }

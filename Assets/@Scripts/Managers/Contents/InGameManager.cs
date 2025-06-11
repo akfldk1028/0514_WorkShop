@@ -140,6 +140,10 @@ public class InGameManager
         CompletedOrderData.LastCompletedSprite = iconSprite;
         CompletedOrderData.LastCompletedRecipeId = recipe.NO;
         CompletedOrderData.LastCompletedPrefabName = recipe.Prefab;
+        
+        // GameManager 인벤토리에도 추가
+        Managers.Game.AddRecipeToInventory(recipe.NO, recipe.RecipeName, recipe.Prefab);
+        
         Managers.PublishAction(ActionType.GameScene_AddCompletedRecipe);
     }
 

@@ -79,6 +79,62 @@ public class GameManager
     private Player _player;
     public Player Player => _player;
 
+    // 플레이어 인벤토리 - 완료된 레시피들 (간단한 구조체로 저장)
+    [System.Serializable]
+    public struct PlayerRecipe
+    {
+        public int recipeId;
+        public string recipeName;
+        public string prefabName;
+        
+        public PlayerRecipe(int id, string name, string prefab)
+        {
+            recipeId = id;
+            recipeName = name;
+            prefabName = prefab;
+        }
+    }
+    
+    private List<PlayerRecipe> _playerInventory = new List<PlayerRecipe>();
+    public IReadOnlyList<PlayerRecipe> PlayerInventory => _playerInventory;
+
+    // 플레이어 인벤토리 관리 메서드들
+    public void AddRecipeToInventory(int recipeId, string recipeName, string prefabName)
+    {
+        var recipe = new PlayerRecipe(recipeId, recipeName, prefabName);
+        _playerInventory.Add(recipe);
+        Debug.Log($"<color=green>[GameManager]</color> 인벤토리에 레시피 추가: {recipeName} (ID: {recipeId})");
+    }
+    
+    public bool RemoveRecipeFromInventory(int recipeId)
+    {
+        for (int i = 0; i < _playerInventory.Count; i++)
+        {
+            if (_playerInventory[i].recipeId == recipeId)
+            {
+                var removedRecipe = _playerInventory[i];
+                _playerInventory.RemoveAt(i);
+                Debug.Log($"<color=orange>[GameManager]</color> 인벤토리에서 레시피 제거: {removedRecipe.recipeName} (ID: {recipeId})");
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public bool HasRecipe(int recipeId)
+    {
+        return _playerInventory.Any(recipe => recipe.recipeId == recipeId);
+    }
+    
+    public PlayerRecipe? GetRecipe(int recipeId)
+    {
+        for (int i = 0; i < _playerInventory.Count; i++)
+        {
+            if (_playerInventory[i].recipeId == recipeId)
+                return _playerInventory[i];
+        }
+        return null;
+    }
 	#endregion
 	public GameManager()
 	{

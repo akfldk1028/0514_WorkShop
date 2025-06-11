@@ -36,7 +36,7 @@ public class Customer : Unit
     public AudioClip gainGoldClip;
     
     [Header("Look At Settings")]
-    [SerializeField] private float lookAtSpeed = 2f; // 회전 속도
+    [SerializeField] private float lookAtSpeed = 4f; // 회전 속도
     [SerializeField] private float lookAtPlayerDuration = 2f; // 플레이어를 바라보는 시간
     
     private GameObject modelInstance;
