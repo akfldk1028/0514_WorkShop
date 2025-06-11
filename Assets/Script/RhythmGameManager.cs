@@ -180,34 +180,42 @@ public class RhythmGameManager : MonoBehaviour
     {
         WaitASecond();
 
-        // OrderManager에서 다음 주문을 확인만 하기 (꺼내지 않음)
-        Order nextOrder = Managers.Game.CustomerCreator.OrderManager.PeekNextOrder();
-        Debug.Log($"[RhythmGameManager] 다음 주문 확인: {(nextOrder != null ? nextOrder.RecipeName : "없음")}");
-        
-        if (nextOrder != null)
+        // 현재 레시피가 없을 때만 새로운 레시피를 가져옴
+        if (currentRecipe == null)
         {
-            // 주문된 레시피 ID로 레시피 데이터 가져오기
-            if (Managers.Data.RecipeDic.ContainsKey(nextOrder.recipeId))
+            // OrderManager에서 다음 주문을 확인만 하기 (꺼내지 않음)
+            Order nextOrder = Managers.Game.CustomerCreator.OrderManager.PeekNextOrder();
+            Debug.Log($"[RhythmGameManager] 다음 주문 확인: {(nextOrder != null ? nextOrder.RecipeName : "없음")}");
+            
+            if (nextOrder != null)
             {
-                currentRecipe = Managers.Data.RecipeDic[nextOrder.recipeId];
-                UpdateRecipeTempo();  // BPM에 따라 interval 업데이트
-                
-                Debug.Log($"<color=green>[RhythmGameManager]</color> 주문된 레시피로 게임 시작: {currentRecipe.RecipeName} (ID: {nextOrder.recipeId})");
+                // 주문된 레시피 ID로 레시피 데이터 가져오기
+                if (Managers.Data.RecipeDic.ContainsKey(nextOrder.recipeId))
+                {
+                    currentRecipe = Managers.Data.RecipeDic[nextOrder.recipeId];
+                    UpdateRecipeTempo();  // BPM에 따라 interval 업데이트
+                    
+                    Debug.Log($"<color=green>[RhythmGameManager]</color> 주문된 레시피로 게임 시작: {currentRecipe.RecipeName} (ID: {nextOrder.recipeId})");
+                }
+                else
+                {
+                    Debug.LogError($"<color=red>[RhythmGameManager]</color> 레시피 ID {nextOrder.recipeId}를 찾을 수 없습니다!");
+                    // 폴백으로 랜덤 레시피 사용
+                    currentRecipe = Managers.Ingame.getRandomRecipe();
+                    UpdateRecipeTempo();  // BPM에 따라 interval 업데이트
+                }
             }
             else
             {
-                Debug.LogError($"<color=red>[RhythmGameManager]</color> 레시피 ID {nextOrder.recipeId}를 찾을 수 없습니다!");
-                // 폴백으로 랜덤 레시피 사용
+                Debug.LogWarning($"<color=yellow>[RhythmGameManager]</color> 대기 중인 주문이 없습니다. 랜덤 레시피 사용.");
+                // 주문이 없으면 랜덤 레시피 사용
                 currentRecipe = Managers.Ingame.getRandomRecipe();
                 UpdateRecipeTempo();  // BPM에 따라 interval 업데이트
             }
         }
         else
         {
-            Debug.LogWarning($"<color=yellow>[RhythmGameManager]</color> 대기 중인 주문이 없습니다. 랜덤 레시피 사용.");
-            // 주문이 없으면 랜덤 레시피 사용
-            currentRecipe = Managers.Ingame.getRandomRecipe();
-            UpdateRecipeTempo();  // BPM에 따라 interval 업데이트
+            Debug.Log($"<color=green>[RhythmGameManager]</color> 실패한 레시피 재시도: {currentRecipe.RecipeName}");
         }
 
         Debug.Log(currentRecipe.RecipeName);
@@ -357,6 +365,15 @@ public class RhythmGameManager : MonoBehaviour
     private IEnumerator WaitForInputs()
     {
         float inputStartTime = Time.time;
+        HashSet<KeyCode> allowedKeys = new HashSet<KeyCode> 
+        { 
+            KeyCode.A, 
+            KeyCode.S, 
+            KeyCode.D, 
+            KeyCode.W, 
+            KeyCode.Space, 
+            KeyCode.Escape 
+        };
 
         for (int i = 0; i < rhythmPattern.Count; i++)
         {
@@ -374,7 +391,7 @@ public class RhythmGameManager : MonoBehaviour
                 {
                     List<string> keysPressed = new List<string>();
 
-                    foreach (KeyCode k in System.Enum.GetValues(typeof(KeyCode)))
+                    foreach (KeyCode k in allowedKeys)  // System.Enum.GetValues(typeof(KeyCode)) 대신 allowedKeys 사용
                     {
                         if (Input.GetKey(k))
                         {
@@ -384,7 +401,7 @@ public class RhythmGameManager : MonoBehaviour
                             AudioClip soundToPlay = GetRecipeSound(key);
                             if (soundToPlay != null)
                             {
-                                audioSource.PlayOneShot(soundToPlay);  // 키 사운드는 기존 AudioSource 사용
+                                audioSource.PlayOneShot(soundToPlay);
                             }
                         }
                     }
@@ -526,6 +543,7 @@ public class RhythmGameManager : MonoBehaviour
             // UI 업데이트 (주문은 그대로, 현재 레시피도 유지)
             UpdateRecipeNameUI();
             
+            Debug.Log($"<color=red>[RhythmGameManager]</color> 레시피 {currentRecipe.RecipeName} 실패, 재시도합니다.");
             StartRhythmSequence();  // Restart with same order
         }
         else
@@ -558,10 +576,10 @@ public class RhythmGameManager : MonoBehaviour
             UpdateRecipeNameUI();
             
             // Wait for space input only on success
-            while (!Input.GetKeyDown(KeyCode.Space))
-            {
-                yield return null;
-            }
+            //while (!Input.GetKeyDown(KeyCode.Space))
+            //{
+            //    yield return null;
+            //}
 
             // Prepare for next sequence
             RestoreKeyUI();
