@@ -295,6 +295,9 @@ public class MapManager
 	public GameObject PlaceObjectAtCell(GameObject prefab, Vector3Int cellPos)
 	{
 		Vector3 worldPos = GetCellCenterWorld(cellPos);
+		
+		// Y값을 낮춰서 배치 (예: -2만큼 아래로)
+		worldPos.y -= 0.5f;
 	
 		GameObject instance = Managers.Resource.Instantiate(prefab.name, worldPos);
 		BaseObject baseObj = instance.GetComponent<BaseObject>();

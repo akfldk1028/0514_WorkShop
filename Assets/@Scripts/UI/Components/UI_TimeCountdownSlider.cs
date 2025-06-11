@@ -8,7 +8,7 @@ public class UI_TimeCountdownSlider : MonoBehaviour
     public Slider timeSlider;
     
     [Header("시간 설정")]
-    private float totalTime = 10f; // 총 시간 (초) - 기본 30초
+    private float totalTime = 30f; // 총 시간 (초) - 기본 30초
     [SerializeField] private float currentTime;
     [SerializeField] private bool isCountingDown = false;
     

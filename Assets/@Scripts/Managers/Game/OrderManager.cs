@@ -220,4 +220,25 @@ public class OrderManager
         
         return removedCount;
     }
+    
+    /// <summary>
+    /// 첫 번째 주문을 맨 뒤로 이동 (Tab키로 레시피 건너뛰기용)
+    /// </summary>
+    /// <returns>이동 성공 여부</returns>
+    public bool MoveFirstOrderToBack()
+    {
+        if (orderQueue.Count <= 1) 
+        {
+            Debug.Log($"<color=yellow>[OrderManager]</color> 주문이 {orderQueue.Count}개뿐이라 순서 변경 불가");
+            return false; // 주문이 1개 이하면 의미없음
+        }
+        
+        Order firstOrder = orderQueue.Dequeue();
+        orderQueue.Enqueue(firstOrder);
+        Debug.Log($"<color=cyan>[OrderManager]</color> 주문 순서 변경: {firstOrder.RecipeName}을 맨 뒤로 이동 (총 {orderQueue.Count}개 주문)");
+        
+        // UI 업데이트 액션 호출
+        Managers.PublishAction(ActionType.GameScene_UpdateOrderText);
+        return true;
+    }
 }

@@ -20,11 +20,55 @@ using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
+[Serializable]
+public class GameSaveData
+{
 
+	public int Gold = 0;
+
+}
 public class GameManager
 {
-    // private List<Item> _items = new List<Item>();
-    // public IReadOnlyList<Item> Items => _items;
+
+	GameSaveData _saveData = new GameSaveData();
+	public GameSaveData SaveData { get { return _saveData; } set { _saveData = value; } }
+	public int Gold
+	{
+		get { return _saveData.Gold; }
+		private set
+		{
+			_saveData.Gold = value;
+			(Managers.UI.SceneUI as UI_GameScene)?.RefreshGoldText();
+		}
+	}
+
+	// Gold 관련 메서드들
+	public void AddGold(int amount)
+	{
+		if (amount > 0)
+		{
+			Gold += amount;
+			Debug.Log($"[GameManager] Gold 증가: +{amount}, 현재 Gold: {Gold}");
+		}
+	}
+
+	public bool SubtractGold(int amount)
+	{
+		if (amount > 0 && Gold >= amount)
+		{
+			Gold -= amount;
+			Debug.Log($"[GameManager] Gold 감소: -{amount}, 현재 Gold: {Gold}");
+			return true;
+		}
+		Debug.Log($"[GameManager] Gold 부족: 필요 {amount}, 현재 {Gold}");
+		return false;
+	}
+
+	public void SetGold(int amount)
+	{
+		Gold = Mathf.Max(0, amount);
+		Debug.Log($"[GameManager] Gold 설정: {Gold}");
+	}
 
     #region Sub Systems
     private CustomerCreator _customerCreator = new CustomerCreator();
@@ -117,7 +161,34 @@ public class GameManager
 	#region Save & Load	
 	public string Path { get { return Application.persistentDataPath + "/SaveData.json"; } }
 
+	public void InitGame()
+	{
+		if (File.Exists(Path))
+			return;
 
+	}
+
+	public void SaveGame()
+	{
+		string jsonStr = JsonUtility.ToJson(Managers.Game.SaveData);
+		File.WriteAllText(Path, jsonStr);
+		Debug.Log($"Save Game Completed : {Path}");
+	}
+
+	public bool LoadGame()
+	{
+		if (File.Exists(Path) == false)
+			return false;
+
+		string fileStr = File.ReadAllText(Path);
+		GameSaveData data = JsonUtility.FromJson<GameSaveData>(fileStr);
+
+		if (data != null)
+			Managers.Game.SaveData = data;
+
+		Debug.Log($"Save Game Loaded : {Path}");
+		return true;
+	}
 	#endregion
 
 }

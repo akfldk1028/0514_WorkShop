@@ -13,7 +13,7 @@ public class TableManager
     public IReadOnlyList<Table> Tables => _tables;
 
     [Header("Interaction")]
-    public float interactionDistance = 3f;  // 인터랙션 가능 거리
+    public float interactionDistance = 5f;  // 인터랙션 가능 거리
 
     public string LastOrderSummary { get; private set; } // 주문 요약 저장용 프로퍼티
 

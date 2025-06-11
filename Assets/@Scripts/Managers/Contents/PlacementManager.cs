@@ -126,10 +126,8 @@ public class PlacementManager
             
             Debug.Log($"고스트 생성 성공: {_ghostInstance.name}");
             
-            // 위치 설정
-            Vector3Int cellPos = Managers.Map.World2Cell(hitPoint);
-            Vector3 cellCenter = Managers.Map.Cell2World(cellPos);
-            _ghostInstance.transform.position = new Vector3(cellCenter.x, 0.5f, cellCenter.z);
+            // 위치 설정 - 마우스 커서의 실제 위치 사용 (셀 중심점 대신)
+            _ghostInstance.transform.position = new Vector3(hitPoint.x, 0.5f, hitPoint.z);
             
             // 반투명 처리
             ApplyTransparency(_ghostInstance, 0.5f);
@@ -156,10 +154,9 @@ public class PlacementManager
             if (Mathf.Abs(hitPoint.x) <= 50 && Mathf.Abs(hitPoint.z) <= 50)
             {
                 Vector3Int cellPos = Managers.Map.World2Cell(hitPoint);
-                Vector3 cellCenter = Managers.Map.Cell2World(cellPos);
                 
-                // 고스트 위치 업데이트
-                _ghostInstance.transform.position = new Vector3(cellCenter.x, 0.5f, cellCenter.z);
+                // 고스트 위치 업데이트 - 마우스 커서의 실제 위치 사용
+                _ghostInstance.transform.position = new Vector3(hitPoint.x, 0.5f, hitPoint.z);
                 
                 // 하이라이트 업데이트
                 ClearHighlight();

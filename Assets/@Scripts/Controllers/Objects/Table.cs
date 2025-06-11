@@ -101,7 +101,7 @@ public class Table : Item
             // 타이머 슬라이더를 먼저 설정 (비활성화 상태에서)
             if (waitingForFoodSlider != null)
             {
-                waitingForFoodSlider.SetTotalTime(10f); // 음식 대기 시간 15초로 설정
+                waitingForFoodSlider.SetTotalTime(30f); // 음식 대기 시간 15초로 설정
                 waitingForFoodSlider.ResetTimer();
             }
             

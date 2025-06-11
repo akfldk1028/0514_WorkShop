@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using System; // IDisposable 사용을 위해 추가
+using UnityEngine.UI;
 
 public class UI_GameScene : UI_Scene
 {
@@ -27,17 +28,24 @@ public class UI_GameScene : UI_Scene
         // WoodCountText,
         // MineralCountText,
         OrderButtonText,
+        GoldCountText,
     }
 
     enum Sliders
     {
-        MeatSlider,
-        WoodSlider,
-        MineralSlider,
+        // MeatSlider,
+        // WoodSlider,
+        // MineralSlider,
+    }
+ 
+    enum GameObjects
+    {
+        ReadyToServeItem,
     }
 
     private IDisposable _orderTextSubscription;
     private string _lastOrderText = ""; // 마지막 주문 텍스트 캐시
+    private int completedRecipeCount = 0;
 
     public override bool Init()
     {
@@ -47,7 +55,7 @@ public class UI_GameScene : UI_Scene
         BindButtons(typeof(Buttons));
         BindTexts(typeof(Texts));
         BindSliders(typeof(Sliders));
-
+        BindObjects(typeof(GameObjects));
         // GetButton((int)Buttons.GoldPlusButton).gameObject.BindEvent(OnClickGoldPlusButton);
         // GetButton((int)Buttons.DiaPlusButton).gameObject.BindEvent(OnClickDiaPlusButton);
         // GetButton((int)Buttons.SettingButton).gameObject.BindEvent(OnClickSettingButton);
@@ -56,9 +64,12 @@ public class UI_GameScene : UI_Scene
         // GetButton((int)Buttons.ChallengeButton).gameObject.BindEvent(OnClickChallengeButton);
         // GetButton((int)Buttons.CheatButton).gameObject.BindEvent(OnClickCheatButton);
         GetButton((int)Buttons.shopButton).gameObject.BindEvent(OnClickShopButton);
-        
+        // GetText((int)Texts.GoldCountText).text = "0";
         // 주문 텍스트 업데이트 액션 구독
         _orderTextSubscription = Managers.Subscribe(ActionType.GameScene_UpdateOrderText, OnUpdateOrderText);
+        
+        // 완료된 레시피 아이콘 추가 액션 구독
+        Managers.Subscribe(ActionType.GameScene_AddCompletedRecipe, OnAddCompletedRecipe);
         
         // 카메라 뷰 전환 액션 구독
         Managers.Subscribe(ActionType.Camera_TopViewActivated, OnTopViewActivated);
@@ -105,7 +116,10 @@ public class UI_GameScene : UI_Scene
         popup.GetComponent<Canvas>().sortingOrder = 101;
         popup.SetInfo();
     }
-
+	public void RefreshGoldText()
+	{
+		GetText((int)Texts.GoldCountText).text = Managers.Game.Gold.ToString();
+	}
     void OnClickGoldPlusButton(PointerEventData evt)
     {
         Debug.Log("OnOnClickGoldPlusButton");
@@ -213,6 +227,50 @@ public class UI_GameScene : UI_Scene
                 Debug.LogWarning("[UI_GameScene] GameManager 또는 TableManager에 접근할 수 없습니다.");
             }
         }
+    }
+
+    private void OnAddCompletedRecipe()
+    {
+        var sprite = InGameManager.CompletedOrderData.LastCompletedSprite;
+        var recipeId = InGameManager.CompletedOrderData.LastCompletedRecipeId;
+        var prefabName = InGameManager.CompletedOrderData.LastCompletedPrefabName;
+        
+        if (sprite == null)
+        {
+            Debug.LogError("완료된 레시피 스프라이트가 null입니다.");
+            return;
+        }
+
+        CreateRecipeIcon(sprite, recipeId, prefabName);
+    }
+
+    private void CreateRecipeIcon(Sprite sprite, int recipeId, string prefabName)
+    {
+        var iconObj = new GameObject($"CompletedRecipe_{recipeId}");
+        var readyToServeParent = GetObject((int)GameObjects.ReadyToServeItem);
+        iconObj.transform.SetParent(readyToServeParent.transform, false);
+        
+        var image = iconObj.AddComponent<Image>();
+        image.sprite = sprite;
+        
+        SetupRectTransform(iconObj, completedRecipeCount);
+        completedRecipeCount++;
+        
+        // prefab 정보를 활용한 추가 처리 (필요시)
+        Debug.Log($"완료된 레시피: {recipeId}, Prefab: {prefabName}");
+    }
+
+    private void SetupRectTransform(GameObject iconObj, int index)
+    {
+        // Anchor와 Pivot 설정 (왼쪽 정렬)
+        RectTransform rectTransform = iconObj.GetComponent<RectTransform>();
+        rectTransform.anchorMin = new Vector2(0, 0.5f);
+        rectTransform.anchorMax = new Vector2(0, 0.5f);
+        rectTransform.pivot = new Vector2(0, 0.5f);
+        
+        // 크기 및 위치 설정
+        rectTransform.sizeDelta = new Vector2(100, 100);
+        rectTransform.anchoredPosition = new Vector2(index * 110, 0);
     }
 
 }

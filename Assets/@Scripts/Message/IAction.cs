@@ -18,6 +18,7 @@ public enum ActionType
     Customer_FinishedEating, // 손님이 식사를 마침
     Customer_Left,
     GameScene_UpdateOrderText,
+    GameScene_AddCompletedRecipe,  // 완료된 레시피 아이콘을 UI에 추가
     Chair_OccupiedChanged, // 의자 착석 상태 변경
     Chair_Changed,
     // 게임 상태 이벤트

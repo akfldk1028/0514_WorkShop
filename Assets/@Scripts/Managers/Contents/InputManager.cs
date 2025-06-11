@@ -169,10 +169,17 @@ public class InputManager
         {
             Managers.Ingame.rhythmGameManager?.ForceStopAndFail();
             Managers.Ingame.Resume();
+            UI_GameScene sceneUI = Managers.UI.ShowSceneUI<UI_GameScene>();
+            sceneUI.GetComponent<Canvas>().sortingOrder = 100;
+            sceneUI.SetInfo();
+
         }
 
-
-
+        // Tab키로 현재 레시피 건너뛰기 (리듬게임 진행 중일 때만)
+        if (Input.GetKeyDown(KeyCode.Tab) && Managers.Ingame.isInteracting && Managers.Ingame.isRhythmGameStarted)
+        {
+            Managers.Ingame.rhythmGameManager?.SkipCurrentRecipe();
+        }
     }
 
     private void HandleMouseInput()
