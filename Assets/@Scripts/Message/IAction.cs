@@ -45,6 +45,8 @@ public enum ActionType
     UI_UpdateRecipeText,   // 레시피 텍스트 업데이트
     UI_UpdateOrderText,    // 주문 텍스트 업데이트
     UI_UpdateGlassText,    // 유리잔 개수 텍스트 업데이트
+    UI_AnimateGoldIncrease, // 골드 증가 애니메이션
+
     
     MoveDirChanged,
     JoystickStateChanged,

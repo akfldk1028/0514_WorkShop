@@ -15,6 +15,8 @@ public class Table : Item
     // public GameObject orderButton;   // 기존 버튼, 필요하면 유지
 
     public Image readyToOrderImage; // 손님 꽉 찼을 때 (주문 가능) 이미지
+
+    public Canvas cacheCanvas; // 테이블 설정 버튼
     public UI_TimeCountdownSlider waitingForFoodSlider; // 주문 받고 음식 기다릴 때 타이머 슬라이더
 
     public enum ETableUIState 

@@ -201,7 +201,15 @@ public class GameManager
 	}
 
 	// 기존 호환성을 위한 래퍼 메서드들
-	public void AddGold(int amount) => AddResource(ResourceType.Gold, amount);
+	public void AddGold(int amount) 
+	{
+		int oldGold = Gold;
+		AddResource(ResourceType.Gold, amount);
+		
+		// 골드 추가 애니메이션을 위한 이벤트 발행
+		Managers.PublishAction(ActionType.UI_AnimateGoldIncrease);
+	}
+
 	public bool SubtractGold(int amount) => SubtractResource(ResourceType.Gold, amount);
 	public void SetGold(int amount) => SetResource(ResourceType.Gold, amount);
 	
@@ -409,5 +417,13 @@ public class GameManager
 		return true;
 	}
 	#endregion
+}
 
+// 골드 애니메이션 데이터 클래스
+[System.Serializable]
+public class GoldAnimationData
+{
+	public int oldAmount;
+	public int newAmount;
+	public int addedAmount;
 }

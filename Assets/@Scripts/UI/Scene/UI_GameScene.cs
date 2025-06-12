@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using System; // IDisposable 사용을 위해 추가
 using UnityEngine.UI;
+using DG.Tweening; // DoTween 사용을 위해 추가
 
 public class UI_GameScene : UI_Scene
 {
@@ -46,6 +47,7 @@ public class UI_GameScene : UI_Scene
     }
 
     private IDisposable _orderTextSubscription;
+    private IDisposable _goldAnimationSubscription; // 골드 애니메이션 구독 추가
     private string _lastOrderText = ""; // 마지막 주문 텍스트 캐시
     private int completedRecipeCount = 0;
 
@@ -64,6 +66,8 @@ public class UI_GameScene : UI_Scene
         GetText((int)Texts.BattlePowerText).text = $"{Managers.Game.Glass}개";
         // 주문 텍스트 업데이트 액션 구독
         _orderTextSubscription = Managers.Subscribe(ActionType.GameScene_UpdateOrderText, OnUpdateOrderText);
+        // 골드 애니메이션 이벤트 구독 추가
+        _goldAnimationSubscription = Managers.Subscribe(ActionType.UI_AnimateGoldIncrease, OnAnimateGoldIncrease);
         // 완료된 레시피 아이콘 추가 액션 구독
         Managers.Subscribe(ActionType.GameScene_AddCompletedRecipe, OnAddCompletedRecipe);
         // 완료된 레시피 아이콘 제거 액션 구독 추가
@@ -87,17 +91,17 @@ public class UI_GameScene : UI_Scene
 
     private void Update()
     {
-        _elapsedTime += Time.deltaTime;
+        // _elapsedTime += Time.deltaTime;
 
-        if (_elapsedTime >= _updateInterval)
-        {
-            float fps = 1.0f / Time.deltaTime;
-            float ms = Time.deltaTime * 1000.0f;
-            string text = string.Format("{0:N1} FPS ({1:N1}ms)", fps, ms);
-            // GetText((int)Texts.GoldCountText).text = text;
+        // if (_elapsedTime >= _updateInterval)
+        // {
+        //     float fps = 1.0f / Time.deltaTime;
+        //     float ms = Time.deltaTime * 1000.0f;
+        //     string text = string.Format("{0:N1} FPS ({1:N1}ms)", fps, ms);
+        //     // GetText((int)Texts.GoldCountText).text = text;
 
-            _elapsedTime = 0;
-        }
+        //     _elapsedTime = 0;
+        // }
     }
     
     public void SetInfo()
@@ -127,6 +131,7 @@ public class UI_GameScene : UI_Scene
 
     public void RefreshGoldText()
     {
+        // 애니메이션 없이 즉시 업데이트하는 경우에만 사용
         GetText((int)Texts.GoldCountText).text = Managers.Game.Gold.ToString();
     }
 
@@ -138,6 +143,24 @@ public class UI_GameScene : UI_Scene
     private void OnDestroy() // Scene이 파괴될 때 구독 해제
     {
         _orderTextSubscription?.Dispose(); // IDisposable을 사용하여 구독 해제
+        _goldAnimationSubscription?.Dispose(); // 골드 애니메이션 구독 해제 추가
+    }
+
+    /// <summary>
+    /// 골드 증가 애니메이션 처리 - 화끈한 버전! 🔥💰
+    /// </summary>
+    private void OnAnimateGoldIncrease()
+    {
+        int currentGold = Managers.Game.Gold;
+        TMPro.TMP_Text goldText = GetText((int)Texts.GoldCountText);
+        
+        // 이전 골드 값을 파싱 (실패하면 0으로 기본값)
+        int.TryParse(goldText.text.Replace(",", ""), out int oldGold);
+        
+        // UIAnimationController 사용으로 간단하게!
+        UIAnimationController.AnimateGoldIncrease(goldText, oldGold, currentGold);
+        
+        Debug.Log($"<color=gold>🔥💰 [UI_GameScene] 화끈한 골드 애니메이션 실행!</color> {oldGold:N0} → {currentGold:N0}");
     }
 
     private void OnTopViewActivated()
@@ -287,14 +310,22 @@ public class UI_GameScene : UI_Scene
     {
         // RhythmGameManager에서 현재 레시피 정보 가져와서 텍스트 업데이트
         var rhythmManager = Managers.Ingame.rhythmGameManager;
+        string recipeDisplayText = "";
+        
         if (rhythmManager != null && rhythmManager.CurrentRecipe != null)
         {
-            GetText((int)Texts.RecipeButtonText).text = $"🔥 제작 중: {rhythmManager.CurrentRecipe.RecipeName}";
+            recipeDisplayText = $"🔥 제작 중: {rhythmManager.CurrentRecipe.RecipeName}";
         }
         else
         {
-            GetText((int)Texts.RecipeButtonText).text = "🔥 제작 중: 없음";
+            recipeDisplayText = "🔥 제작 중: 없음";
         }
+        
+        TMPro.TMP_Text recipeText = GetText((int)Texts.RecipeButtonText);
+        
+        // 기존 방식도 유지 + 애니메이션 추가! 🔥👨‍🍳
+        recipeText.text = recipeDisplayText;  // 기존 방식
+        UIAnimationController.AnimateRecipeUpdate(recipeText, recipeDisplayText); // 애니메이션 추가
     }
 
     private void OnUpdateOrderTextFromRhythm()
@@ -315,12 +346,27 @@ public class UI_GameScene : UI_Scene
             orderDisplayText = "📋 대기 주문: 없음";
         }
         
-        GetText((int)Texts.OrderButtonText).text = orderDisplayText.TrimEnd('\n');
+        TMPro.TMP_Text orderText = GetText((int)Texts.OrderButtonText);
+        string finalText = orderDisplayText.TrimEnd('\n');
+        
+        // 기존 방식도 유지 + 애니메이션 추가! 📋⚡
+        orderText.text = finalText;  // 기존 방식
+        UIAnimationController.AnimateOrderUpdate(orderText, finalText); // 애니메이션 추가
     }
 
     private void OnUpdateGlassText()
     {
-        RefreshGlassText();
+        int currentGlass = Managers.Game.Glass;
+        TMPro.TMP_Text glassText = GetText((int)Texts.BattlePowerText);
+        
+        // 이전 유리잔 개수 파싱
+        string currentText = glassText.text.Replace("개", "");
+        int.TryParse(currentText, out int oldGlass);
+        
+        // 기존 방식도 유지 + 애니메이션 추가! 🥃✨
+        RefreshGlassText();  // 기존 방식
+        UIAnimationController.AnimateGlassUpdate(glassText, oldGlass, currentGlass); // 애니메이션 추가
+        
         Debug.Log($"<color=cyan>[UI_GameScene]</color> 유리잔 텍스트 업데이트: {Managers.Game.Glass}개");
     }
 
