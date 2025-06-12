@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using System; // IDisposable 사용을 위해 추가
 using UnityEngine.UI;
+using DG.Tweening; // DoTween 사용을 위해 추가
 
 public class UI_GameScene : UI_Scene
 {
@@ -27,7 +28,9 @@ public class UI_GameScene : UI_Scene
         // MeatCountText,
         // WoodCountText,
         // MineralCountText,
+        BattlePowerText,
         OrderButtonText,
+        RecipeButtonText,
         GoldCountText,
     }
 
@@ -44,6 +47,7 @@ public class UI_GameScene : UI_Scene
     }
 
     private IDisposable _orderTextSubscription;
+    private IDisposable _goldAnimationSubscription; // 골드 애니메이션 구독 추가
     private string _lastOrderText = ""; // 마지막 주문 텍스트 캐시
     private int completedRecipeCount = 0;
 
@@ -56,27 +60,26 @@ public class UI_GameScene : UI_Scene
         BindTexts(typeof(Texts));
         BindSliders(typeof(Sliders));
         BindObjects(typeof(GameObjects));
-        // GetButton((int)Buttons.GoldPlusButton).gameObject.BindEvent(OnClickGoldPlusButton);
-        // GetButton((int)Buttons.DiaPlusButton).gameObject.BindEvent(OnClickDiaPlusButton);
-        // GetButton((int)Buttons.SettingButton).gameObject.BindEvent(OnClickSettingButton);
-        // GetButton((int)Buttons.InventoryButton).gameObject.BindEvent(OnClickInventoryButton);
-        // GetButton((int)Buttons.QuestButton).gameObject.BindEvent(OnClickQuestButton);
-        // GetButton((int)Buttons.ChallengeButton).gameObject.BindEvent(OnClickChallengeButton);
-        // GetButton((int)Buttons.CheatButton).gameObject.BindEvent(OnClickCheatButton);
+
         GetButton((int)Buttons.shopButton).gameObject.BindEvent(OnClickShopButton);
-        // GetText((int)Texts.GoldCountText).text = "0";
+        GetText((int)Texts.GoldCountText).text = "0";
+        GetText((int)Texts.BattlePowerText).text = $"{Managers.Game.Glass}개";
         // 주문 텍스트 업데이트 액션 구독
         _orderTextSubscription = Managers.Subscribe(ActionType.GameScene_UpdateOrderText, OnUpdateOrderText);
-        
+        // 골드 애니메이션 이벤트 구독 추가
+        _goldAnimationSubscription = Managers.Subscribe(ActionType.UI_AnimateGoldIncrease, OnAnimateGoldIncrease);
         // 완료된 레시피 아이콘 추가 액션 구독
         Managers.Subscribe(ActionType.GameScene_AddCompletedRecipe, OnAddCompletedRecipe);
-        
         // 완료된 레시피 아이콘 제거 액션 구독 추가
         Managers.Subscribe(ActionType.GameScene_RemoveCompletedRecipe, OnRemoveCompletedRecipe);
-        
         // 카메라 뷰 전환 액션 구독
         Managers.Subscribe(ActionType.Camera_TopViewActivated, OnTopViewActivated);
         Managers.Subscribe(ActionType.Camera_BackViewActivated, OnBackViewActivated);
+        
+        // UI 업데이트 액션 구독
+        Managers.Subscribe(ActionType.UI_UpdateRecipeText, OnUpdateRecipeText);
+        Managers.Subscribe(ActionType.UI_UpdateOrderText, OnUpdateOrderTextFromRhythm);
+        Managers.Subscribe(ActionType.UI_UpdateGlassText, OnUpdateGlassText);
         
         Refresh();
         
@@ -88,17 +91,17 @@ public class UI_GameScene : UI_Scene
 
     private void Update()
     {
-        _elapsedTime += Time.deltaTime;
+        // _elapsedTime += Time.deltaTime;
 
-        if (_elapsedTime >= _updateInterval)
-        {
-            float fps = 1.0f / Time.deltaTime;
-            float ms = Time.deltaTime * 1000.0f;
-            string text = string.Format("{0:N1} FPS ({1:N1}ms)", fps, ms);
-            // GetText((int)Texts.GoldCountText).text = text;
+        // if (_elapsedTime >= _updateInterval)
+        // {
+        //     float fps = 1.0f / Time.deltaTime;
+        //     float ms = Time.deltaTime * 1000.0f;
+        //     string text = string.Format("{0:N1} FPS ({1:N1}ms)", fps, ms);
+        //     // GetText((int)Texts.GoldCountText).text = text;
 
-            _elapsedTime = 0;
-        }
+        //     _elapsedTime = 0;
+        // }
     }
     
     public void SetInfo()
@@ -110,6 +113,9 @@ public class UI_GameScene : UI_Scene
     {
         if (_init == false)
             return;
+            
+        RefreshGlassText();
+        RefreshGoldText();
     }
 
     void OnClickShopButton(PointerEventData evt)
@@ -119,121 +125,42 @@ public class UI_GameScene : UI_Scene
         
         Debug.Log("<color=magenta>[UI_GameScene]</color> OnClickShopButton");
         UI_TableSetting popup = Managers.UI.ShowPopupUI<UI_TableSetting>();
-        // 이거봐바 내가 uigamescene에서 ui talbe pop 을 show하는함수야
-        //  ㅇㅗ케이
-
-        // 그러니까 내기존 ui 에 니 리듬게임 popup 만 띄우는 형식으로해야  이게 빠다리? 무튼 긐게 안날거같건든
-        // 그럼 내가 key ui를 저런식으로 빼볼게 자신 있 지 는 않긴 한데 하겠습니다.....!
-        // 어키 그 리듬게임 ui만 따로빼서 prefab으로만 만들면 내가 거기 놓는식으로
-        // 지금 보면 진웅님이 보내주신 ui배치 봤어??아니 왜?
-        // 그거 보면 서빙할때랑 리듬게임 파트랑 유아이가 겹치는 부분이 있는데
-        //잠만 
         popup.GetComponent<Canvas>().sortingOrder = 101;
         popup.SetInfo();
     }
-	public void RefreshGoldText()
-	{
-		GetText((int)Texts.GoldCountText).text = Managers.Game.Gold.ToString();
-	}
-    void OnClickGoldPlusButton(PointerEventData evt)
+
+    public void RefreshGoldText()
     {
-        // blub 사운드 재생
-        Managers.Sound.Play(Define.ESound.Effect, "blub");
-        
-        Debug.Log("OnOnClickGoldPlusButton");
+        // 애니메이션 없이 즉시 업데이트하는 경우에만 사용
+        GetText((int)Texts.GoldCountText).text = Managers.Game.Gold.ToString();
     }
 
-    void OnClickDiaPlusButton(PointerEventData evt)
+    public void RefreshGlassText()
     {
-        // blub 사운드 재생
-        Managers.Sound.Play(Define.ESound.Effect, "blub");
-        
-        Debug.Log("OnClickDiaPlusButton");
+        GetText((int)Texts.BattlePowerText).text = $"{Managers.Game.Glass}개";
     }
-
-    void OnClickHeroesListButton(PointerEventData evt)
-    {
-        // blub 사운드 재생
-        Managers.Sound.Play(Define.ESound.Effect, "blub");
-        
-		Debug.Log("OnClickHeroesListButton");
-	}
-
-    void OnClickSetHeroesButton(PointerEventData evt)
-    {
-        // blub 사운드 재생
-        Managers.Sound.Play(Define.ESound.Effect, "blub");
-        
-		Debug.Log("OnClickSetHeroesButton");
-	}
-
-    void OnClickSettingButton(PointerEventData evt)
-    {
-        // blub 사운드 재생
-        Managers.Sound.Play(Define.ESound.Effect, "blub");
-        
-		Debug.Log("OnClickSettingButton");
-	}
-
-    void OnClickInventoryButton(PointerEventData evt)
-    {
-        // blub 사운드 재생
-        Managers.Sound.Play(Define.ESound.Effect, "blub");
-        
-        Debug.Log("OnClickInventoryButton");
-    }
-
-    void OnClickWorldMapButton(PointerEventData evt)
-    {
-        // blub 사운드 재생
-        Managers.Sound.Play(Define.ESound.Effect, "blub");
-        
-        Debug.Log("OnClickWorldMapButton");
-    }
-
-    void OnClickQuestButton(PointerEventData evt)
-    {
-        // blub 사운드 재생
-        Managers.Sound.Play(Define.ESound.Effect, "blub");
-        
-        Debug.Log("OnClickQuestButton");
-    }
-
-    void OnClickChallengeButton(PointerEventData evt)
-    {
-        // blub 사운드 재생
-        Managers.Sound.Play(Define.ESound.Effect, "blub");
-        
-        Debug.Log("OnOnClickChallengeButton");
-    }
-
-    void OnClickCampButton(PointerEventData evt)
-    {
-        // blub 사운드 재생
-        Managers.Sound.Play(Define.ESound.Effect, "blub");
-        
-        Debug.Log("OnClickCampButton");
-    }
-
-    void OnClickPortalButton(PointerEventData evt)
-    {
-        // blub 사운드 재생
-        Managers.Sound.Play(Define.ESound.Effect, "blub");
-        
-        Debug.Log("OnClickPortalButton");
-	}
-
-    void OnClickCheatButton(PointerEventData evt)
-    {
-        // blub 사운드 재생
-        Managers.Sound.Play(Define.ESound.Effect, "blub");
-        
-		Debug.Log("OnClickCheatButton");
-	}
 
     private void OnDestroy() // Scene이 파괴될 때 구독 해제
     {
         _orderTextSubscription?.Dispose(); // IDisposable을 사용하여 구독 해제
+        _goldAnimationSubscription?.Dispose(); // 골드 애니메이션 구독 해제 추가
+    }
+
+    /// <summary>
+    /// 골드 증가 애니메이션 처리 - 화끈한 버전! 🔥💰
+    /// </summary>
+    private void OnAnimateGoldIncrease()
+    {
+        int currentGold = Managers.Game.Gold;
+        TMPro.TMP_Text goldText = GetText((int)Texts.GoldCountText);
+        
+        // 이전 골드 값을 파싱 (실패하면 0으로 기본값)
+        int.TryParse(goldText.text.Replace(",", ""), out int oldGold);
+        
+        // UIAnimationController 사용으로 간단하게!
+        UIAnimationController.AnimateGoldIncrease(goldText, oldGold, currentGold);
+        
+        Debug.Log($"<color=gold>🔥💰 [UI_GameScene] 화끈한 골드 애니메이션 실행!</color> {oldGold:N0} → {currentGold:N0}");
     }
 
     private void OnTopViewActivated()
@@ -377,6 +304,70 @@ public class UI_GameScene : UI_Scene
                 rectTransform.anchoredPosition = new Vector2(i * 110, 0);
             }
         }
+    }
+
+    private void OnUpdateRecipeText()
+    {
+        // RhythmGameManager에서 현재 레시피 정보 가져와서 텍스트 업데이트
+        var rhythmManager = Managers.Ingame.rhythmGameManager;
+        string recipeDisplayText = "";
+        
+        if (rhythmManager != null && rhythmManager.CurrentRecipe != null)
+        {
+            recipeDisplayText = $"🔥 제작 중: {rhythmManager.CurrentRecipe.RecipeName}";
+        }
+        else
+        {
+            recipeDisplayText = "🔥 제작 중: 없음";
+        }
+        
+        TMPro.TMP_Text recipeText = GetText((int)Texts.RecipeButtonText);
+        
+        // 기존 방식도 유지 + 애니메이션 추가! 🔥👨‍🍳
+        recipeText.text = recipeDisplayText;  // 기존 방식
+        UIAnimationController.AnimateRecipeUpdate(recipeText, recipeDisplayText); // 애니메이션 추가
+    }
+
+    private void OnUpdateOrderTextFromRhythm()
+    {
+        // OrderManager에서 주문 정보 가져와서 텍스트 업데이트
+        var allOrders = Managers.Game.CustomerCreator.OrderManager.GetAllOrders();
+        string orderDisplayText = "";
+        if (allOrders.Count > 0)
+        {
+            orderDisplayText = $"📋 대기 주문 ({allOrders.Count}개):\n";
+            for (int i = 0; i < allOrders.Count; i++)
+            {
+                orderDisplayText += $"{i + 1}. {allOrders[i].RecipeName} x{allOrders[i].Quantity}\n";
+            }
+        }
+        else
+        {
+            orderDisplayText = "📋 대기 주문: 없음";
+        }
+        
+        TMPro.TMP_Text orderText = GetText((int)Texts.OrderButtonText);
+        string finalText = orderDisplayText.TrimEnd('\n');
+        
+        // 기존 방식도 유지 + 애니메이션 추가! 📋⚡
+        orderText.text = finalText;  // 기존 방식
+        UIAnimationController.AnimateOrderUpdate(orderText, finalText); // 애니메이션 추가
+    }
+
+    private void OnUpdateGlassText()
+    {
+        int currentGlass = Managers.Game.Glass;
+        TMPro.TMP_Text glassText = GetText((int)Texts.BattlePowerText);
+        
+        // 이전 유리잔 개수 파싱
+        string currentText = glassText.text.Replace("개", "");
+        int.TryParse(currentText, out int oldGlass);
+        
+        // 기존 방식도 유지 + 애니메이션 추가! 🥃✨
+        RefreshGlassText();  // 기존 방식
+        UIAnimationController.AnimateGlassUpdate(glassText, oldGlass, currentGlass); // 애니메이션 추가
+        
+        Debug.Log($"<color=cyan>[UI_GameScene]</color> 유리잔 텍스트 업데이트: {Managers.Game.Glass}개");
     }
 
 }

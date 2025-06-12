@@ -199,7 +199,8 @@ public class PlacementManager
                 {
                     GameObject placedObj = Managers.Map.PlaceObjectAtCell(_placeablePrefab, cellPos);
                     Debug.Log($"배치된 오브젝트: {placedObj}");
-                    // Chair 오브젝트면 Chair_Changed 이벤트 발행
+                    Managers.Sound.Play(Define.ESound.Effect, "microwave");
+                    Managers.Game.SubtractGold(1000);
                     if (placedObj != null && placedObj.GetComponent<Chair>() != null)
                     {
                         Managers.PublishAction(ActionType.Chair_Changed);

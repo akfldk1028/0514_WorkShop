@@ -41,6 +41,12 @@ public enum ActionType
     // UI 이벤트
     UIOpen,
     UIClose,
+    UI_StartRhythmGame,    // 리듬게임 시작 버튼 클릭
+    UI_UpdateRecipeText,   // 레시피 텍스트 업데이트
+    UI_UpdateOrderText,    // 주문 텍스트 업데이트
+    UI_UpdateGlassText,    // 유리잔 개수 텍스트 업데이트
+    UI_AnimateGoldIncrease, // 골드 증가 애니메이션
+
     
     MoveDirChanged,
     JoystickStateChanged,
