@@ -220,4 +220,47 @@ public class OrderManager
         
         return removedCount;
     }
+    
+    /// <summary>
+    /// 첫 번째 주문을 맨 뒤로 이동 (Tab키로 레시피 건너뛰기용)
+    /// </summary>
+    /// <returns>이동 성공 여부</returns>
+    public bool MoveFirstOrderToBack()
+    {
+        if (orderQueue.Count <= 1) return false;
+        
+        var firstOrder = orderQueue.Dequeue();
+        orderQueue.Enqueue(firstOrder);
+        
+        Debug.Log($"<color=cyan>[OrderManager]</color> 첫 번째 주문을 맨 뒤로 이동: {firstOrder.RecipeName}");
+        return true;
+    }
+    
+    /// <summary>
+    /// 서빙된 주문을 처리합니다. (TableManager에서 호출)
+    /// </summary>
+    /// <param name="recipe">서빙할 레시피</param>
+    /// <param name="order">처리할 주문</param>
+    /// <returns>처리 성공 여부</returns>
+    public bool ProcessServedOrder(GameManager.PlayerRecipe recipe, Order order)
+    {
+        Debug.Log($"<color=green>[OrderManager] 주문 처리: {recipe.recipeName} x{order.Quantity}</color>");
+        
+        // 1. 플레이어 인벤토리에서 제거
+        Managers.Game.RemoveRecipeFromInventory(recipe.recipeId);
+        
+        // 2. UI에서 아이콘 제거
+        RemoveRecipeFromUI(recipe.recipeId);
+        
+        return true;
+    }
+    
+    /// <summary>
+    /// UI에서 레시피 아이콘을 제거합니다.
+    /// </summary>
+    private void RemoveRecipeFromUI(int recipeId)
+    {
+        InGameManager.CompletedOrderData.LastCompletedRecipeId = recipeId;
+        Managers.PublishAction(ActionType.GameScene_RemoveCompletedRecipe);
+    }
 }

@@ -101,7 +101,7 @@ public class Table : Item
             // 타이머 슬라이더를 먼저 설정 (비활성화 상태에서)
             if (waitingForFoodSlider != null)
             {
-                waitingForFoodSlider.SetTotalTime(10f); // 음식 대기 시간 15초로 설정
+                waitingForFoodSlider.SetTotalTime(60f); // 음식 대기 시간 15초로 설정
                 waitingForFoodSlider.ResetTimer();
             }
             
@@ -164,7 +164,7 @@ public class Table : Item
     }
     
     /// <summary>
-    /// 음식이 서빙되었을 때 타이머를 중지하는 메서드
+    /// 음식이 서빙되었을 때 타이머를 중지하고 UI를 숨기는 메서드
     /// </summary>
     public void OnFoodServed()
     {
@@ -174,8 +174,9 @@ public class Table : Item
             Debug.Log($"<color=green>[Table {tableId}] 음식이 서빙되어 타이머를 중지했습니다.</color>");
         }
         
-        // 음식 서빙 후 상태 변경 (필요시)
-        // HideOrderUI(); // 또는 다른 상태로 변경
+        // 🆕 음식 서빙 후 UI 숨기기
+        HideOrderUI();
+        Debug.Log($"<color=green>[Table {tableId}] 음식 서빙 완료 - UI 숨김 처리</color>");
     }
 
     public void HideOrderUI() // 기존 HideOrderUI에서 변경

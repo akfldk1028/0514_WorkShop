@@ -24,7 +24,8 @@ namespace Data
 		public List<string> RequiredIngredientsVisual;
 		public string CompletedVisualResourceID;
 		public string OpenOption;
-
+		public string IconImage;
+		public string Prefab;
 	}
 
 	[Serializable]

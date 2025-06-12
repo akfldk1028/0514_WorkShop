@@ -36,7 +36,7 @@ public class InteractableObject : MonoBehaviour
             ShowText();
             if (Input.GetKeyDown(KeyCode.F))
             {
-                Managers.UI.CloseSceneUI();
+                Managers.UI.HideSceneUI();
                 interacted = true;
                 Interact();
             }

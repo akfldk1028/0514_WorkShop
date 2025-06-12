@@ -32,11 +32,11 @@ public class Customer : Unit
     public Transform door;
     
     [Header("Settings")]
-    public float eatingTime = 10f;
+    public float eatingTime = 4f; // 기본값 (실제로는 3~5초 랜덤으로 설정됨)
     public AudioClip gainGoldClip;
     
     [Header("Look At Settings")]
-    [SerializeField] private float lookAtSpeed = 2f; // 회전 속도
+    [SerializeField] private float lookAtSpeed = 4f; // 회전 속도
     [SerializeField] private float lookAtPlayerDuration = 2f; // 플레이어를 바라보는 시간
     
     private GameObject modelInstance;
@@ -305,16 +305,26 @@ private void OnDestroy()
 
             case ECustomerState.Eating:
                 action.CustomerEat();
+                
+                // 음식 먹는 시간을 3~5초 사이의 랜덤 값으로 설정
+                eatingTime = Random.Range(3f, 5f);
+                Debug.Log($"<color=green>[Customer {this.name}] 식사 시작 - 예상 식사 시간: {eatingTime:F1}초</color>");
+                
                 Managers.PublishAction(ActionType.Customer_StartedEating);
                 break;
 
             case ECustomerState.StandingUp:
                 Debug.Log($"<color=yellow>[Customer {this.name}] StandingUp 상태 진입 - 일어나는 애니메이션 시작</color>");
                 action.CustomerStandIdle();
+                
+                // 💰 돈 지불 로직 추가
+                PayForMeal();
+                
                 _chair?.VacateSeat();
                 Managers.PublishAction(ActionType.Customer_FinishedEating);
-                CustomerState = ECustomerState.LeavingRestaurant;
-                Debug.Log($"<color=green>[Customer {this.name}] StandingUp 완료 - LeavingRestaurant로 전환</color>");
+                
+                // 바로 떠나지 않고 잠시 대기
+                Debug.Log($"<color=green>[Customer {this.name}] StandingUp 완료 - 잠시 후 떠날 예정</color>");
                 break;
 
             case ECustomerState.LeavingRestaurant:
@@ -444,6 +454,15 @@ private void OnDestroy()
                 if (_stateTimer >= eatingTime)
                 {
                     CustomerState = ECustomerState.StandingUp;
+                }
+                break;
+                
+            case ECustomerState.StandingUp:
+                // 1.5초 후에 레스토랑을 떠남
+                if (_stateTimer >= 1.5f)
+                {
+                    CustomerState = ECustomerState.LeavingRestaurant;
+                    Debug.Log($"<color=cyan>[Customer {this.name}] StandingUp 완료 - 이제 레스토랑을 떠납니다</color>");
                 }
                 break;
 
@@ -614,10 +633,13 @@ private void OnDestroy()
         transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
         modelInstance = Instantiate(clientCustomer.ModelPrefab, transform.position, Quaternion.identity);
         modelInstance.transform.SetParent(transform);
+        
         // Relay 스크립트 추가 및 연결
-         // Relay 스크립트 추가 및 연결
         var relay = modelInstance.AddComponent<AnimationEventRelay>();
         relay.customer = this;
+
+        // 🆕 CharacterAction 컴포넌트 추가 (애니메이션 이벤트 처리용)
+        var characterAction = modelInstance.AddComponent<CharacterAction>();
 
         modelAnimator = modelInstance.GetComponent<Animator>();
         if (modelAnimator == null)
@@ -628,17 +650,18 @@ private void OnDestroy()
             modelAnimator.runtimeAnimatorController = clientCustomer.AnimatorController;
         }
 
+        // CharacterAction에 애니메이터 설정
+        if (characterAction != null && modelAnimator != null)
+        {
+            characterAction.SetAnimator(modelAnimator);
+            Debug.Log($"<color=green>[Customer {this.name}] CharacterAction 컴포넌트 추가 및 애니메이터 설정 완료</color>");
+        }
+
         if (action != null)
         {
             action.SetAnimator(modelAnimator);
             if (modelAnimator == null)
                 Debug.LogError("SetAnimator에 null 전달됨!");
-        }
-
-    
-        if (action != null)
-        {
-            action.SetAnimator(modelAnimator);
         }
     }
 
@@ -746,6 +769,75 @@ private void OnDestroy()
     /// 할당된 대기 위치
     /// </summary>
     public Vector3 AssignedWaitingPosition => _assignedWaitingPosition;
+
+    /// <summary>
+    /// 식사 후 돈 지불 처리
+    /// </summary>
+    private void PayForMeal()
+    {
+        if (_chair?.table == null)
+        {
+            Debug.LogWarning($"<color=yellow>[Customer {this.name}] 테이블 정보가 없어 돈 지불을 건너뜁니다.</color>");
+            return;
+        }
+
+        Table currentTable = _chair.table;
+        
+        // 이 고객이 주문한 음식들의 총 가격 계산
+        int totalPayment = 0;
+        int itemCount = 0;
+        
+        if (orderedFoods.ContainsKey(currentTable))
+        {
+            foreach (var food in orderedFoods[currentTable])
+            {
+                // RecipeData에서 가격 정보 가져오기
+                if (Managers.Data?.RecipeDic?.ContainsKey(food.NO) == true)
+                {
+                    var recipeData = Managers.Data.RecipeDic[food.NO];
+                    int itemPrice = recipeData.BasePrice * food.Quantity;
+                    totalPayment += itemPrice;
+                    itemCount += food.Quantity;
+                    
+                    Debug.Log($"<color=cyan>[Customer {this.name}] {food.RecipeName} x{food.Quantity} = {itemPrice}골드</color>");
+                }
+                else
+                {
+                    // 기본 가격 적용 (레시피 데이터가 없는 경우)
+                    int defaultPrice = 1000 * food.Quantity;
+                    totalPayment += defaultPrice;
+                    itemCount += food.Quantity;
+                    
+                    Debug.Log($"<color=yellow>[Customer {this.name}] {food.RecipeName} x{food.Quantity} = {defaultPrice}골드 (기본가격)</color>");
+                }
+            }
+        }
+        
+        // 최소 지불 금액 보장 (주문 정보가 없어도 기본 금액 지불)
+        if (totalPayment <= 0)
+        {
+            totalPayment = 2000; // 기본 지불 금액
+            Debug.Log($"<color=yellow>[Customer {this.name}] 주문 정보가 없어 기본 금액 {totalPayment}골드 지불</color>");
+        }
+        
+        Managers.Game.AddGold(totalPayment);
+        Managers.Sound.Play(Define.ESound.Effect, "cash");
+        
+        // 추가 사운드 재생 (기존 gainGoldClip이 있다면)
+        if (gainGoldClip != null)
+        {
+            Managers.Sound.Play(Define.ESound.Effect, gainGoldClip);
+        }
+        
+        Debug.Log($"<color=green>💰 [Customer {this.name}] 식사 완료! {totalPayment}골드 지불 (총 {itemCount}개 아이템)</color>");
+        Debug.Log($"<color=green>💰 현재 총 골드: {Managers.Game.Gold}골드</color>");
+        
+        // 주문 데이터 정리
+        if (orderedFoods.ContainsKey(currentTable))
+        {
+            orderedFoods.Remove(currentTable);
+        }
+    }
 
 }
 

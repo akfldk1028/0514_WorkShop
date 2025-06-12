@@ -106,12 +106,15 @@ public class InGameManager
         {
             case RhythmResult.Fail:
                 Debug.Log("리듬게임 결과: 실패");
+                ShowCompletedRecipeIcon();
                 break;
             case RhythmResult.Good:
                 Debug.Log("리듬게임 결과: 굿");
+                ShowCompletedRecipeIcon();
                 break;
             case RhythmResult.Perfect:
                 Debug.Log("리듬게임 결과: 퍼펙트");
+                ShowCompletedRecipeIcon();
                 break;
         }
 
@@ -120,5 +123,36 @@ public class InGameManager
         // 기타 후처리 로직 추가 가능
     }
 
+    private void ShowCompletedRecipeIcon()
+    {
+        if (rhythmGameManager?.CurrentRecipe == null) return;
+
+        var recipe = rhythmGameManager.CurrentRecipe;
+        var iconSprite = Managers.Resource.Load<Sprite>(recipe.IconImage);
+        
+        if (iconSprite == null)
+        {
+            Debug.LogError($"<color=red>[InGameManager]</color> 스프라이트 로드 실패: {recipe.IconImage}");
+            return;
+        }
+
+        // 완료된 주문 데이터 설정 및 액션 발행
+        CompletedOrderData.LastCompletedSprite = iconSprite;
+        CompletedOrderData.LastCompletedRecipeId = recipe.NO;
+        CompletedOrderData.LastCompletedPrefabName = recipe.Prefab;
+        
+        // GameManager 인벤토리에도 추가
+        Managers.Game.AddRecipeToInventory(recipe.NO, recipe.RecipeName, recipe.Prefab);
+        
+        Managers.PublishAction(ActionType.GameScene_AddCompletedRecipe);
+    }
+
+    // 완료된 주문 데이터를 전달하기 위한 정적 클래스
+    public static class CompletedOrderData
+    {
+        public static Sprite LastCompletedSprite;
+        public static int LastCompletedRecipeId;
+        public static string LastCompletedPrefabName;
+    }
 }
 

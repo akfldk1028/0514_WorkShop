@@ -7,6 +7,7 @@ public class SoundManager
 	private AudioSource[] _audioSources = new AudioSource[(int)Define.ESound.Max];
 	private Dictionary<string, AudioClip> _audioClips = new Dictionary<string, AudioClip>();
 	private GameObject _soundRoot = null;
+	private string _currentBgmName = null; // 현재 재생 중인 BGM 이름
 
 	public void Init()
 	{
@@ -52,6 +53,13 @@ public class SoundManager
 
 		if (type == Define.ESound.Bgm)
 		{
+			// 같은 BGM이 이미 재생 중이면 계속 재생
+			if (_currentBgmName == key && audioSource.isPlaying)
+			{
+				Debug.Log($"<color=cyan>[SoundManager]</color> BGM '{key}'가 이미 재생 중입니다. 계속 재생합니다.");
+				return;
+			}
+
 			LoadAudioClip(key, (audioClip) =>
 			{
 				if (audioSource.isPlaying)
@@ -59,6 +67,8 @@ public class SoundManager
 
 				audioSource.clip = audioClip;
 				audioSource.Play();
+				_currentBgmName = key; // 현재 BGM 이름 저장
+				Debug.Log($"<color=green>[SoundManager]</color> BGM 재생 시작: {key}");
 			});
 		}
 		else
@@ -77,11 +87,20 @@ public class SoundManager
 
 		if (type == Define.ESound.Bgm)
 		{
+			// 같은 BGM이 이미 재생 중이면 계속 재생
+			if (_currentBgmName == audioClip.name && audioSource.isPlaying && audioSource.clip == audioClip)
+			{
+				Debug.Log($"<color=cyan>[SoundManager]</color> BGM '{audioClip.name}'가 이미 재생 중입니다. 계속 재생합니다.");
+				return;
+			}
+
 			if (audioSource.isPlaying)
 				audioSource.Stop();
 
 			audioSource.clip = audioClip;
 			audioSource.Play();
+			_currentBgmName = audioClip.name; // 현재 BGM 이름 저장
+			Debug.Log($"<color=green>[SoundManager]</color> BGM 재생 시작: {audioClip.name}");
 		}
 		else
 		{
@@ -94,6 +113,11 @@ public class SoundManager
 	{
 		AudioSource audioSource = _audioSources[(int)type];
 		audioSource.Stop();
+		
+		if (type == Define.ESound.Bgm)
+		{
+			_currentBgmName = null; // BGM 정지 시 현재 BGM 이름 초기화
+		}
 	}
 
 	private void LoadAudioClip(string key, Action<AudioClip> callback)

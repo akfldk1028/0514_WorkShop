@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using System; // IDisposable 사용을 위해 추가
+using UnityEngine.UI;
 
 public class UI_GameScene : UI_Scene
 {
@@ -27,17 +28,24 @@ public class UI_GameScene : UI_Scene
         // WoodCountText,
         // MineralCountText,
         OrderButtonText,
+        GoldCountText,
     }
 
     enum Sliders
     {
-        MeatSlider,
-        WoodSlider,
-        MineralSlider,
+        // MeatSlider,
+        // WoodSlider,
+        // MineralSlider,
+    }
+ 
+    enum GameObjects
+    {
+        ReadyToServeItem,
     }
 
     private IDisposable _orderTextSubscription;
     private string _lastOrderText = ""; // 마지막 주문 텍스트 캐시
+    private int completedRecipeCount = 0;
 
     public override bool Init()
     {
@@ -47,7 +55,7 @@ public class UI_GameScene : UI_Scene
         BindButtons(typeof(Buttons));
         BindTexts(typeof(Texts));
         BindSliders(typeof(Sliders));
-
+        BindObjects(typeof(GameObjects));
         // GetButton((int)Buttons.GoldPlusButton).gameObject.BindEvent(OnClickGoldPlusButton);
         // GetButton((int)Buttons.DiaPlusButton).gameObject.BindEvent(OnClickDiaPlusButton);
         // GetButton((int)Buttons.SettingButton).gameObject.BindEvent(OnClickSettingButton);
@@ -56,9 +64,15 @@ public class UI_GameScene : UI_Scene
         // GetButton((int)Buttons.ChallengeButton).gameObject.BindEvent(OnClickChallengeButton);
         // GetButton((int)Buttons.CheatButton).gameObject.BindEvent(OnClickCheatButton);
         GetButton((int)Buttons.shopButton).gameObject.BindEvent(OnClickShopButton);
-        
+        // GetText((int)Texts.GoldCountText).text = "0";
         // 주문 텍스트 업데이트 액션 구독
         _orderTextSubscription = Managers.Subscribe(ActionType.GameScene_UpdateOrderText, OnUpdateOrderText);
+        
+        // 완료된 레시피 아이콘 추가 액션 구독
+        Managers.Subscribe(ActionType.GameScene_AddCompletedRecipe, OnAddCompletedRecipe);
+        
+        // 완료된 레시피 아이콘 제거 액션 구독 추가
+        Managers.Subscribe(ActionType.GameScene_RemoveCompletedRecipe, OnRemoveCompletedRecipe);
         
         // 카메라 뷰 전환 액션 구독
         Managers.Subscribe(ActionType.Camera_TopViewActivated, OnTopViewActivated);
@@ -100,69 +114,111 @@ public class UI_GameScene : UI_Scene
 
     void OnClickShopButton(PointerEventData evt)
     {
+        // blub 사운드 재생
+        Managers.Sound.Play(Define.ESound.Effect, "blub");
+        
         Debug.Log("<color=magenta>[UI_GameScene]</color> OnClickShopButton");
         UI_TableSetting popup = Managers.UI.ShowPopupUI<UI_TableSetting>();
         popup.GetComponent<Canvas>().sortingOrder = 101;
         popup.SetInfo();
     }
-
+	public void RefreshGoldText()
+	{
+		GetText((int)Texts.GoldCountText).text = Managers.Game.Gold.ToString();
+	}
     void OnClickGoldPlusButton(PointerEventData evt)
     {
+        // blub 사운드 재생
+        Managers.Sound.Play(Define.ESound.Effect, "blub");
+        
         Debug.Log("OnOnClickGoldPlusButton");
     }
 
     void OnClickDiaPlusButton(PointerEventData evt)
     {
+        // blub 사운드 재생
+        Managers.Sound.Play(Define.ESound.Effect, "blub");
+        
         Debug.Log("OnClickDiaPlusButton");
     }
 
     void OnClickHeroesListButton(PointerEventData evt)
     {
+        // blub 사운드 재생
+        Managers.Sound.Play(Define.ESound.Effect, "blub");
+        
 		Debug.Log("OnClickHeroesListButton");
 	}
 
     void OnClickSetHeroesButton(PointerEventData evt)
     {
+        // blub 사운드 재생
+        Managers.Sound.Play(Define.ESound.Effect, "blub");
+        
 		Debug.Log("OnClickSetHeroesButton");
 	}
 
     void OnClickSettingButton(PointerEventData evt)
     {
+        // blub 사운드 재생
+        Managers.Sound.Play(Define.ESound.Effect, "blub");
+        
 		Debug.Log("OnClickSettingButton");
 	}
 
     void OnClickInventoryButton(PointerEventData evt)
     {
+        // blub 사운드 재생
+        Managers.Sound.Play(Define.ESound.Effect, "blub");
+        
         Debug.Log("OnClickInventoryButton");
     }
 
     void OnClickWorldMapButton(PointerEventData evt)
     {
+        // blub 사운드 재생
+        Managers.Sound.Play(Define.ESound.Effect, "blub");
+        
         Debug.Log("OnClickWorldMapButton");
     }
 
     void OnClickQuestButton(PointerEventData evt)
     {
+        // blub 사운드 재생
+        Managers.Sound.Play(Define.ESound.Effect, "blub");
+        
         Debug.Log("OnClickQuestButton");
     }
 
     void OnClickChallengeButton(PointerEventData evt)
     {
+        // blub 사운드 재생
+        Managers.Sound.Play(Define.ESound.Effect, "blub");
+        
         Debug.Log("OnOnClickChallengeButton");
     }
 
     void OnClickCampButton(PointerEventData evt)
     {
+        // blub 사운드 재생
+        Managers.Sound.Play(Define.ESound.Effect, "blub");
+        
         Debug.Log("OnClickCampButton");
     }
 
     void OnClickPortalButton(PointerEventData evt)
     {
+        // blub 사운드 재생
+        Managers.Sound.Play(Define.ESound.Effect, "blub");
+        
         Debug.Log("OnClickPortalButton");
 	}
 
     void OnClickCheatButton(PointerEventData evt)
     {
+        // blub 사운드 재생
+        Managers.Sound.Play(Define.ESound.Effect, "blub");
+        
 		Debug.Log("OnClickCheatButton");
 	}
 
@@ -211,6 +267,105 @@ public class UI_GameScene : UI_Scene
                 _lastOrderText = "주문 정보 없음";
                 GetText((int)Texts.OrderButtonText).text = _lastOrderText;
                 Debug.LogWarning("[UI_GameScene] GameManager 또는 TableManager에 접근할 수 없습니다.");
+            }
+        }
+    }
+
+    private void OnAddCompletedRecipe()
+    {
+        var sprite = InGameManager.CompletedOrderData.LastCompletedSprite;
+        var recipeId = InGameManager.CompletedOrderData.LastCompletedRecipeId;
+        var prefabName = InGameManager.CompletedOrderData.LastCompletedPrefabName;
+        
+        if (sprite == null)
+        {
+            Debug.LogError("완료된 레시피 스프라이트가 null입니다.");
+            return;
+        }
+
+        CreateRecipeIcon(sprite, recipeId, prefabName);
+    }
+
+    private void CreateRecipeIcon(Sprite sprite, int recipeId, string prefabName)
+    {
+        var iconObj = new GameObject($"CompletedRecipe_{recipeId}");
+        var readyToServeParent = GetObject((int)GameObjects.ReadyToServeItem);
+        iconObj.transform.SetParent(readyToServeParent.transform, false);
+        
+        var image = iconObj.AddComponent<Image>();
+        image.sprite = sprite;
+        
+        SetupRectTransform(iconObj, completedRecipeCount);
+        completedRecipeCount++;
+        
+        // prefab 정보를 활용한 추가 처리 (필요시)
+        Debug.Log($"완료된 레시피: {recipeId}, Prefab: {prefabName}");
+    }
+
+    private void SetupRectTransform(GameObject iconObj, int index)
+    {
+        // Anchor와 Pivot 설정 (왼쪽 정렬)
+        RectTransform rectTransform = iconObj.GetComponent<RectTransform>();
+        rectTransform.anchorMin = new Vector2(0, 0.5f);
+        rectTransform.anchorMax = new Vector2(0, 0.5f);
+        rectTransform.pivot = new Vector2(0, 0.5f);
+        
+        // 크기 및 위치 설정
+        rectTransform.sizeDelta = new Vector2(100, 100);
+        rectTransform.anchoredPosition = new Vector2(index * 110, 0);
+    }
+
+    private void OnRemoveCompletedRecipe()
+    {
+        // CompletedOrderData에서 제거할 레시피 ID 가져오기
+        int recipeIdToRemove = InGameManager.CompletedOrderData.LastCompletedRecipeId;
+        
+        var readyToServeParent = GetObject((int)GameObjects.ReadyToServeItem);
+        if (readyToServeParent == null)
+        {
+            Debug.LogError("[UI_GameScene] ReadyToServeItem을 찾을 수 없습니다!");
+            return;
+        }
+        
+        // 해당 레시피 ID의 아이콘 찾아서 제거
+        Transform targetIcon = null;
+        for (int i = 0; i < readyToServeParent.transform.childCount; i++)
+        {
+            var child = readyToServeParent.transform.GetChild(i);
+            if (child.name == $"CompletedRecipe_{recipeIdToRemove}")
+            {
+                targetIcon = child;
+                break;
+            }
+        }
+        
+        if (targetIcon != null)
+        {
+            // 아이콘 제거
+            Destroy(targetIcon.gameObject);
+            completedRecipeCount--;
+            
+            // 남은 아이콘들의 위치 재정렬
+            ReorganizeIcons(readyToServeParent);
+            
+            Debug.Log($"<color=orange>[UI_GameScene]</color> 레시피 아이콘 제거됨: {recipeIdToRemove}");
+        }
+        else
+        {
+            Debug.LogWarning($"[UI_GameScene] 제거할 레시피 아이콘을 찾을 수 없습니다: {recipeIdToRemove}");
+        }
+    }
+    
+    private void ReorganizeIcons(GameObject parent)
+    {
+        // 남은 아이콘들을 왼쪽부터 다시 정렬
+        for (int i = 0; i < parent.transform.childCount; i++)
+        {
+            var child = parent.transform.GetChild(i);
+            var rectTransform = child.GetComponent<RectTransform>();
+            if (rectTransform != null)
+            {
+                rectTransform.anchoredPosition = new Vector2(i * 110, 0);
             }
         }
     }

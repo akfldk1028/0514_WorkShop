@@ -79,6 +79,9 @@ public class RhythmGameManager : MonoBehaviour
     // Current recipe being played
     private Data.RecipeData currentRecipe;
 
+    // 현재 레시피 정보를 외부에서 접근할 수 있도록 하는 프로퍼티
+    public Data.RecipeData CurrentRecipe => currentRecipe;
+
     private Dictionary<string, AudioClip> keySoundDict;
 
     [Header("Key Animation Settings")]
@@ -186,6 +189,10 @@ public class RhythmGameManager : MonoBehaviour
 
     public void StartRhythmSequence()
     {
+        // 리듬게임 시작 시 메인 BGM 정지
+        Managers.Sound.Stop(Define.ESound.Bgm);
+        Debug.Log("<color=yellow>[RhythmGameManager]</color> 메인 BGM 정지");
+        
         WaitASecond();
 
         // 현재 레시피가 없을 때만 새로운 레시피를 가져옴
@@ -202,13 +209,11 @@ public class RhythmGameManager : MonoBehaviour
                 {
                     currentRecipe = Managers.Data.RecipeDic[nextOrder.recipeId];
                     UpdateRecipeTempo();  // BPM에 따라 interval 업데이트
-                    
                     Debug.Log($"<color=green>[RhythmGameManager]</color> 주문된 레시피로 게임 시작: {currentRecipe.RecipeName} (ID: {nextOrder.recipeId})");
                 }
                 else
                 {
                     Debug.LogError($"<color=red>[RhythmGameManager]</color> 레시피 ID {nextOrder.recipeId}를 찾을 수 없습니다!");
-                    // 폴백으로 랜덤 레시피 사용
                     currentRecipe = Managers.Ingame.getRandomRecipe();
                     UpdateRecipeTempo();  // BPM에 따라 interval 업데이트
                 }
@@ -216,7 +221,6 @@ public class RhythmGameManager : MonoBehaviour
             else
             {
                 Debug.LogWarning($"<color=yellow>[RhythmGameManager]</color> 대기 중인 주문이 없습니다. 랜덤 레시피 사용.");
-                // 주문이 없으면 랜덤 레시피 사용
                 currentRecipe = Managers.Ingame.getRandomRecipe();
                 UpdateRecipeTempo();  // BPM에 따라 interval 업데이트
             }
@@ -560,6 +564,46 @@ public class RhythmGameManager : MonoBehaviour
         StartCoroutine(HandleGameEnd(RhythmResult.Fail));
     }
 
+    /// <summary>
+    /// 현재 레시피를 건너뛰고 다음 레시피로 변경 (Tab키 처리용)
+    /// </summary>
+    public void SkipCurrentRecipe()
+    {
+        // 주문이 2개 이상 있을 때만 건너뛰기 가능
+        if (Managers.Game.CustomerCreator.OrderManager.MoveFirstOrderToBack())
+        {
+            Debug.Log($"<color=cyan>[RhythmGameManager]</color> 레시피 건너뛰기: {currentRecipe?.RecipeName}");
+            
+            // 현재 레시피 초기화
+            currentRecipe = null;
+            
+            // 실행 중인 코루틴들 정지
+            if (rhythmCoroutine != null) StopCoroutine(rhythmCoroutine);
+            if (inputCoroutine != null) StopCoroutine(inputCoroutine);
+            if (metronomeCoroutine != null) StopCoroutine(metronomeCoroutine);
+            
+            useMetronome = false;
+            
+            // UI 초기화
+            RestoreKeyUI();
+            if (Num != null) Num.text = "";
+            
+            // 칵테일 오브젝트 정리
+            if (currentCocktailPrefab != null)
+            {
+                Destroy(currentCocktailPrefab);
+                currentCocktailPrefab = null;
+            }
+            
+            // 새로운 레시피로 다시 시작
+            StartRhythmSequence();
+        }
+        else
+        {
+            Debug.Log($"<color=yellow>[RhythmGameManager]</color> 건너뛸 수 있는 주문이 없습니다.");
+        }
+    }
+
     private IEnumerator HandleGameEnd(RhythmResult result) // Handle game end state and result display
     {
         yield return WaitASecond();
@@ -582,6 +626,8 @@ public class RhythmGameManager : MonoBehaviour
             
             Debug.Log($"<color=red>[RhythmGameManager]</color> 레시피 {currentRecipe.RecipeName} 실패, 재시도합니다.");
             StartRhythmSequence();  // Restart with same order
+            /////////////////////////////////////////////////////동현이가 일단추가
+            Managers.Ingame.EndRhythmGame(result);
         }
         else
         {
@@ -605,6 +651,8 @@ public class RhythmGameManager : MonoBehaviour
             if (completedOrder != null)
             {
                 Debug.Log($"<color=green>[RhythmGameManager]</color> 주문 완료: {completedOrder.RecipeName}");
+                
+            
             }
             
             currentRecipe = null;  // Clear current recipe on success only
@@ -625,6 +673,33 @@ public class RhythmGameManager : MonoBehaviour
             
             // Send result to game manager
             Managers.Ingame.EndRhythmGame(result);
+            
+            // 리듬게임 완료 시 메인 BGM 재시작
+            RestartMainBGM();
+        }
+    }
+
+    /// <summary>
+    /// 메인 BGM을 재시작합니다.
+    /// </summary>
+    private void RestartMainBGM()
+    {
+        try 
+        {
+            AudioClip audioClip = Managers.Resource.Load<AudioClip>("spring-day");
+            if (audioClip != null)
+            {
+                Managers.Sound.Play(Define.ESound.Bgm, audioClip);
+                Debug.Log("<color=green>[RhythmGameManager]</color> 메인 BGM 재시작: spring-day");
+            }
+            else
+            {
+                Debug.LogWarning("<color=yellow>[RhythmGameManager]</color> spring-day AudioClip을 찾을 수 없습니다.");
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"<color=red>[RhythmGameManager]</color> BGM 재시작 실패: {e.Message}");
         }
     }
 
@@ -687,7 +762,7 @@ public class RhythmGameManager : MonoBehaviour
         try
         {
             // Addressables를 통해 프리팹 로드
-            var loadOperation = Addressables.LoadAssetAsync<GameObject>(recipeId);
+            var loadOperation = Addressables.LoadAssetAsync<GameObject>($"{recipeId}_prefab");
             var prefab = await loadOperation.Task;
 
             if (prefab != null)
@@ -742,5 +817,6 @@ public class RhythmGameManager : MonoBehaviour
             Debug.LogError($"<color=red>[LoadAndSpawnCocktailPrefab]</color> 프리팹 로드 실패: {recipeId}\n{e.Message}");
         }
     }
+
 
 }
