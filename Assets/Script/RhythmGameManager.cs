@@ -404,6 +404,7 @@ public class RhythmGameManager : MonoBehaviour
 
     private IEnumerator WaitForInputs()
     {
+        
         float inputStartTime = Time.time;
         HashSet<KeyCode> allowedKeys = new HashSet<KeyCode> 
         { 
@@ -552,6 +553,9 @@ public class RhythmGameManager : MonoBehaviour
         {
             StartCoroutine(HandleGameEnd(RhythmResult.Good));
         }
+        expectedTimes.Clear();
+        inputTimes.Clear();
+        inputKeys.Clear();
     }
 
     public void ForceStopAndFail()
