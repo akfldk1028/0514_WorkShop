@@ -706,9 +706,9 @@ public class RhythmGameManager : MonoBehaviour
     private void UpdateRecipeNameUI()
     {
         // 현재 제작 중인 레시피만 표시
-        UpdateCurrentRecipeUI();
+        //UpdateCurrentRecipeUI();
         // 대기 중인 주문들만 표시
-        UpdateOrderQueueUI();
+        //UpdateOrderQueueUI();
     }
     //////////////////////////////////////이함수  내가 적어놓을게..
 
@@ -731,28 +731,28 @@ public class RhythmGameManager : MonoBehaviour
     private void UpdateOrderQueueUI()
     {
 
-        /*var allOrders = Managers.Game.CustomerCreator.OrderManager.GetAllOrders();
+        var allOrders = Managers.Game.CustomerCreator.OrderManager.GetAllOrders();
         Debug.Log($"[RhythmGameManager] 대기 중인 주문 수: {allOrders.Count}");
         
-        string orderDisplayText = "";
+        //string orderDisplayText = "";
         
         if (allOrders.Count > 0)
         {
-            orderDisplayText = $"📋 대기 주문 ({allOrders.Count}개):\n";
+            //orderDisplayText = $"📋 대기 주문 ({allOrders.Count}개):\n";
             for (int i = 0; i < allOrders.Count; i++)
             {
-                orderDisplayText += $"{i + 1}. {allOrders[i].RecipeName} x{allOrders[i].Quantity}\n";
+                //orderDisplayText += $"{i + 1}. {allOrders[i].RecipeName} x{allOrders[i].Quantity}\n";
                 Debug.Log($"[RhythmGameManager] 주문 {i+1}: {allOrders[i].RecipeName} x{allOrders[i].Quantity}");
             }
         }
         else
         {
-            orderDisplayText = "📋 대기 주문: 없음";
+            //orderDisplayText = "📋 대기 주문: 없음";
             Debug.Log("[RhythmGameManager] 대기 중인 주문이 없습니다.");
         }
         
-        orderText.text = orderDisplayText.TrimEnd('\n');
-        Debug.Log($"[RhythmGameManager] 주문 UI 업데이트 완료: {orderText.text}"); */
+        //orderText.text = orderDisplayText.TrimEnd('\n');
+        //Debug.Log($"[RhythmGameManager] 주문 UI 업데이트 완료: {orderText.text}");
     }
 
     private async void LoadAndSpawnCocktailPrefab(string recipeId)
