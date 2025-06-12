@@ -81,6 +81,14 @@ public class RhythmGameManager : MonoBehaviour
 
     private Dictionary<string, AudioClip> keySoundDict;
 
+    [Header("Key Animation Settings")]
+    [SerializeField] private float scaleMultiplier = 1.3f;  // 커질 때의 크기 배수
+    [SerializeField] private float scaleDuration = 0.2f;    // 애니메이션 지속 시간
+
+
+    [Header("Sample Image")]
+    public Image sampleImage;  // Sample 이미지
+
     private void Start()
     {
         KeyUI.SetActive(false);
@@ -287,7 +295,7 @@ public class RhythmGameManager : MonoBehaviour
 
     private IEnumerator PlayRhythm()
     {
-        metronomeSource.volume = 0.7f;
+        metronomeSource.volume = 0f;
 
         expectedTimes.Clear();
         inputTimes.Clear();
@@ -331,13 +339,24 @@ public class RhythmGameManager : MonoBehaviour
     private IEnumerator PlayCountdownBeats()
     {
         string[] countdown = { "3", "2", "1" };
-
+        metronomeSource.volume = 0.7f;
+        sampleImage.gameObject.SetActive(true);
         foreach (string c in countdown)
         {
             if (Num != null) Num.text = c;
             yield return new WaitForSeconds(interval);
+            if (sampleImage != null)
+            {
+                Vector3 currentScale = sampleImage.transform.localScale;
+                sampleImage.transform.localScale = new Vector3(
+                    currentScale.x - 0.2f,
+                    currentScale.y - 0.2f,
+                    currentScale.z - 0.2f
+                );
+            }
         }
         metronomeSource.volume = 0f; //플레이어 입력 시 메트로놈 볼륨 낮춤
+        sampleImage.gameObject.SetActive(false);
         if (Num != null) Num.text = "";
     }
 
@@ -362,6 +381,23 @@ public class RhythmGameManager : MonoBehaviour
         }
     }
 
+    private IEnumerator AnimateKeyScale(int keyIndex)
+    {
+        if (keyIndex < 0 || keyIndex >= keyImages.Count) yield break;
+        
+        Image keyImage = keyImages[keyIndex];
+        Vector3 originalScale = keyImage.transform.localScale;
+        Vector3 targetScale = originalScale * scaleMultiplier;
+        
+        // 크기 증가
+        keyImage.transform.localScale = targetScale;
+        
+        // 지정된 시간 후 원래 크기로 복귀
+        yield return new WaitForSeconds(scaleDuration);
+        
+        keyImage.transform.localScale = originalScale;
+    }
+
     private IEnumerator WaitForInputs()
     {
         float inputStartTime = Time.time;
@@ -375,7 +411,7 @@ public class RhythmGameManager : MonoBehaviour
             KeyCode.Escape 
         };
 
-        for (int i = 0; i < rhythmPattern.Count; i++)
+        for (int i = 0; i < rhythmPattern.Count; i++) //
         {
             float expectedTime = inputStartTime + i * interval;
             expectedTimes.Add(expectedTime);
@@ -391,7 +427,7 @@ public class RhythmGameManager : MonoBehaviour
                 {
                     List<string> keysPressed = new List<string>();
 
-                    foreach (KeyCode k in allowedKeys)  // System.Enum.GetValues(typeof(KeyCode)) 대신 allowedKeys 사용
+                    foreach (KeyCode k in allowedKeys)
                     {
                         if (Input.GetKey(k))
                         {
@@ -432,6 +468,7 @@ public class RhythmGameManager : MonoBehaviour
                             if (key == expectedKey)
                             {
                                 isCorrectInput = true;
+                                StartCoroutine(AnimateKeyScale(i));  // 키 입력이 있고 맞았을 때만 애니메이션 실행
                                 break;
                             }
                         }
