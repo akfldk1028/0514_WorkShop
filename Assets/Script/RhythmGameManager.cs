@@ -706,53 +706,35 @@ public class RhythmGameManager : MonoBehaviour
     private void UpdateRecipeNameUI()
     {
         // 현재 제작 중인 레시피만 표시
-        //UpdateCurrentRecipeUI();
+        UpdateCurrentRecipeUI();
         // 대기 중인 주문들만 표시
-        //UpdateOrderQueueUI();
+        UpdateOrderQueueUI();
     }
-    //////////////////////////////////////이함수  내가 적어놓을게..
 
     private void UpdateCurrentRecipeUI()
     {
-
-
-        /*if (currentRecipe != null)
+        if (currentRecipe != null)
         {
-            recipeName.text = $"🔥 제작 중: {currentRecipe.RecipeName}";
+            // 레시피 텍스트 업데이트 액션 발행
+            Managers.PublishAction(ActionType.UI_UpdateRecipeText);
             Debug.Log($"[RhythmGameManager] 현재 레시피: {currentRecipe.RecipeName}");
         }
         else
         {
-            recipeName.text = "🔥 제작 중: 없음";
+            // 레시피 텍스트 업데이트 액션 발행
+            Managers.PublishAction(ActionType.UI_UpdateRecipeText);
             Debug.Log("[RhythmGameManager] 현재 제작 중인 레시피 없음");
-        }*/
+        }
     }
 
     private void UpdateOrderQueueUI()
     {
-
         var allOrders = Managers.Game.CustomerCreator.OrderManager.GetAllOrders();
         Debug.Log($"[RhythmGameManager] 대기 중인 주문 수: {allOrders.Count}");
         
-        //string orderDisplayText = "";
-        
-        if (allOrders.Count > 0)
-        {
-            //orderDisplayText = $"📋 대기 주문 ({allOrders.Count}개):\n";
-            for (int i = 0; i < allOrders.Count; i++)
-            {
-                //orderDisplayText += $"{i + 1}. {allOrders[i].RecipeName} x{allOrders[i].Quantity}\n";
-                Debug.Log($"[RhythmGameManager] 주문 {i+1}: {allOrders[i].RecipeName} x{allOrders[i].Quantity}");
-            }
-        }
-        else
-        {
-            //orderDisplayText = "📋 대기 주문: 없음";
-            Debug.Log("[RhythmGameManager] 대기 중인 주문이 없습니다.");
-        }
-        
-        //orderText.text = orderDisplayText.TrimEnd('\n');
-        //Debug.Log($"[RhythmGameManager] 주문 UI 업데이트 완료: {orderText.text}");
+        // 주문 텍스트 업데이트 액션 발행
+        Managers.PublishAction(ActionType.UI_UpdateOrderText);
+        Debug.Log($"[RhythmGameManager] 주문 UI 업데이트 액션 발행");
     }
 
     private async void LoadAndSpawnCocktailPrefab(string recipeId)
