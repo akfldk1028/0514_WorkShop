@@ -1,0 +1,124 @@
+{
+  "stages": [
+    {
+      "NO": 400001,
+      "StageNumber": 1,
+      "StageName": null,
+      "ClearCondition_Desc": null,
+      "TargetSales": 0,
+      "StageTime": 5,
+      "AppearingCustomer": 15,
+      "MinTotalServedCustomers": 0,
+      "MaxUnsatisfiedCustomersAllowed": 2,
+      "AutoUnlockRecipeIDs": null
+    },
+    {
+      "NO": 400002,
+      "StageNumber": 2,
+      "StageName": null,
+      "ClearCondition_Desc": null,
+      "TargetSales": 0,
+      "StageTime": 5,
+      "AppearingCustomer": 20,
+      "MinTotalServedCustomers": 0,
+      "MaxUnsatisfiedCustomersAllowed": 3,
+      "AutoUnlockRecipeIDs": null
+    },
+    {
+      "NO": 400003,
+      "StageNumber": 3,
+      "StageName": null,
+      "ClearCondition_Desc": null,
+      "TargetSales": 0,
+      "StageTime": 7,
+      "AppearingCustomer": 25,
+      "MinTotalServedCustomers": 0,
+      "MaxUnsatisfiedCustomersAllowed": 3,
+      "AutoUnlockRecipeIDs": null
+    },
+    {
+      "NO": 400004,
+      "StageNumber": 4,
+      "StageName": null,
+      "ClearCondition_Desc": null,
+      "TargetSales": 0,
+      "StageTime": 7,
+      "AppearingCustomer": 30,
+      "MinTotalServedCustomers": 0,
+      "MaxUnsatisfiedCustomersAllowed": 4,
+      "AutoUnlockRecipeIDs": null
+    },
+    {
+      "NO": 400005,
+      "StageNumber": 5,
+      "StageName": null,
+      "ClearCondition_Desc": null,
+      "TargetSales": 0,
+      "StageTime": 10,
+      "AppearingCustomer": 35,
+      "MinTotalServedCustomers": 0,
+      "MaxUnsatisfiedCustomersAllowed": 4,
+      "AutoUnlockRecipeIDs": null
+    },
+    {
+      "NO": 400006,
+      "StageNumber": 6,
+      "StageName": null,
+      "ClearCondition_Desc": null,
+      "TargetSales": 0,
+      "StageTime": 10,
+      "AppearingCustomer": 40,
+      "MinTotalServedCustomers": 0,
+      "MaxUnsatisfiedCustomersAllowed": 5,
+      "AutoUnlockRecipeIDs": null
+    },
+    {
+      "NO": 400007,
+      "StageNumber": 7,
+      "StageName": null,
+      "ClearCondition_Desc": null,
+      "TargetSales": 0,
+      "StageTime": 12,
+      "AppearingCustomer": 45,
+      "MinTotalServedCustomers": 0,
+      "MaxUnsatisfiedCustomersAllowed": 5,
+      "AutoUnlockRecipeIDs": null
+    },
+    {
+      "NO": 400008,
+      "StageNumber": 8,
+      "StageName": null,
+      "ClearCondition_Desc": null,
+      "TargetSales": 0,
+      "StageTime": 12,
+      "AppearingCustomer": 45,
+      "MinTotalServedCustomers": 0,
+      "MaxUnsatisfiedCustomersAllowed": 5,
+      "AutoUnlockRecipeIDs": null
+    },
+    {
+      "NO": 400009,
+      "StageNumber": 9,
+      "StageName": null,
+      "ClearCondition_Desc": null,
+      "TargetSales": 0,
+      "StageTime": 15,
+      "AppearingCustomer": 50,
+      "MinTotalServedCustomers": 0,
+      "MaxUnsatisfiedCustomersAllowed": 6,
+      "AutoUnlockRecipeIDs": null
+    },
+    {
+      "NO": 400010,
+      "StageNumber": 10,
+      "StageName": null,
+      "ClearCondition_Desc": null,
+      "TargetSales": 0,
+      "StageTime": 15,
+      "AppearingCustomer": 50,
+      "MinTotalServedCustomers": 0,
+      "MaxUnsatisfiedCustomersAllowed": 6,
+      "AutoUnlockRecipeIDs": null
+    }
+  ]
+}
