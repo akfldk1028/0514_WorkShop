@@ -181,6 +181,10 @@ public class RhythmGameManager : MonoBehaviour
 
     public void StartRhythmSequence()
     {
+        // 리듬게임 시작 시 메인 BGM 정지
+        Managers.Sound.Stop(Define.ESound.Bgm);
+        Debug.Log("<color=yellow>[RhythmGameManager]</color> 메인 BGM 정지");
+        
         WaitASecond();
 
         // 현재 레시피가 없을 때만 새로운 레시피를 가져옴
@@ -632,6 +636,33 @@ public class RhythmGameManager : MonoBehaviour
             
             // Send result to game manager
             Managers.Ingame.EndRhythmGame(result);
+            
+            // 리듬게임 완료 시 메인 BGM 재시작
+            RestartMainBGM();
+        }
+    }
+
+    /// <summary>
+    /// 메인 BGM을 재시작합니다.
+    /// </summary>
+    private void RestartMainBGM()
+    {
+        try 
+        {
+            AudioClip audioClip = Managers.Resource.Load<AudioClip>("spring-day");
+            if (audioClip != null)
+            {
+                Managers.Sound.Play(Define.ESound.Bgm, audioClip);
+                Debug.Log("<color=green>[RhythmGameManager]</color> 메인 BGM 재시작: spring-day");
+            }
+            else
+            {
+                Debug.LogWarning("<color=yellow>[RhythmGameManager]</color> spring-day AudioClip을 찾을 수 없습니다.");
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"<color=red>[RhythmGameManager]</color> BGM 재시작 실패: {e.Message}");
         }
     }
 

@@ -25,9 +25,6 @@ public class UI_StartUpScene : UI_Scene
 		ExitButton,
 	}
 
-	[Header("BGM Settings")]
-	[SerializeField] private string bgmFileName = "StartUpScene_bgm"; // BGM 파일명
-	[SerializeField] private float bgmVolume = 0.5f; // BGM 볼륨
 
     public override bool Init()
     {
@@ -52,7 +49,6 @@ public class UI_StartUpScene : UI_Scene
 		GetButton((int)Buttons.ExitButton).gameObject.BindEvent(OnClickExitButton);
 
 		StartLoadAssets();
-// PlayBGM();
 		return true;
     }
 
@@ -97,8 +93,9 @@ public class UI_StartUpScene : UI_Scene
 		GetButton((int)Buttons.StartButton).gameObject.BindEvent(OnClickStartButton);
 		// GetText((int)Texts.DisplayText).text = "Touch To Start";
 		
-		// 에셋 로딩 완료 후 BGM이 재생되고 있는지 확인
-		Debug.Log("<color=yellow>[UI_StartUpScene]</color> 에셋 로딩 완료 - BGM 재생 중");
+		// 에셋 로딩 완료 후 BGM 재생
+		PlayBGM();
+		Debug.Log("<color=yellow>[UI_StartUpScene]</color> 에셋 로딩 완료 - BGM 재생 시작");
 	}
 
 	/// <summary>
@@ -108,9 +105,15 @@ public class UI_StartUpScene : UI_Scene
 	{
 		try 
 		{
-			// SoundManager를 통해 BGM 재생
-			Managers.Sound.Play(Define.ESound.Bgm, bgmFileName);
-			Debug.Log($"<color=green>[UI_StartUpScene]</color> BGM 재생 시작: {bgmFileName}");
+			AudioClip audioClip = Managers.Resource.Load<AudioClip>("spring-day");
+			if (audioClip == null)
+			{
+				Debug.LogWarning("<color=yellow>[UI_StartUpScene]</color> spring-day AudioClip을 찾을 수 없습니다.");
+				return;
+			}
+			
+			Managers.Sound.Play(Define.ESound.Bgm, audioClip);
+			Debug.Log("<color=green>[UI_StartUpScene]</color> BGM 재생: spring-day");
 		}
 		catch (System.Exception e)
 		{

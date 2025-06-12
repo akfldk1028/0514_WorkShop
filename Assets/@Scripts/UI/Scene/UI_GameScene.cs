@@ -114,6 +114,9 @@ public class UI_GameScene : UI_Scene
 
     void OnClickShopButton(PointerEventData evt)
     {
+        // blub 사운드 재생
+        Managers.Sound.Play(Define.ESound.Effect, "blub");
+        
         Debug.Log("<color=magenta>[UI_GameScene]</color> OnClickShopButton");
         UI_TableSetting popup = Managers.UI.ShowPopupUI<UI_TableSetting>();
         popup.GetComponent<Canvas>().sortingOrder = 101;
@@ -125,61 +128,97 @@ public class UI_GameScene : UI_Scene
 	}
     void OnClickGoldPlusButton(PointerEventData evt)
     {
+        // blub 사운드 재생
+        Managers.Sound.Play(Define.ESound.Effect, "blub");
+        
         Debug.Log("OnOnClickGoldPlusButton");
     }
 
     void OnClickDiaPlusButton(PointerEventData evt)
     {
+        // blub 사운드 재생
+        Managers.Sound.Play(Define.ESound.Effect, "blub");
+        
         Debug.Log("OnClickDiaPlusButton");
     }
 
     void OnClickHeroesListButton(PointerEventData evt)
     {
+        // blub 사운드 재생
+        Managers.Sound.Play(Define.ESound.Effect, "blub");
+        
 		Debug.Log("OnClickHeroesListButton");
 	}
 
     void OnClickSetHeroesButton(PointerEventData evt)
     {
+        // blub 사운드 재생
+        Managers.Sound.Play(Define.ESound.Effect, "blub");
+        
 		Debug.Log("OnClickSetHeroesButton");
 	}
 
     void OnClickSettingButton(PointerEventData evt)
     {
+        // blub 사운드 재생
+        Managers.Sound.Play(Define.ESound.Effect, "blub");
+        
 		Debug.Log("OnClickSettingButton");
 	}
 
     void OnClickInventoryButton(PointerEventData evt)
     {
+        // blub 사운드 재생
+        Managers.Sound.Play(Define.ESound.Effect, "blub");
+        
         Debug.Log("OnClickInventoryButton");
     }
 
     void OnClickWorldMapButton(PointerEventData evt)
     {
+        // blub 사운드 재생
+        Managers.Sound.Play(Define.ESound.Effect, "blub");
+        
         Debug.Log("OnClickWorldMapButton");
     }
 
     void OnClickQuestButton(PointerEventData evt)
     {
+        // blub 사운드 재생
+        Managers.Sound.Play(Define.ESound.Effect, "blub");
+        
         Debug.Log("OnClickQuestButton");
     }
 
     void OnClickChallengeButton(PointerEventData evt)
     {
+        // blub 사운드 재생
+        Managers.Sound.Play(Define.ESound.Effect, "blub");
+        
         Debug.Log("OnOnClickChallengeButton");
     }
 
     void OnClickCampButton(PointerEventData evt)
     {
+        // blub 사운드 재생
+        Managers.Sound.Play(Define.ESound.Effect, "blub");
+        
         Debug.Log("OnClickCampButton");
     }
 
     void OnClickPortalButton(PointerEventData evt)
     {
+        // blub 사운드 재생
+        Managers.Sound.Play(Define.ESound.Effect, "blub");
+        
         Debug.Log("OnClickPortalButton");
 	}
 
     void OnClickCheatButton(PointerEventData evt)
     {
+        // blub 사운드 재생
+        Managers.Sound.Play(Define.ESound.Effect, "blub");
+        
 		Debug.Log("OnClickCheatButton");
 	}
 

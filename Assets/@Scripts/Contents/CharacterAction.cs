@@ -124,5 +124,18 @@ public class CharacterAction : MonoBehaviour
         animator.SetBool("eating",false);
     }
 
+    /// <summary>
+    /// 애니메이션 이벤트에서 호출되는 메서드 (Eating 애니메이션용)
+    /// </summary>
+    public void MasadanKalk()
+    {
+        // 식사 중 애니메이션 이벤트 처리
+        Debug.Log($"<color=cyan>[CharacterAction] MasadanKalk 애니메이션 이벤트 호출됨</color>");
+        // 필요시 추가 로직 구현 (예: 사운드 재생, 이펙트 등)
+        
+        // 예시: 식사 사운드 재생
+        // Managers.Sound.Play(Define.ESound.Effect, "eating_sound");
+    }
+
    
 }

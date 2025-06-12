@@ -42,8 +42,10 @@ public class InGameScene : BaseScene
 		sceneUI.GetComponent<Canvas>().sortingOrder = 100;
 		sceneUI.SetInfo();
 		
-		// 모든 오브젝트 찾기 및 할당
 		AutoAssign();
+
+		// BGM 재생 (StartUpScene에서 이어서 재생)
+		PlayBGM();
 
 		return true;
 	}
@@ -92,6 +94,28 @@ public class InGameScene : BaseScene
 				RhythmGameManager = obj.GetComponent<RhythmGameManager>();
 				Debug.Log("<color=magenta>[InGameScene]</color> RhythmManager 찾음");
 			}
+		}
+	}
+
+	/// <summary>
+	/// BGM을 재생합니다.
+	/// </summary>
+	private void PlayBGM()
+	{
+		try 
+		{
+			AudioClip audioClip = Managers.Resource.Load<AudioClip>("spring-day");
+			if (audioClip == null)
+			{
+				Debug.LogWarning("<color=yellow>[InGameScene]</color> spring-day AudioClip을 찾을 수 없습니다.");
+				return;
+			}
+			
+			Managers.Sound.Play(Define.ESound.Bgm, audioClip);
+		}
+		catch (System.Exception e)
+		{
+			Debug.LogError($"<color=red>[InGameScene]</color> BGM 재생 실패: {e.Message}");
 		}
 	}
 

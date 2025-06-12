@@ -39,7 +39,6 @@ public class Managers : MonoBehaviour
     public static InputManager Input { get { Instance?._input.Init();  return Instance?._input; } }
 
     public static InGameManager Ingame { get {Instance?._Ingame.Init(); return Instance?._Ingame; } }
-
     //public static RythmGameManager RythmGame { get { return Instance?._Rythm; } }
     #endregion
 
@@ -58,7 +57,7 @@ public class Managers : MonoBehaviour
     public static PoolManager Pool { get { return Instance?._pool; } }
     public static ResourceManager Resource { get { return Instance?._resource; } }
     public static SceneManagerEx Scene { get { return Instance?._scene; } }
-    public static SoundManager Sound { get { return Instance?._sound; } }
+    public static SoundManager Sound { get { Instance?._sound.Init(); return Instance?._sound; } }
 
     public static UIManager UI { get { return Instance?._ui; } }
 

@@ -336,6 +336,9 @@ public class TableManager
     /// </summary>
     private void SpawnFoodOnTable(Table table, string prefabName, int quantity)
     {
+        // plate-over 사운드 재생
+        Managers.Sound.Play(Define.ESound.Effect, "plate-over");
+        
         for (int i = 0; i < quantity; i++)
         {
             if (string.IsNullOrEmpty(prefabName))
@@ -396,6 +399,9 @@ public class TableManager
         
         if (customersServed > 0)
         {
+            // 🆕 음식이 서빙되었으므로 테이블의 대기 슬라이더 숨기기
+            table.OnFoodServed();
+            
             Debug.Log($"<color=cyan>[TableManager] 테이블 {table.tableId}에서 총 {customersServed}명의 고객이 식사를 시작했습니다.</color>");
         }
     }
