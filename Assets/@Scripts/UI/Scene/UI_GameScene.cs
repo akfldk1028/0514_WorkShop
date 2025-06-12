@@ -119,6 +119,15 @@ public class UI_GameScene : UI_Scene
         
         Debug.Log("<color=magenta>[UI_GameScene]</color> OnClickShopButton");
         UI_TableSetting popup = Managers.UI.ShowPopupUI<UI_TableSetting>();
+        // 이거봐바 내가 uigamescene에서 ui talbe pop 을 show하는함수야
+        //  ㅇㅗ케이
+
+        // 그러니까 내기존 ui 에 니 리듬게임 popup 만 띄우는 형식으로해야  이게 빠다리? 무튼 긐게 안날거같건든
+        // 그럼 내가 key ui를 저런식으로 빼볼게 자신 있 지 는 않긴 한데 하겠습니다.....!
+        // 어키 그 리듬게임 ui만 따로빼서 prefab으로만 만들면 내가 거기 놓는식으로
+        // 지금 보면 진웅님이 보내주신 ui배치 봤어??아니 왜?
+        // 그거 보면 서빙할때랑 리듬게임 파트랑 유아이가 겹치는 부분이 있는데
+        //잠만 
         popup.GetComponent<Canvas>().sortingOrder = 101;
         popup.SetInfo();
     }
