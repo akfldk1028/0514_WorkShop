@@ -536,4 +536,65 @@ namespace Data
 
 
 	#endregion
+
+	#region ItemShopData
+	[Serializable]
+	public class ItemShopData
+	{
+		public int NO; // 아이템 번호
+		public string ItemID_eng; // 영문 아이템 ID
+		public string ItemName; // 아이템 이름
+		public string ItemType; // 아이템 타입 (업그레이드, 가구, 장식 등)
+		public string Description; // 아이템 설명
+		public int Price; // 가격
+		public int Max_Amount; // 최대 구매 가능 수량
+		public List<int> ShopUnlockStageID; // 상점 해금 스테이지 ID 리스트
+		public int Increase_CurrentMaxGlasses; // 잔 용량 증가량
+	}
+
+	[Serializable]
+	public class ItemShopDataLoader : ILoader<int, ItemShopData>
+	{
+		public List<ItemShopData> items = new List<ItemShopData>();
+
+		public Dictionary<int, ItemShopData> MakeDict()
+		{
+			Dictionary<int, ItemShopData> dict = new Dictionary<int, ItemShopData>();
+			foreach (ItemShopData item in items)
+				dict.Add(item.NO, item);
+			return dict;
+		}
+	}
+	#endregion
+
+	#region StageData
+	[Serializable]
+	public class StageData
+	{
+		public int NO; // 스테이지 번호
+		public int StageNumber; // 스테이지 넘버
+		public string StageName; // 스테이지 이름
+		public string ClearCondition_Desc; // 클리어 조건 설명
+		public int TargetSales; // 목표 매출
+		public int StageTime; // 스테이지 시간 (분)
+		public int AppearingCustomer; // 등장하는 고객 수
+		public int MinTotalServedCustomers; // 최소 서빙 고객 수
+		public int MaxUnsatisfiedCustomersAllowed; // 허용되는 최대 불만족 고객 수
+		public List<int> AutoUnlockRecipeIDs; // 자동 해금되는 레시피 ID 리스트
+	}
+
+	[Serializable]
+	public class StageDataLoader : ILoader<int, StageData>
+	{
+		public List<StageData> stages = new List<StageData>();
+
+		public Dictionary<int, StageData> MakeDict()
+		{
+			Dictionary<int, StageData> dict = new Dictionary<int, StageData>();
+			foreach (StageData stage in stages)
+				dict.Add(stage.NO, stage);
+			return dict;
+		}
+	}
+	#endregion
 }
