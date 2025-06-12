@@ -673,6 +673,7 @@ public class RhythmGameManager : MonoBehaviour
         // 대기 중인 주문들만 표시
         UpdateOrderQueueUI();
     }
+    //////////////////////////////////////이함수  내가 적어놓을게..
 
     private void UpdateCurrentRecipeUI()
     {
@@ -687,7 +688,7 @@ public class RhythmGameManager : MonoBehaviour
             Debug.Log("[RhythmGameManager] 현재 제작 중인 레시피 없음");
         }
     }
-
+    //////////////////////////////////////이함수  내가 적어놓을게..
     private void UpdateOrderQueueUI()
     {
         var allOrders = Managers.Game.CustomerCreator.OrderManager.GetAllOrders();
@@ -726,6 +727,7 @@ public class RhythmGameManager : MonoBehaviour
         {
             // Addressables를 통해 프리팹 로드
             var loadOperation = Addressables.LoadAssetAsync<GameObject>($"{recipeId}_prefab");
+            // 이렇게 붙여놧어 _prefab을 
             var prefab = await loadOperation.Task;
 
             if (prefab != null)
