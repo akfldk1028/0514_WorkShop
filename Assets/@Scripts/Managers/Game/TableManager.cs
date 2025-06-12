@@ -124,7 +124,8 @@ public class TableManager
         this.LastOrderSummary = string.Join("\n", _accumulatedOrders);
         
         table.ShowWaitingForFoodUI(); 
-        
+        Managers.Sound.Play(Define.ESound.Effect, "microwave");
+
         Debug.Log($"<color=cyan>[TableManager] 테이블 {table.tableId}에서 {orders.Count}개 종류, 총 {orders.Sum(o => o.Quantity)}개 음식 주문 받음! UI를 음식 대기 상태로 변경.</color>");
         Debug.Log($"<color=magenta>[TableManager] 전체 누적 주문: {this.LastOrderSummary}</color>");
 

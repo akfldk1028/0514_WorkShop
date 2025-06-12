@@ -1,0 +1,244 @@
+{
+  "items": [
+    {
+      "NO": 310001,
+      "ItemID_eng": "glass_capacity_upgrade_01",
+      "ItemName": "�߰� ������ ��Ʈ",
+      "ItemType": "Upgrade_GlassCapacity",
+      "Description": "������ �ִ�ġ�� 1�� �ø��ϴ�.",
+      "Price": 10000,
+      "Max_Amount": 2,
+      "ShopUnlockStageID": [
+        1
+      ],
+      "Increase_CurrentMaxGlasses": 1
+    },
+    {
+      "NO": 310002,
+      "ItemID_eng": "glass_capacity_upgrade_02",
+      "ItemName": "�߰� ������ ��Ʈ",
+      "ItemType": "Upgrade_GlassCapacity",
+      "Description": "������ �ִ�ġ�� 1�� �ø��ϴ�.",
+      "Price": 10000,
+      "Max_Amount": 2,
+      "ShopUnlockStageID": [
+        2
+      ],
+      "Increase_CurrentMaxGlasses": 1
+    },
+    {
+      "NO": 310003,
+      "ItemID_eng": "glass_capacity_upgrade_03",
+      "ItemName": "�߰� ������ ��Ʈ",
+      "ItemType": "Upgrade_GlassCapacity",
+      "Description": "������ �ִ�ġ�� 1�� �ø��ϴ�.",
+      "Price": 20000,
+      "Max_Amount": 2,
+      "ShopUnlockStageID": [
+        3
+      ],
+      "Increase_CurrentMaxGlasses": 1
+    },
+    {
+      "NO": 310004,
+      "ItemID_eng": "glass_capacity_upgrade_04",
+      "ItemName": "�߰� ������ ��Ʈ",
+      "ItemType": "Upgrade_GlassCapacity",
+      "Description": "������ �ִ�ġ�� 1�� �ø��ϴ�.",
+      "Price": 20000,
+      "Max_Amount": 2,
+      "ShopUnlockStageID": [
+        4
+      ],
+      "Increase_CurrentMaxGlasses": 1
+    },
+    {
+      "NO": 310005,
+      "ItemID_eng": "glass_capacity_upgrade_05",
+      "ItemName": "�߰� ������ ��Ʈ",
+      "ItemType": "Upgrade_GlassCapacity",
+      "Description": "������ �ִ�ġ�� 1�� �ø��ϴ�.",
+      "Price": 20000,
+      "Max_Amount": 2,
+      "ShopUnlockStageID": [
+        5
+      ],
+      "Increase_CurrentMaxGlasses": 1
+    },
+    {
+      "NO": 310006,
+      "ItemID_eng": "glass_capacity_upgrade_06",
+      "ItemName": "�߰� ������ ��Ʈ",
+      "ItemType": "Upgrade_GlassCapacity",
+      "Description": "������ �ִ�ġ�� 1�� �ø��ϴ�.",
+      "Price": 25000,
+      "Max_Amount": 3,
+      "ShopUnlockStageID": [
+        6
+      ],
+      "Increase_CurrentMaxGlasses": 1
+    },
+    {
+      "NO": 310007,
+      "ItemID_eng": "glass_capacity_upgrade_07",
+      "ItemName": "�߰� ������ ��Ʈ",
+      "ItemType": "Upgrade_GlassCapacity",
+      "Description": "������ �ִ�ġ�� 1�� �ø��ϴ�.",
+      "Price": 25000,
+      "Max_Amount": 4,
+      "ShopUnlockStageID": [
+        7
+      ],
+      "Increase_CurrentMaxGlasses": 1
+    },
+    {
+      "NO": 310008,
+      "ItemID_eng": "glass_capacity_upgrade_08",
+      "ItemName": "�߰� ������ ��Ʈ",
+      "ItemType": "Upgrade_GlassCapacity",
+      "Description": "������ �ִ�ġ�� 1�� �ø��ϴ�.",
+      "Price": 30000,
+      "Max_Amount": 4,
+      "ShopUnlockStageID": [
+        8
+      ],
+      "Increase_CurrentMaxGlasses": 1
+    },
+    {
+      "NO": 310009,
+      "ItemID_eng": "glass_capacity_upgrade_09",
+      "ItemName": "�߰� ������ ��Ʈ",
+      "ItemType": "Upgrade_GlassCapacity",
+      "Description": "������ �ִ�ġ�� 1�� �ø��ϴ�.",
+      "Price": 30000,
+      "Max_Amount": 5,
+      "ShopUnlockStageID": [
+        9
+      ],
+      "Increase_CurrentMaxGlasses": 1
+    },
+    {
+      "NO": 310010,
+      "ItemID_eng": "glass_capacity_upgrade_10",
+      "ItemName": "�߰� ������ ��Ʈ",
+      "ItemType": "Upgrade_GlassCapacity",
+      "Description": "������ �ִ�ġ�� 1�� �ø��ϴ�.",
+      "Price": 30000,
+      "Max_Amount": 5,
+      "ShopUnlockStageID": [
+        10
+      ],
+      "Increase_CurrentMaxGlasses": 1
+    },
+    {
+      "NO": 320101,
+      "ItemID_eng": "table_wood_basic_02",
+      "ItemName": "�⺻ 2�� �������̺�",
+      "ItemType": "Furniture_Table",
+      "Description": "2���� ���� �� �ִ� 2�ο� �������̺�",
+      "Price": 100000,
+      "Max_Amount": 99,
+      "ShopUnlockStageID": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "Increase_CurrentMaxGlasses": 0
+    },
+    {
+      "NO": 320102,
+      "ItemID_eng": "table_wood_basic_04",
+      "ItemName": "�⺻ 4�� �������̺�",
+      "ItemType": "Furniture_Table",
+      "Description": "4���� ���� �� �ִ� 4�ο� �������̺�",
+      "Price": 150000,
+      "Max_Amount": 99,
+      "ShopUnlockStageID": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "Increase_CurrentMaxGlasses": 0
+    },
+    {
+      "NO": 320201,
+      "ItemID_eng": "chair_wood_basic_01",
+      "ItemName": "�⺻ 1�� ��������",
+      "ItemType": "Furniture_Chair",
+      "Description": "�⺻ 1�� ��������",
+      "Price": 25000,
+      "Max_Amount": 99,
+      "ShopUnlockStageID": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "Increase_CurrentMaxGlasses": 0
+    },
+    {
+      "NO": 320202,
+      "ItemID_eng": "chair_wood_basic_02",
+      "ItemName": "�⺻ 2�� ��������",
+      "ItemType": "Furniture_Chair",
+      "Description": "�⺻ 2�� ��������",
+      "Price": 40000,
+      "Max_Amount": 99,
+      "ShopUnlockStageID": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "Increase_CurrentMaxGlasses": 0
+    },
+    {
+      "NO": 330001,
+      "ItemID_eng": "decor_poster_jazz_club_01",
+      "ItemName": "���� Ŭ�� ������",
+      "ItemType": "Decoration",
+      "Description": "���� ���̴� ������",
+      "Price": 100000,
+      "Max_Amount": 99,
+      "ShopUnlockStageID": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "Increase_CurrentMaxGlasses": 0
+    }
+  ]
+}
