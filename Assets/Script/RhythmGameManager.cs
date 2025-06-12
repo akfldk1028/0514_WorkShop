@@ -66,7 +66,7 @@ public class RhythmGameManager : MonoBehaviour
 
     private bool useMetronome = true;
 
-    [Header("Rhythm Game UI")]
+    //[Header("Rhythm Game UI")]
     public TextMeshProUGUI recipeName;
     public TextMeshProUGUI resultText;
     public TextMeshProUGUI orderText;
@@ -714,7 +714,9 @@ public class RhythmGameManager : MonoBehaviour
 
     private void UpdateCurrentRecipeUI()
     {
-        if (currentRecipe != null)
+
+
+        /*if (currentRecipe != null)
         {
             recipeName.text = $"🔥 제작 중: {currentRecipe.RecipeName}";
             Debug.Log($"[RhythmGameManager] 현재 레시피: {currentRecipe.RecipeName}");
@@ -723,12 +725,13 @@ public class RhythmGameManager : MonoBehaviour
         {
             recipeName.text = "🔥 제작 중: 없음";
             Debug.Log("[RhythmGameManager] 현재 제작 중인 레시피 없음");
-        }
+        }*/
     }
-    //////////////////////////////////////이함수  내가 적어놓을게..
+
     private void UpdateOrderQueueUI()
     {
-        var allOrders = Managers.Game.CustomerCreator.OrderManager.GetAllOrders();
+
+        /*var allOrders = Managers.Game.CustomerCreator.OrderManager.GetAllOrders();
         Debug.Log($"[RhythmGameManager] 대기 중인 주문 수: {allOrders.Count}");
         
         string orderDisplayText = "";
@@ -749,7 +752,7 @@ public class RhythmGameManager : MonoBehaviour
         }
         
         orderText.text = orderDisplayText.TrimEnd('\n');
-        Debug.Log($"[RhythmGameManager] 주문 UI 업데이트 완료: {orderText.text}");
+        Debug.Log($"[RhythmGameManager] 주문 UI 업데이트 완료: {orderText.text}"); */
     }
 
     private async void LoadAndSpawnCocktailPrefab(string recipeId)
