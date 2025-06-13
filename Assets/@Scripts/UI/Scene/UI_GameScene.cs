@@ -140,7 +140,8 @@ public class UI_GameScene : UI_Scene
 
     public void RefreshGlassText()
     {
-        GetText((int)Texts.BattlePowerText).text = $"{Managers.Game.Glass}개";
+        GetText((int)Texts.BattlePowerText).text = Managers.Game.Glass.ToString();
+        //$"{Managers.Game.Glass}개";
     }
 
     private void OnDestroy() // Scene이 파괴될 때 구독 해제

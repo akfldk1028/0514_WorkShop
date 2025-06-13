@@ -12,7 +12,8 @@ public enum RhythmResult
 {
     Fail,
     Good,
-    Perfect
+    Perfect,
+    Pause
 }
 
 public class RhythmGameManager : MonoBehaviour
@@ -72,9 +73,9 @@ public class RhythmGameManager : MonoBehaviour
     public TextMeshProUGUI orderText;
 
     // Coroutine references
-    private Coroutine rhythmCoroutine;
-    private Coroutine inputCoroutine;
-    private Coroutine metronomeCoroutine;
+    //private Coroutine rhythmCoroutine;
+    //private Coroutine inputCoroutine;
+    //private Coroutine metronomeCoroutine;
 
     // Current recipe being played
     private Data.RecipeData currentRecipe;
@@ -92,6 +93,10 @@ public class RhythmGameManager : MonoBehaviour
     [Header("Sample Image")]
     public Image sampleImage;  // Sample 이미지
 
+
+    private bool isRestart = false;
+    private bool isRhythmGameEnded = true;
+
     private void Start()
     {
         KeyUI.SetActive(false);
@@ -99,105 +104,40 @@ public class RhythmGameManager : MonoBehaviour
         InitKeySoundDict();
     }
 
-    private void SetupAudioSources()
-    {
-        // 메트로놈용 AudioSource 설정
-        if (metronomeSource == null)
-        {
-            // 기존 AudioSource가 있다면 그것을 메트로놈용으로 사용
-            metronomeSource = GetComponent<AudioSource>();
-            
-            // 없다면 새로 생성
-            if (metronomeSource == null)
-            {
-                metronomeSource = gameObject.AddComponent<AudioSource>();
-            }
-            metronomeSource.playOnAwake = false;
-        }
-
-        // 키 사운드용 AudioSource 생성
-        if (audioSource == null)
-        {
-            // 새로운 AudioSource 컴포넌트 추가
-            audioSource = gameObject.AddComponent<AudioSource>();
-            audioSource.playOnAwake = false;
-        }
-
-        Debug.Log("Audio Sources setup completed - Metronome: " + (metronomeSource != null) + ", KeySound: " + (audioSource != null));
-    }
-
-    private void InitKeySoundDict()
-    {
-        keySoundDict = new Dictionary<string, AudioClip>
-        {
-            { "A", soundA },
-            { "S", soundS },
-            { "D", soundD },
-            { "W", soundW },
-            { "Z", soundZ }
-        };
-    }
-
-    private void InitKeySpriteDict() // Initialize dictionary for key sprites
-    {
-        if (keySpriteDict != null) return;
-
-        keySpriteDict = new Dictionary<string, Sprite>();
-        for (int i = 0; i < keyLabels.Count; i++)
-        {
-            keySpriteDict[keyLabels[i]] = keySprites[i];
-        }
-    }
-
-    public void ShowKeyCombinationUI(List<string> keys) //show key combination ui
-    {
-        InitKeySpriteDict();
-
-        for (int i = 0; i < keyImages.Count; i++)
-        {
-            if (i < keys.Count)
-            {
-                string key = keys[i].ToUpper();
-
-                if (keySpriteDict.ContainsKey(key))
-                {
-                    keyImages[i].sprite = keySpriteDict[key];
-                    keyImages[i].gameObject.SetActive(true);
-                }
-                else
-                {
-                    keyImages[i].gameObject.SetActive(false);
-                }
-            }
-        }
-    }
-
-    private IEnumerator WaitASecond() // Wait for 1 second
-    {
-        yield return new WaitForSeconds(1f);
-    }
-
-    private void UpdateRecipeTempo()
-    {
-        if (currentRecipe != null)
-        {
-            // BPM을 interval로 변환 (60초 / BPM = 한 비트당 시간)
-            interval = 60f / currentRecipe.BPM;
-            Debug.Log($"레시피 {currentRecipe.RecipeName}의 BPM: {currentRecipe.BPM}, interval: {interval}");
-        }
-    }
-
+    // ====== 메인 게임플레이 메서드 ======
     public void StartRhythmSequence()
     {
+        isRhythmGameEnded = false; 
+        // Glass 보유 여부 확인 (GameManager의 전용 메서드 사용)
+        if (!Managers.Game.CanCraftRecipe(1))
+        {
+            Debug.LogWarning("<color=red>[RhythmGameManager]</color> Glass가 부족하여 리듬 게임을 시작할 수 없습니다.");
+            return; // Glass가 없으면 시작하지 않음
+        }
+        
         // 리듬게임 시작 시 메인 BGM 정지
         Managers.Sound.Stop(Define.ESound.Bgm);
-        Debug.Log("<color=yellow>[RhythmGameManager]</color> 메인 BGM 정지");
+        //Debug.Log("<color=yellow>[RhythmGameManager]</color> 메인 BGM 정지");
         
         WaitASecond();
 
         // 현재 레시피가 없을 때만 새로운 레시피를 가져옴
-        if (currentRecipe == null)
+        if (isRestart) //재시작 시
+        {   
+            RestoreKeyUI();
+            Debug.Log($"<color=green>[RhythmGameManager]</color> 실패한 레시피 재시도: {currentRecipe.RecipeName}");
+            // 프리팹을 다시 로드하지 않고 기존 프리팹(2_steps 상태) 그대로 사용
+            // 나머지 UI/패턴만 갱신
+            rhythmPattern = new List<string>(currentRecipe.KeyCombination);
+            UpdateRecipeNameUI();
+            ShowKeyCombinationUI(currentRecipe.KeyCombination);
+            StartCoroutine(InitAndStart());
+            KeyUI.SetActive(true);
+            return;
+        }
+        else
         {
+            RestoreKeyUI();
             // OrderManager에서 다음 주문을 확인만 하기 (꺼내지 않음)
             Order nextOrder = Managers.Game.CustomerCreator.OrderManager.PeekNextOrder();
             Debug.Log($"[RhythmGameManager] 다음 주문 확인: {(nextOrder != null ? nextOrder.RecipeName : "없음")}");
@@ -211,7 +151,7 @@ public class RhythmGameManager : MonoBehaviour
                     UpdateRecipeTempo();  // BPM에 따라 interval 업데이트
                     Debug.Log($"<color=green>[RhythmGameManager]</color> 주문된 레시피로 게임 시작: {currentRecipe.RecipeName} (ID: {nextOrder.recipeId})");
                 }
-                else
+                else //레시피 id가 없으면 랜덤 레시피 사용
                 {
                     Debug.LogError($"<color=red>[RhythmGameManager]</color> 레시피 ID {nextOrder.recipeId}를 찾을 수 없습니다!");
                     currentRecipe = Managers.Ingame.getRandomRecipe();
@@ -225,12 +165,7 @@ public class RhythmGameManager : MonoBehaviour
                 UpdateRecipeTempo();  // BPM에 따라 interval 업데이트
             }
         }
-        else
-        {
-            Debug.Log($"<color=green>[RhythmGameManager]</color> 실패한 레시피 재시도: {currentRecipe.RecipeName}");
-        }
-
-        Debug.Log(currentRecipe.RecipeName);
+ 
         LoadAndSpawnCocktailPrefab(currentRecipe.NO.ToString());
         Debug.Log(string.Join(", ", currentRecipe.KeyCombination));
 
@@ -242,69 +177,42 @@ public class RhythmGameManager : MonoBehaviour
 
         ShowKeyCombinationUI(currentRecipe.KeyCombination);
         //TrimTrailingSilence();
-        rhythmCoroutine = StartCoroutine(InitAndStart());
+        StartCoroutine(InitAndStart());
         KeyUI.SetActive(true);
-    }
-
-    private void TrimTrailingSilence()
-    {
-        for (int i = rhythmPattern.Count - 1; i >= 0; i--)
-        {
-            if (rhythmPattern[i] != "_")
-            {
-                rhythmPattern = rhythmPattern.GetRange(0, i + 1);
-                break;
-            }
-        }
     }
 
     private IEnumerator InitAndStart()
     {
         yield return new WaitForSeconds(1f);
-        useMetronome = true;
-        metronomeCoroutine = StartCoroutine(MetronomeLoop());
-        rhythmCoroutine = StartCoroutine(PlayRhythm());
-    }
-
-    private IEnumerator MetronomeLoop()
-    {
-        while (useMetronome)
+        
+        if (isRestart)
         {
-            if (metronomeClip != null && metronomeSource != null)
-                metronomeSource.PlayOneShot(metronomeClip);
-
-            yield return new WaitForSeconds(interval);
+            // 1_Steps(혹은 step) 오브젝트 전부 활성화
+            /*if (cocktailStepObjects != null)
+            {
+                foreach (var stepObj in cocktailStepObjects)
+                {
+                    if (stepObj != null)
+                        stepObj.SetActive(true);
+                }
+            }*/
+            yield return StartCoroutine(PlayCountdownBeats());
+            yield return StartCoroutine(WaitForInputs());
         }
-    }
-
-    private AudioClip GetRecipeSound(string key)
-    {
-        if (currentRecipe == null)
-            return keySoundDict[key];
-
-        var soundSet = recipeSoundData.GetSoundSet(currentRecipe.NO);
-        if (soundSet == null)
-            return keySoundDict[key];
-
-        switch (key)
+        else
         {
-            case "A": return soundSet.soundA ?? keySoundDict[key];
-            case "S": return soundSet.soundS ?? keySoundDict[key];
-            case "D": return soundSet.soundD ?? keySoundDict[key];
-            case "W": return soundSet.soundW ?? keySoundDict[key];
-            case "Z": return soundSet.soundZ ?? keySoundDict[key];
-            default: return keySoundDict[key];
+        useMetronome = true;
+        //metronomeCoroutine = StartCoroutine(MetronomeLoop());
+        //StartCoroutine(MetronomeLoop());
+        //rhythmCoroutine = StartCoroutine(PlayRhythm());
+        StartCoroutine(PlayRhythm());
         }
     }
 
     private IEnumerator PlayRhythm()
     {
         metronomeSource.volume = 0f;
-
-        expectedTimes.Clear();
-        inputTimes.Clear();
-        inputKeys.Clear();
-
+        
         // 모든 칵테일 이미지 비활성화
         foreach (var obj in cocktailStepObjects)
         {
@@ -337,73 +245,54 @@ public class RhythmGameManager : MonoBehaviour
 
         RestoreKeyUI();
         yield return StartCoroutine(PlayCountdownBeats());
-        inputCoroutine = StartCoroutine(WaitForInputs());
+        //inputCoroutine = StartCoroutine(WaitForInputs());
+        StartCoroutine(WaitForInputs());
     }
 
     private IEnumerator PlayCountdownBeats()
     {
-        string[] countdown = { "3", "2", "1" };
-        metronomeSource.volume = 0.7f;
         sampleImage.gameObject.SetActive(true);
+        string[] countdown = { "3", "2", "1", "GO!", " " };
+
+        if (sampleImage != null)
+        {
+            sampleImage.transform.localScale = new Vector3(2f, 2f, 2f);
+        }
+        
         foreach (string c in countdown)
         {
             if (Num != null) Num.text = c;
-            yield return new WaitForSeconds(interval);
-            if (sampleImage != null)
+            
+            if (c != " ")
             {
-                Vector3 currentScale = sampleImage.transform.localScale;
-                sampleImage.transform.localScale = new Vector3(
-                    currentScale.x - 0.2f,
-                    currentScale.y - 0.2f,
-                    currentScale.z - 0.2f
-                );
+                           // 카운트다운 숫자마다 메트로놈 소리 재생
+            if (metronomeClip != null && metronomeSource != null)
+                metronomeSource.PlayOneShot(metronomeClip);
+            yield return new WaitForSeconds(interval);
             }
+
+
+                if (sampleImage != null)
+                {
+                    Vector3 currentScale = sampleImage.transform.localScale;
+                    sampleImage.transform.localScale = new Vector3(
+                        currentScale.x - 0.2f,
+                        currentScale.y - 0.2f,
+                        currentScale.z - 0.2f
+                    );
+                }
+
+            
         }
         metronomeSource.volume = 0f; //플레이어 입력 시 메트로놈 볼륨 낮춤
         sampleImage.gameObject.SetActive(false);
         if (Num != null) Num.text = "";
-    }
-
-    private void DimKeyUI(int index) // Dim the UI of pressed key
-    {
-        if (index >= 0 && index < keyImages.Count)
-        {
-            Image image = keyImages[index];
-            Color color = image.color;
-            color = new Color(color.r * 0.5f, color.g * 0.5f, color.b * 0.5f, 0.3f);
-            image.color = color;
-        }
-    }
-
-    private void RestoreKeyUI() // Restore UI brightness to original state
-    {
-        foreach (Image image in keyImages)
-        {
-            Color color = image.color;
-            color = new Color(1f, 1f, 1f, 1f);
-            image.color = color;
-        }
-    }
-
-    private IEnumerator AnimateKeyScale(int keyIndex)
-    {
-        if (keyIndex < 0 || keyIndex >= keyImages.Count) yield break;
         
-        Image keyImage = keyImages[keyIndex];
-        Vector3 originalScale = keyImage.transform.localScale;
-        Vector3 targetScale = originalScale * scaleMultiplier;
-        
-        // 크기 증가
-        keyImage.transform.localScale = targetScale;
-        
-        // 지정된 시간 후 원래 크기로 복귀
-        yield return new WaitForSeconds(scaleDuration);
-        
-        keyImage.transform.localScale = originalScale;
     }
 
     private IEnumerator WaitForInputs()
     {
+        
         float inputStartTime = Time.time;
         HashSet<KeyCode> allowedKeys = new HashSet<KeyCode> 
         { 
@@ -496,11 +385,6 @@ public class RhythmGameManager : MonoBehaviour
         JudgeResults();
     }
 
-    private string SortString(string input)
-    {
-        return new string(input.ToCharArray().OrderBy(c => c).ToArray());
-    }
-
     private void JudgeResults()
     {
         bool allCorrect = true;
@@ -552,16 +436,98 @@ public class RhythmGameManager : MonoBehaviour
         {
             StartCoroutine(HandleGameEnd(RhythmResult.Good));
         }
+        expectedTimes.Clear();
+        inputTimes.Clear();
+        inputKeys.Clear();
+        //RestoreKeyUI();
     }
 
-    public void ForceStopAndFail()
+    private IEnumerator HandleGameEnd(RhythmResult result) // Handle game end state and result display
     {
-        if (rhythmCoroutine != null) StopCoroutine(rhythmCoroutine);
-        if (inputCoroutine != null) StopCoroutine(inputCoroutine);
-        if (metronomeCoroutine != null) StopCoroutine(metronomeCoroutine);
+        yield return WaitASecond();
+        KeyUI.SetActive(false);
+        // Show result text with color
+        resultText.gameObject.SetActive(true);
+        if (result == RhythmResult.Fail) //리듬게임 실패
+        {
+            resultText.text = "Bad";
+            resultText.color = Color.red;
+            
+            // 실패 시 주문은 그대로 유지 (다시 시도)
+            yield return WaitASecond();  // Show result text briefly
+            
+            resultText.gameObject.SetActive(false);
 
-        useMetronome = false;
-        StartCoroutine(HandleGameEnd(RhythmResult.Fail));
+            // UI 업데이트 (주문은 그대로, 현재 레시피도 유지)
+            UpdateRecipeNameUI();
+
+            Debug.Log($"<color=red>[RhythmGameManager]</color> 레시피 {currentRecipe.RecipeName} 실패, 재시도합니다.");
+            isRestart = true;
+            StartRhythmSequence();  // Restart with same order
+            /////////////////////////////////////////////////////동현이가 일단추가
+            //Managers.Ingame.EndRhythmGame(result);
+        }
+        else if (result == RhythmResult.Pause)
+        {
+            //
+        }
+        else //성공 시
+        {
+            resultText.text = "Clear";
+            resultText.color = Color.blue;
+            isRestart = false;
+            isRhythmGameEnded = true;
+
+            //Final 오브젝트 활성화
+            if (cocktailFinalObjects != null)
+            {
+                foreach (var finalObj in cocktailFinalObjects)
+                {
+                    if (finalObj != null)
+                    {
+                        finalObj.SetActive(true);
+                    }
+                }
+            }
+            
+            //주문 제거
+            var completedOrder = Managers.Game.CustomerCreator.OrderManager.GetNextOrder();
+            if (completedOrder != null)
+            {
+                Debug.Log($"<color=green>[RhythmGameManager]</color> 주문 완료: {completedOrder.RecipeName}");
+            }
+            
+            currentRecipe = null;  // Clear current recipe on success only
+            
+            // UI 업데이트 (주문 제거됨, 현재 레시피 클리어)
+            UpdateRecipeNameUI();
+            
+            // Send result to game manager
+            Managers.Ingame.EndRhythmGame(result);
+
+            // 잠시 대기
+            yield return new WaitForSeconds(1.5f);
+            
+            //만약 리스트에 다음 레시피가 있으면 다음 레시피로 넘어가고 없으면 게임 종료
+            if (Managers.Game.CustomerCreator.OrderManager.GetOrderCount() > 0)
+            {
+                Debug.Log("<color=cyan>[RhythmGameManager]</color> 다음 주문이 있습니다. 다음 리듬게임을 시작합니다.");
+                // 완성된 칵테일 프리팹 제거 및 상태 초기화
+                //ClearCocktailPrefab();
+                isRhythmGameEnded = false; 
+                StartRhythmSequence();
+                resultText.gameObject.SetActive(false);
+            }
+            else
+            {
+                Debug.Log("<color=yellow>[RhythmGameManager]</color> 남은 주문이 없습니다. 메인 BGM을 재시작합니다.");
+                isRhythmGameEnded = true;
+                ESCPressed();
+                
+            }
+        }
+
+            //yield return WaitASecond();
     }
 
     /// <summary>
@@ -578,9 +544,9 @@ public class RhythmGameManager : MonoBehaviour
             currentRecipe = null;
             
             // 실행 중인 코루틴들 정지
-            if (rhythmCoroutine != null) StopCoroutine(rhythmCoroutine);
-            if (inputCoroutine != null) StopCoroutine(inputCoroutine);
-            if (metronomeCoroutine != null) StopCoroutine(metronomeCoroutine);
+            // if (rhythmCoroutine != null) StopCoroutine(rhythmCoroutine);
+            // if (inputCoroutine != null) StopCoroutine(inputCoroutine);
+            // if (metronomeCoroutine != null) StopCoroutine(metronomeCoroutine);
             
             useMetronome = false;
             
@@ -601,105 +567,6 @@ public class RhythmGameManager : MonoBehaviour
         else
         {
             Debug.Log($"<color=yellow>[RhythmGameManager]</color> 건너뛸 수 있는 주문이 없습니다.");
-        }
-    }
-
-    private IEnumerator HandleGameEnd(RhythmResult result) // Handle game end state and result display
-    {
-        yield return WaitASecond();
-        KeyUI.SetActive(false);
-        
-        // Show result text with color
-        resultText.gameObject.SetActive(true);
-        if (result == RhythmResult.Fail)
-        {
-            resultText.text = "Bad";
-            resultText.color = Color.red;
-            
-            // 실패 시 주문은 그대로 유지 (다시 시도)
-            yield return WaitASecond();  // Show result text briefly
-            RestoreKeyUI();
-            resultText.gameObject.SetActive(false);
-            
-            // UI 업데이트 (주문은 그대로, 현재 레시피도 유지)
-            UpdateRecipeNameUI();
-            
-            Debug.Log($"<color=red>[RhythmGameManager]</color> 레시피 {currentRecipe.RecipeName} 실패, 재시도합니다.");
-            StartRhythmSequence();  // Restart with same order
-            /////////////////////////////////////////////////////동현이가 일단추가
-            Managers.Ingame.EndRhythmGame(result);
-        }
-        else
-        {
-            resultText.text = "Clear";
-            resultText.color = Color.blue;
-            
-            // 성공 시 Final 오브젝트 활성화
-            if (cocktailFinalObjects != null)
-            {
-                foreach (var finalObj in cocktailFinalObjects)
-                {
-                    if (finalObj != null)
-                    {
-                        finalObj.SetActive(true);
-                    }
-                }
-            }
-            
-            // 성공 시에만 주문 제거
-            var completedOrder = Managers.Game.CustomerCreator.OrderManager.GetNextOrder();
-            if (completedOrder != null)
-            {
-                Debug.Log($"<color=green>[RhythmGameManager]</color> 주문 완료: {completedOrder.RecipeName}");
-                
-            
-            }
-            
-            currentRecipe = null;  // Clear current recipe on success only
-            
-            // UI 업데이트 (주문 제거됨, 현재 레시피 클리어)
-            UpdateRecipeNameUI();
-            
-            // Wait for space input only on success
-            //while (!Input.GetKeyDown(KeyCode.Space))
-            //{
-            //    yield return null;
-            //}
-
-            // Prepare for next sequence
-            RestoreKeyUI();
-            KeyUI.SetActive(true);
-            resultText.gameObject.SetActive(false);
-            
-            // Send result to game manager
-            Managers.Ingame.EndRhythmGame(result);
-            
-            // 리듬게임 완료 시 메인 BGM 재시작
-            RestartMainBGM();
-        }
-    }
-
-    /// <summary>
-    /// 메인 BGM을 재시작합니다.
-    /// </summary>
-    private void RestartMainBGM()
-    {
-        try 
-        {
-            AudioClip audioClip = Managers.Resource.Load<AudioClip>("spring-day");
-            if (audioClip != null)
-            {
-                Managers.Sound.Play(Define.ESound.Bgm, audioClip);
-                Debug.Log("<color=green>[RhythmGameManager]</color> 메인 BGM 재시작: spring-day");
-            }
-            else
-            {
-                Debug.LogWarning("<color=yellow>[RhythmGameManager]</color> spring-day AudioClip을 찾을 수 없습니다.");
-            }
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError($"<color=red>[RhythmGameManager]</color> BGM 재시작 실패: {e.Message}");
         }
     }
 
@@ -739,6 +606,13 @@ public class RhythmGameManager : MonoBehaviour
 
     private async void LoadAndSpawnCocktailPrefab(string recipeId)
     {
+        // isRestart가 true면 프리팹을 새로 로드하지 않고 기존 프리팹을 그대로 사용
+        if (isRestart && currentCocktailPrefab != null)
+        {
+            // 아무것도 하지 않고 바로 return (기존 프리팹 유지)
+            return;
+        }
+
         // 이전 프리팹이 있다면 제거
         if (currentCocktailPrefab != null)
         {
@@ -805,5 +679,220 @@ public class RhythmGameManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 메인 BGM을 재시작합니다.
+    /// </summary>
+    private void RestartMainBGM()
+    {
+        try 
+        {
+            AudioClip audioClip = Managers.Resource.Load<AudioClip>("spring-day");
+            if (audioClip != null)
+            {
+                Managers.Sound.Play(Define.ESound.Bgm, audioClip);
+                Debug.Log("<color=green>[RhythmGameManager]</color> 메인 BGM 재시작: spring-day");
+            }
+            else
+            {
+                Debug.LogWarning("<color=yellow>[RhythmGameManager]</color> spring-day AudioClip을 찾을 수 없습니다.");
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"<color=red>[RhythmGameManager]</color> BGM 재시작 실패: {e.Message}");
+        }
+    }
+
+    // ====== 보조/유틸리티 메서드 ======
+    private void SetupAudioSources()
+    {
+        // 메트로놈용 AudioSource 설정
+        if (metronomeSource == null)
+        {
+            // 기존 AudioSource가 있다면 그것을 메트로놈용으로 사용
+            metronomeSource = GetComponent<AudioSource>();
+            
+            // 없다면 새로 생성
+            if (metronomeSource == null)
+            {
+                metronomeSource = gameObject.AddComponent<AudioSource>();
+            }
+            metronomeSource.playOnAwake = false;
+        }
+
+        // 키 사운드용 AudioSource 생성
+        if (audioSource == null)
+        {
+            // 새로운 AudioSource 컴포넌트 추가
+            audioSource = gameObject.AddComponent<AudioSource>();
+            audioSource.playOnAwake = false;
+        }
+
+        Debug.Log("Audio Sources setup completed - Metronome: " + (metronomeSource != null) + ", KeySound: " + (audioSource != null));
+    }
+
+    private void InitKeySoundDict()
+    {
+        keySoundDict = new Dictionary<string, AudioClip>
+        {
+            { "A", soundA },
+            { "S", soundS },
+            { "D", soundD },
+            { "W", soundW },
+            { "Z", soundZ }
+        };
+    }
+
+    private void InitKeySpriteDict() // Initialize dictionary for key sprites
+    {
+        if (keySpriteDict != null) return;
+
+        keySpriteDict = new Dictionary<string, Sprite>();
+        for (int i = 0; i < keyLabels.Count; i++)
+        {
+            keySpriteDict[keyLabels[i]] = keySprites[i];
+        }
+    }
+
+    public void ShowKeyCombinationUI(List<string> keys) //show key combination ui
+    {
+        InitKeySpriteDict();
+
+        for (int i = 0; i < keyImages.Count; i++)
+        {
+            if (i < keys.Count)
+            {
+                string key = keys[i].ToUpper();
+
+                if (keySpriteDict.ContainsKey(key))
+                {
+                    keyImages[i].sprite = keySpriteDict[key];
+                    keyImages[i].gameObject.SetActive(true);
+                }
+                else
+                {
+                    keyImages[i].gameObject.SetActive(false);
+                }
+            }
+        }
+    }
+
+    private IEnumerator WaitASecond() // Wait for 1 second
+    {
+        yield return new WaitForSeconds(1f);
+    }
+
+    private void UpdateRecipeTempo()
+    {
+        if (currentRecipe != null)
+        {
+            // BPM을 interval로 변환 (60초 / BPM = 한 비트당 시간)
+            interval = 60f / currentRecipe.BPM;
+            Debug.Log($"레시피 {currentRecipe.RecipeName}의 BPM: {currentRecipe.BPM}, interval: {interval}");
+        }
+    }
+
+    private AudioClip GetRecipeSound(string key)
+    {
+        if (currentRecipe == null)
+            return keySoundDict[key];
+
+        var soundSet = recipeSoundData.GetSoundSet(currentRecipe.NO);
+        if (soundSet == null)
+            return keySoundDict[key];
+
+        switch (key)
+        {
+            case "A": return soundSet.soundA ?? keySoundDict[key];
+            case "S": return soundSet.soundS ?? keySoundDict[key];
+            case "D": return soundSet.soundD ?? keySoundDict[key];
+            case "W": return soundSet.soundW ?? keySoundDict[key];
+            case "Z": return soundSet.soundZ ?? keySoundDict[key];
+            default: return keySoundDict[key];
+        }
+    }
+
+    private void DimKeyUI(int index) // Dim the UI of pressed key
+    {
+        if (index >= 0 && index < keyImages.Count)
+        {
+            Image image = keyImages[index];
+            Color color = image.color;
+            color = new Color(color.r * 0.5f, color.g * 0.5f, color.b * 0.5f, 0.3f);
+            image.color = color;
+        }
+    }
+
+    private void RestoreKeyUI() // Restore UI brightness to original state
+    {
+        foreach (Image image in keyImages)
+        {
+            Color color = image.color;
+            color = new Color(1f, 1f, 1f, 1f);
+            image.color = color;
+        }
+    }
+
+    private IEnumerator AnimateKeyScale(int keyIndex)
+    {
+        if (keyIndex < 0 || keyIndex >= keyImages.Count) yield break;
+        
+        Image keyImage = keyImages[keyIndex];
+        Vector3 originalScale = keyImage.transform.localScale;
+        Vector3 targetScale = originalScale * scaleMultiplier;
+        
+        // 크기 증가
+        keyImage.transform.localScale = targetScale;
+        
+        // 지정된 시간 후 원래 크기로 복귀
+        yield return new WaitForSeconds(scaleDuration);
+        
+        keyImage.transform.localScale = originalScale;
+
+    }
+
+    private string SortString(string input)
+    {
+        return new string(input.ToCharArray().OrderBy(c => c).ToArray());
+    }
+
+
+    public void ESCPressed() //정리해야됨
+    {
+        Debug.Log("ESCPressed가 호출되었습니다.");
+        RestoreKeyUI();
+        KeyUI.SetActive(false);
+        Managers.Ingame.isRhythmGameStarted = false;
+
+        // 게임이 진행 중일 때 ESC를 누른 경우
+        if (!isRhythmGameEnded)
+        {
+            Debug.Log("<color=orange>[RhythmGameManager]</color> ESC를 눌러 리듬 게임을 강제 중단합니다.");
+
+            StopAllCoroutines();
+            isRhythmGameEnded = true; 
+
+
+            ClearCocktailPrefab();
+            Managers.Ingame.EndRhythmGame(RhythmResult.Pause);
+        }
+        // 게임이 이미 끝난 상태(성공 또는 주문없음)에서 ESC가 눌렸을 때 ->
+        else
+        {
+            Debug.Log("게임 종료 후 ESC: UI와 오브젝트를 정리합니다.");
+            // 이미 멈춰있는 상태이므로, 남은 오브젝트만 정리합니다.
+            ClearCocktailPrefab();
+            resultText.gameObject.SetActive(false);
+        }
+    }
+
+    public void ClearCocktailPrefab()
+    {
+        if (currentCocktailPrefab != null)
+        {
+            Destroy(currentCocktailPrefab);
+            currentCocktailPrefab = null;
+        }
+    }
 
 }

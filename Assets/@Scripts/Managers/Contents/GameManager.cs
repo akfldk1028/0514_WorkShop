@@ -323,7 +323,7 @@ public class GameManager
 		
 		_gameResourceManager.InitializeResource(ResourceType.Glass, 0, () => {
 			// TODO: UI_GameScene에 RefreshGlassText() 메서드 구현 필요
-			// (Managers.UI.SceneUI as UI_GameScene)?.RefreshGlassText();
+			(Managers.UI.SceneUI as UI_GameScene)?.RefreshGlassText();
 		});
 	}
  	#region Move

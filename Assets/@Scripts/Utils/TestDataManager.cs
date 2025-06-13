@@ -37,6 +37,7 @@ public class TestDataManager : MonoBehaviour
         
         // 테스트용 골드 추가
         Managers.Game.AddGold(10000);
+        Managers.Game.AddGlass(5);
         
         Debug.Log("<color=green>[TestDataManager]</color> 테스트 데이터 초기화 완료!");
     }
