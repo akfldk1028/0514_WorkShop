@@ -23,6 +23,8 @@ public class RhythmGameManager : MonoBehaviour
     public AudioClip soundClip;
     public AudioSource audioSource;  // 키 사운드용 (기존 AudioSource)
 
+    public AudioClip successSound; // 완성 상태 사운드
+
     [Header("Key Sound Settings")]
     public AudioClip soundA;  // Default Sound for key A
     public AudioClip soundS;  // Default Sound for key S
@@ -37,8 +39,6 @@ public class RhythmGameManager : MonoBehaviour
     public AudioClip metronomeClip;
     public AudioSource metronomeSource;  // 메트로놈 전용 (새로 추가한 AudioSource)
 
-    [Header("Countdown TMP Text")]
-    public TextMeshProUGUI Num;
 
     [Header("Judgment Range")]
     [SerializeField] private float perfectWindow = 0.15f;
@@ -93,6 +93,12 @@ public class RhythmGameManager : MonoBehaviour
     [Header("Sample Image")]
     public Image sampleImage;  // Sample 이미지
 
+    [Header("Countdown Images")]
+    public List<GameObject> countdownImages;  // 카운트다운 이미지들 (4, 3, 2, 1, GO!) 순서대로
+
+    [Header("Result Images")]
+    public GameObject badResultImage;   // Bad 결과 이미지
+
 
     private bool isRestart = false;
     private bool isRhythmGameEnded = true;
@@ -108,6 +114,7 @@ public class RhythmGameManager : MonoBehaviour
     public void StartRhythmSequence()
     {
         isRhythmGameEnded = false; 
+        
         // Glass 보유 여부 확인 (GameManager의 전용 메서드 사용)
         if (!Managers.Game.CanCraftRecipe(1))
         {
@@ -165,7 +172,11 @@ public class RhythmGameManager : MonoBehaviour
                 UpdateRecipeTempo();  // BPM에 따라 interval 업데이트
             }
         }
- 
+        
+        // Bad 이미지가 활성화되어 있을 수 있으니 비활성화
+        if (badResultImage != null)
+            badResultImage.SetActive(false);
+
         LoadAndSpawnCocktailPrefab(currentRecipe.NO.ToString());
         Debug.Log(string.Join(", ", currentRecipe.KeyCombination));
 
@@ -240,7 +251,12 @@ public class RhythmGameManager : MonoBehaviour
                 }
             }
 
-            yield return new WaitForSeconds(interval);
+            // 오디오 시스템 시간 기준으로 정확한 대기
+            double targetTime = AudioSettings.dspTime + interval;
+            while (AudioSettings.dspTime < targetTime)
+            {
+                yield return null;
+            }
         }
 
         RestoreKeyUI();
@@ -251,26 +267,38 @@ public class RhythmGameManager : MonoBehaviour
 
     private IEnumerator PlayCountdownBeats()
     {
-        sampleImage.gameObject.SetActive(true);
-        string[] countdown = { "3", "2", "1", "GO!", " " };
+        sampleImage.gameObject.SetActive(true); //첫박 도입 위한 가이드 이미지
+        string[] countdown = { "4", "3", "2", "1", "GO!" };
 
         if (sampleImage != null)
         {
             sampleImage.transform.localScale = new Vector3(2f, 2f, 2f);
         }
         
-        foreach (string c in countdown)
+        for (int i = 0; i < countdown.Length; i++)
         {
-            if (Num != null) Num.text = c;
+            string c = countdown[i];
             
-            if (c != " ")
+            // 모든 카운트다운 이미지 비활성화
+            foreach (var countdownImg in countdownImages)
             {
-                           // 카운트다운 숫자마다 메트로놈 소리 재생
+                if (countdownImg != null)
+                    countdownImg.SetActive(false);
+            }
+            
+            // 현재 카운트다운 이미지만 활성화
+            if (i < countdownImages.Count && countdownImages[i] != null)
+            {
+                countdownImages[i].SetActive(true);
+            }
+            
+            if (c != "GO!")
+            {
+            // 카운트다운 숫자마다 메트로놈 소리 재생
             if (metronomeClip != null && metronomeSource != null)
                 metronomeSource.PlayOneShot(metronomeClip);
             yield return new WaitForSeconds(interval);
             }
-
 
                 if (sampleImage != null)
                 {
@@ -284,16 +312,24 @@ public class RhythmGameManager : MonoBehaviour
 
             
         }
+        
+        // 모든 카운트다운 이미지 비활성화
+        foreach (var countdownImg in countdownImages)
+        {
+            if (countdownImg != null)
+                countdownImg.SetActive(false);
+        }
+        
         metronomeSource.volume = 0f; //플레이어 입력 시 메트로놈 볼륨 낮춤
         sampleImage.gameObject.SetActive(false);
-        if (Num != null) Num.text = "";
+        
         
     }
 
     private IEnumerator WaitForInputs()
     {
         
-        float inputStartTime = Time.time;
+        double inputStartTime = AudioSettings.dspTime;
         HashSet<KeyCode> allowedKeys = new HashSet<KeyCode> 
         { 
             KeyCode.A, 
@@ -306,15 +342,15 @@ public class RhythmGameManager : MonoBehaviour
 
         for (int i = 0; i < rhythmPattern.Count; i++) //
         {
-            float expectedTime = inputStartTime + i * interval;
-            expectedTimes.Add(expectedTime);
+            double expectedTime = inputStartTime + i * interval;
+            expectedTimes.Add((float)expectedTime);
 
-            float slotEnd = expectedTime + interval;
+            double slotEnd = expectedTime + interval;
             bool inputReceived = false;
             float recordedTime = -1f;
             string pressedKeyString = "";
 
-            while (Time.time < slotEnd)
+            while (AudioSettings.dspTime < slotEnd)
             {
                 if (!inputReceived)
                 {
@@ -324,13 +360,22 @@ public class RhythmGameManager : MonoBehaviour
                     {
                         if (Input.GetKey(k))
                         {
+                            // 키 입력 시점 기록 (밀리세컨드)
+                            float keyPressTime = Time.realtimeSinceStartup * 1000f;
+                            
                             string key = (k == KeyCode.Space) ? "Z" : k.ToString().ToUpper();
                             keysPressed.Add(key);
                             
                             AudioClip soundToPlay = GetRecipeSound(key);
                             if (soundToPlay != null)
                             {
+                                // 오디오 재생 시점 기록 (밀리세컨드)
+                                float audioPlayTime = Time.realtimeSinceStartup * 1000f;
                                 audioSource.PlayOneShot(soundToPlay);
+                                
+                                // 시간차 계산 및 로그 출력
+                                float timeDifference = audioPlayTime - keyPressTime;
+                                Debug.Log($"<color=cyan>[RhythmGameManager]</color> 키 입력-오디오 재생 시간차: {timeDifference:F3}ms (키: {key})");
                             }
                         }
                     }
@@ -340,7 +385,7 @@ public class RhythmGameManager : MonoBehaviour
                         keysPressed.Sort();
                         pressedKeyString = string.Join("", keysPressed);
                         inputReceived = true;
-                        recordedTime = Time.time;
+                        recordedTime = (float)AudioSettings.dspTime;
                     }
 
                     // 입력 패턴이 맞는지 확인하고 흐리게 처리
@@ -350,7 +395,7 @@ public class RhythmGameManager : MonoBehaviour
                         if (!inputReceived)
                         {
                             isCorrectInput = true;
-                            recordedTime = Time.time;
+                            recordedTime = (float)AudioSettings.dspTime;
                         }
                     }
                     else if (inputReceived) //key input
@@ -446,17 +491,19 @@ public class RhythmGameManager : MonoBehaviour
     {
         yield return WaitASecond();
         KeyUI.SetActive(false);
-        // Show result text with color
-        resultText.gameObject.SetActive(true);
+        // Show result image
         if (result == RhythmResult.Fail) //리듬게임 실패
         {
-            resultText.text = "Bad";
-            resultText.color = Color.red;
+            // Bad 이미지 표시
+            if (badResultImage != null)
+                badResultImage.SetActive(true);
             
             // 실패 시 주문은 그대로 유지 (다시 시도)
-            yield return WaitASecond();  // Show result text briefly
+            yield return WaitASecond();  // Show result image briefly
             
-            resultText.gameObject.SetActive(false);
+            // Bad 이미지 숨기기
+            if (badResultImage != null)
+                badResultImage.SetActive(false);
 
             // UI 업데이트 (주문은 그대로, 현재 레시피도 유지)
             UpdateRecipeNameUI();
@@ -473,8 +520,6 @@ public class RhythmGameManager : MonoBehaviour
         }
         else //성공 시
         {
-            resultText.text = "Clear";
-            resultText.color = Color.blue;
             isRestart = false;
             isRhythmGameEnded = true;
 
@@ -488,6 +533,11 @@ public class RhythmGameManager : MonoBehaviour
                         finalObj.SetActive(true);
                     }
                 }
+            }
+
+            if (successSound != null)
+            {
+                audioSource.PlayOneShot(successSound);//
             }
             
             //주문 제거
@@ -516,13 +566,13 @@ public class RhythmGameManager : MonoBehaviour
                 //ClearCocktailPrefab();
                 isRhythmGameEnded = false; 
                 StartRhythmSequence();
-                resultText.gameObject.SetActive(false);
             }
             else
             {
                 Debug.Log("<color=yellow>[RhythmGameManager]</color> 남은 주문이 없습니다. 메인 BGM을 재시작합니다.");
                 isRhythmGameEnded = true;
                 ESCPressed();
+                Managers.Ingame.Resume();
                 
             }
         }
@@ -552,7 +602,6 @@ public class RhythmGameManager : MonoBehaviour
             
             // UI 초기화
             RestoreKeyUI();
-            if (Num != null) Num.text = "";
             
             // 칵테일 오브젝트 정리
             if (currentCocktailPrefab != null)
@@ -862,6 +911,9 @@ public class RhythmGameManager : MonoBehaviour
         Debug.Log("ESCPressed가 호출되었습니다.");
         RestoreKeyUI();
         KeyUI.SetActive(false);
+        sampleImage.gameObject.SetActive(false);
+        
+
         Managers.Ingame.isRhythmGameStarted = false;
 
         // 게임이 진행 중일 때 ESC를 누른 경우
@@ -882,7 +934,6 @@ public class RhythmGameManager : MonoBehaviour
             Debug.Log("게임 종료 후 ESC: UI와 오브젝트를 정리합니다.");
             // 이미 멈춰있는 상태이므로, 남은 오브젝트만 정리합니다.
             ClearCocktailPrefab();
-            resultText.gameObject.SetActive(false);
         }
     }
 

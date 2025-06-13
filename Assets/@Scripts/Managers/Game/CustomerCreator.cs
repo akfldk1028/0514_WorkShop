@@ -25,6 +25,11 @@ public class CustomerCreator
     private IDisposable updateSubscription;
     private IDisposable customerSubscription;
     private bool isActive = false;
+    
+    [Header("고객 스폰 제한 설정")]
+    public int maxCustomersToSpawn = 20; // 최대 스폰할 고객 수
+    private int spawnedCustomersCount = 0; // 현재까지 스폰된 고객 수
+    
     private int[] characterIdList = { CUSTOMER_ID_2, CUSTOMER_ID_3, CUSTOMER_ID_4, CUSTOMER_ID_5, CUSTOMER_ID_6, CUSTOMER_ID_7 }; // 예시: 원하는 id들로 채우세요
 
     public CustomerCreator()
@@ -41,7 +46,7 @@ public class CustomerCreator
         isActive = true;
         lastSpawnTime = Time.time;
         updateSubscription = Managers.Subscribe(ActionType.Managers_Update, OnUpdate);
-        Debug.Log("[CustomerCreator] 자동 스폰 시작");
+        Debug.Log($"[CustomerCreator] 자동 스폰 시작 (최대 {maxCustomersToSpawn}명)");
     }
     
     public void StopAutoSpawn()
@@ -56,6 +61,14 @@ public class CustomerCreator
     private void OnUpdate()
     {
         if (!isActive) return;
+        
+        // 최대 고객 수에 도달했으면 스폰 중지
+        if (spawnedCustomersCount >= maxCustomersToSpawn)
+        {
+            Debug.Log($"<color=yellow>[CustomerCreator]</color> 최대 고객 수 ({maxCustomersToSpawn}명)에 도달하여 스폰을 중지합니다.");
+            StopAutoSpawn();
+            return;
+        }
         
         if (Time.time - lastSpawnTime >= spawnInterval)
         {
@@ -209,10 +222,41 @@ public class CustomerCreator
         // 6. 대기열에 정식 등록
         Managers.Map.RegisterCustomerInQueue(customer, waitingPosition);
         
+        // 7. 스폰된 고객 수 증가
+        spawnedCustomersCount++;
+        
         Debug.Log($"<color=green>[CustomerCreator]</color> {customer.name} 대기줄에 직접 스폰 완료! 위치: {waitingPosition}");
-        Debug.Log($"<color=cyan>[CustomerCreator]</color> 현재 대기자: {Managers.Map.WaitingCustomerCount}명");
+        Debug.Log($"<color=cyan>[CustomerCreator]</color> 현재 대기자: {Managers.Map.WaitingCustomerCount}명, 총 스폰된 고객: {spawnedCustomersCount}/{maxCustomersToSpawn}명");
         
         Managers.PublishAction(ActionType.Customer_Spawned);
+    }
+    
+    /// <summary>
+    /// 스폰 카운터를 리셋합니다.
+    /// </summary>
+    public void ResetSpawnCounter()
+    {
+        spawnedCustomersCount = 0;
+        Debug.Log($"<color=green>[CustomerCreator]</color> 스폰 카운터가 리셋되었습니다.");
+    }
+    
+    /// <summary>
+    /// 최대 스폰 수를 변경합니다.
+    /// </summary>
+    /// <param name="newMaxCount">새로운 최대 스폰 수</param>
+    public void SetMaxCustomersToSpawn(int newMaxCount)
+    {
+        maxCustomersToSpawn = newMaxCount;
+        Debug.Log($"<color=green>[CustomerCreator]</color> 최대 스폰 수가 {newMaxCount}명으로 변경되었습니다.");
+    }
+    
+    /// <summary>
+    /// 현재 스폰 상태를 반환합니다.
+    /// </summary>
+    /// <returns>현재까지 스폰된 고객 수와 최대 스폰 수</returns>
+    public (int spawned, int max) GetSpawnStatus()
+    {
+        return (spawnedCustomersCount, maxCustomersToSpawn);
     }
 
     // private void SpawnCustomer()
