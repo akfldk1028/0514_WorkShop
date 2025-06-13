@@ -41,8 +41,8 @@ public class RhythmGameManager : MonoBehaviour
     public TextMeshProUGUI Num;
 
     [Header("Judgment Range")]
-    [SerializeField] private float perfectWindow = 0.15f;
-    [SerializeField] private float goodWindow = 0.3f;
+    [SerializeField] private float perfectWindow = 0.2f;
+    [SerializeField] private float goodWindow = 0.4f;
 
     [Header("Rhythm Key Setting")]
     [SerializeField] private float interval = 0.4615f;  // 기본값으로 130 BPM에 해당하는 interval 설정
@@ -183,7 +183,7 @@ public class RhythmGameManager : MonoBehaviour
 
     private IEnumerator InitAndStart()
     {
-        yield return new WaitForSeconds(1f);
+        yield return YieldCache.WaitForSeconds(1f);
         
         if (isRestart)
         {
@@ -240,7 +240,7 @@ public class RhythmGameManager : MonoBehaviour
                 }
             }
 
-            yield return new WaitForSeconds(interval);
+            yield return YieldCache.WaitForSeconds(interval);
         }
 
         RestoreKeyUI();
@@ -268,7 +268,7 @@ public class RhythmGameManager : MonoBehaviour
                            // 카운트다운 숫자마다 메트로놈 소리 재생
             if (metronomeClip != null && metronomeSource != null)
                 metronomeSource.PlayOneShot(metronomeClip);
-            yield return new WaitForSeconds(interval);
+            yield return YieldCache.WaitForSeconds(interval);
             }
 
 
@@ -326,11 +326,13 @@ public class RhythmGameManager : MonoBehaviour
                         {
                             string key = (k == KeyCode.Space) ? "Z" : k.ToString().ToUpper();
                             keysPressed.Add(key);
-                            
+                            Debug.Log("key:" + key);
+
                             AudioClip soundToPlay = GetRecipeSound(key);
                             if (soundToPlay != null)
                             {
                                 audioSource.PlayOneShot(soundToPlay);
+                                Debug.Log("soundToPlay:" + soundToPlay);
                             }
                         }
                     }
@@ -506,7 +508,7 @@ public class RhythmGameManager : MonoBehaviour
             Managers.Ingame.EndRhythmGame(result);
 
             // 잠시 대기
-            yield return new WaitForSeconds(1.5f);
+            yield return YieldCache.WaitForSeconds(1.5f);
             
             //만약 리스트에 다음 레시피가 있으면 다음 레시피로 넘어가고 없으면 게임 종료
             if (Managers.Game.CustomerCreator.OrderManager.GetOrderCount() > 0)
@@ -779,7 +781,7 @@ public class RhythmGameManager : MonoBehaviour
 
     private IEnumerator WaitASecond() // Wait for 1 second
     {
-        yield return new WaitForSeconds(1f);
+        yield return YieldCache.WaitForSeconds(1f);
     }
 
     private void UpdateRecipeTempo()
@@ -845,7 +847,7 @@ public class RhythmGameManager : MonoBehaviour
         keyImage.transform.localScale = targetScale;
         
         // 지정된 시간 후 원래 크기로 복귀
-        yield return new WaitForSeconds(scaleDuration);
+        yield return YieldCache.WaitForSeconds(scaleDuration);
         
         keyImage.transform.localScale = originalScale;
 
