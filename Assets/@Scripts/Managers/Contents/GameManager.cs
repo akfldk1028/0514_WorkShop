@@ -321,7 +321,7 @@ public class GameManager
 			(Managers.UI.SceneUI as UI_GameScene)?.RefreshGoldText();
 		});
 		
-		_gameResourceManager.InitializeResource(ResourceType.Glass, 0, () => {
+		_gameResourceManager.InitializeResource(ResourceType.Glass, 10, () => {
 			// TODO: UI_GameScene에 RefreshGlassText() 메서드 구현 필요
 			(Managers.UI.SceneUI as UI_GameScene)?.RefreshGlassText();
 		});

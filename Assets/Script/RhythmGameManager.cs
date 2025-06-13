@@ -542,9 +542,6 @@ public class RhythmGameManager : MonoBehaviour
         {
             Debug.Log($"<color=cyan>[RhythmGameManager]</color> 레시피 건너뛰기: {currentRecipe?.RecipeName}");
             
-            // 현재 레시피 초기화
-            currentRecipe = null;
-            
             // 실행 중인 코루틴들 정지
             // if (rhythmCoroutine != null) StopCoroutine(rhythmCoroutine);
             // if (inputCoroutine != null) StopCoroutine(inputCoroutine);
@@ -561,6 +558,29 @@ public class RhythmGameManager : MonoBehaviour
             {
                 Destroy(currentCocktailPrefab);
                 currentCocktailPrefab = null;
+            }
+            
+            // 새로운 레시피 가져오기 (null 상태를 방지)
+            Order nextOrder = Managers.Game.CustomerCreator.OrderManager.PeekNextOrder();
+            
+            if (nextOrder != null)
+            {
+                // 주문된 레시피 ID로 레시피 데이터 가져오기
+                if (Managers.Data.RecipeDic.ContainsKey(nextOrder.recipeId))
+                {
+                    currentRecipe = Managers.Data.RecipeDic[nextOrder.recipeId];
+                    Debug.Log($"<color=green>[RhythmGameManager]</color> 건너뛰고 다음 레시피로 시작: {currentRecipe.RecipeName} (ID: {nextOrder.recipeId})");
+                }
+                else
+                {
+                    Debug.LogError($"<color=red>[RhythmGameManager]</color> 레시피 ID {nextOrder.recipeId}를 찾을 수 없습니다! 랜덤 레시피 사용.");
+                    currentRecipe = Managers.Ingame.getRandomRecipe();
+                }
+            }
+            else
+            {
+                Debug.LogWarning($"<color=yellow>[RhythmGameManager]</color> 대기 중인 주문이 없습니다. 랜덤 레시피 사용.");
+                currentRecipe = Managers.Ingame.getRandomRecipe();
             }
             
             // 새로운 레시피로 다시 시작
