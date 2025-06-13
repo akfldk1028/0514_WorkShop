@@ -39,7 +39,6 @@ public class Managers : MonoBehaviour
     public static InputManager Input { get { Instance?._input.Init();  return Instance?._input; } }
 
     public static InGameManager Ingame { get {Instance?._Ingame.Init(); return Instance?._Ingame; } }
-
     //public static RythmGameManager RythmGame { get { return Instance?._Rythm; } }
     #endregion
 
@@ -48,6 +47,8 @@ public class Managers : MonoBehaviour
     private PoolManager _pool = new PoolManager();
     private ResourceManager _resource = new ResourceManager();
     private SceneManagerEx _scene = new SceneManagerEx();
+    	private SoundManager _sound = new SoundManager();
+
     private UIManager _ui = new UIManager();
 
     // 메시지 채널들
@@ -56,6 +57,8 @@ public class Managers : MonoBehaviour
     public static PoolManager Pool { get { return Instance?._pool; } }
     public static ResourceManager Resource { get { return Instance?._resource; } }
     public static SceneManagerEx Scene { get { return Instance?._scene; } }
+    public static SoundManager Sound { get { Instance?._sound.Init(); return Instance?._sound; } }
+
     public static UIManager UI { get { return Instance?._ui; } }
 
     // 메시지 채널 접근자

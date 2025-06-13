@@ -100,7 +100,6 @@ MonoBehaviour:
   agent: {fileID: 0}
   priority: 0
   action: {fileID: 0}
-  _currState: {fileID: 0}
   modelInstance: {fileID: 0}
   modelAnimator: {fileID: 0}
   turnSpeed: 20

@@ -8,10 +8,10 @@
       "Description": null,
       "KeyCombination": [
         "z",
-        "_",
         "s",
+        "d",
+        "a",
         "_",
-        "z",
         "_",
         "_",
         "_"
@@ -24,41 +24,14 @@
         "깔끔한맛"
       ],
       "Category": "클래식 칵테일",
+      "BPM": 120.0,
       "RequiredIngredientsVisual": [
         "진 병, 토닉워터 병, 라임 조각 아이콘"
       ],
       "CompletedVisualResourceID": "투명한 하이볼 글라스에 얼음과 투명한 액체, 라임 슬라이스 장식",
-      "OpenOption": null
-    },
-    {
-      "NO": 200002,
-      "RecipeID_eng": "screwdriver",
-      "RecipeName": "스크류 드라이버 (Screwdriver)",
-      "Diffic": 0,
-      "Description": null,
-      "KeyCombination": [
-        "a",
-        "_",
-        "_",
-        "w",
-        "_",
-        "z",
-        "_",
-        "_"
-      ],
-      "BasePrice": 6000,
-      "Tags": [
-        "간단한",
-        "오렌지맛",
-        "달콤한",
-        "인기있는"
-      ],
-      "Category": "주스 기반 칵테일",
-      "RequiredIngredientsVisual": [
-        "보드카 병, 오렌지 주스 팩 아이콘"
-      ],
-      "CompletedVisualResourceID": "하이볼 글라스에 주황색 액체, 오렌지 슬라이스 장식 가능",
-      "OpenOption": null
+      "OpenOption": null,
+      "IconImage": "200001_Image.sprite",
+      "Prefab": "200001_prefab"
     },
     {
       "NO": 200003,
@@ -67,13 +40,13 @@
       "Diffic": 0,
       "Description": null,
       "KeyCombination": [
-        "_",
+        "s",
+        "z",
+        "w",
         "s",
         "_",
         "_",
-        "z",
         "_",
-        "w",
         "_"
       ],
       "BasePrice": 7000,
@@ -84,71 +57,14 @@
         "달콤한"
       ],
       "Category": "위스키 기반 칵테일",
+      "BPM": 120.0,
       "RequiredIngredientsVisual": [
         "잭 다니엘 병 아이콘, 콜라 병 아이콘"
       ],
       "CompletedVisualResourceID": "하이볼 글라스에 얼음과 갈색 액체",
-      "OpenOption": null
-    },
-    {
-      "NO": 200004,
-      "RecipeID_eng": "kahlua_milk",
-      "RecipeName": "깔루아 밀크 (Kahlua & Milk)",
-      "Diffic": 0,
-      "Description": null,
-      "KeyCombination": [
-        "z",
-        "_",
-        "a",
-        "_",
-        "_",
-        "_",
-        "z",
-        "_"
-      ],
-      "BasePrice": 7000,
-      "Tags": [
-        "부드러운",
-        "커피맛",
-        "달콤한",
-        "우유"
-      ],
-      "Category": "리큐르 기반 칵테일",
-      "RequiredIngredientsVisual": [
-        "깔루아 병, 우유 팩 아이콘"
-      ],
-      "CompletedVisualResourceID": "온더락 글라스에 커피색과 흰색이 섞인 부드러운 색감의 액체",
-      "OpenOption": null
-    },
-    {
-      "NO": 200005,
-      "RecipeID_eng": "maksa",
-      "RecipeName": "막사 (Maksa)",
-      "Diffic": 0,
-      "Description": null,
-      "KeyCombination": [
-        "w",
-        "_",
-        "w",
-        "_",
-        "s",
-        "_",
-        "_",
-        "z"
-      ],
-      "BasePrice": 5500,
-      "Tags": [
-        "한국스타일",
-        "달콤한",
-        "청량한",
-        "막걸리베이스"
-      ],
-      "Category": "K-Mix",
-      "RequiredIngredientsVisual": [
-        "막걸리병 아이콘, 사이다캔 아이콘, 막걸리잔 아이콘"
-      ],
-      "CompletedVisualResourceID": "막걸리잔에 막걸리와 사이다가 섞인 뿌연 액체",
-      "OpenOption": null
+      "OpenOption": null,
+      "IconImage": "200001_Image.sprite",
+      "Prefab": "200001_prefab"
     },
     {
       "NO": 200006,
@@ -157,13 +73,13 @@
       "Diffic": 0,
       "Description": null,
       "KeyCombination": [
-        "_",
-        "_",
         "z",
-        "_",
         "a",
-        "_",
         "d",
+        "w",
+        "_",
+        "_",
+        "_",
         "_"
       ],
       "BasePrice": 9000,
@@ -174,71 +90,14 @@
         "데킬라베이스"
       ],
       "Category": "데킬라 기반 칵테일",
+      "BPM": 120.0,
       "RequiredIngredientsVisual": [
         "데킬라 병, 오렌지 주스 팩, 석류 시럽 병 아이콘"
       ],
       "CompletedVisualResourceID": "하이볼 글라스에 아래는 붉은색, 위는 주황색으로 층이 진 칵테일",
-      "OpenOption": null
-    },
-    {
-      "NO": 200007,
-      "RecipeID_eng": "peach_crush",
-      "RecipeName": "피치 크러쉬 (Peach Crush)",
-      "Diffic": 0,
-      "Description": null,
-      "KeyCombination": [
-        "s",
-        "_",
-        "_",
-        "_",
-        "z",
-        "w",
-        "_",
-        "_"
-      ],
-      "BasePrice": 8500,
-      "Tags": [
-        "달콤한",
-        "복숭아맛",
-        "과일향",
-        "인기있는"
-      ],
-      "Category": "리큐르 기반 칵테일",
-      "RequiredIngredientsVisual": [
-        "복숭아 리큐르 병, 샤워믹스 아이콘, 크랜베리 주스 병"
-      ],
-      "CompletedVisualResourceID": "하이볼 글라스에 핑크빛 또는 주황빛 액체, 복숭아 조각 장식 가능",
-      "OpenOption": null
-    },
-    {
-      "NO": 200008,
-      "RecipeID_eng": "black_russian",
-      "RecipeName": "블랙 러시안 (Black Russian)",
-      "Diffic": 0,
-      "Description": null,
-      "KeyCombination": [
-        "z",
-        "w",
-        "s",
-        "w",
-        "z",
-        "_",
-        "a",
-        "w"
-      ],
-      "BasePrice": 7500,
-      "Tags": [
-        "커피맛",
-        "간단한",
-        "보드카베이스",
-        "강한여운"
-      ],
-      "Category": "보드카 기반 칵테일",
-      "RequiredIngredientsVisual": [
-        "보드카, 커피 리큐르 (깔루아 등)"
-      ],
-      "CompletedVisualResourceID": "온더락 글라스에 짙은 갈색 액체",
-      "OpenOption": null
+      "OpenOption": null,
+      "IconImage": "200006_Image.sprite",
+      "Prefab": "200004_prefab"
     },
     {
       "NO": 200009,
@@ -264,11 +123,14 @@
         "인기조합"
       ],
       "Category": "K-Mix",
+      "BPM": 150.0,
       "RequiredIngredientsVisual": [
         "소주병 아이콘, 맥주병/캔 아이콘, 맥주잔 아이콘"
       ],
       "CompletedVisualResourceID": "맥주잔에 소주와 맥주가 섞인 모습, (거품 표현)",
-      "OpenOption": null
+      "OpenOption": null,
+      "IconImage": "200009_Image.sprite",
+      "Prefab": "200004_prefab"
     },
     {
       "NO": 200010,
@@ -295,11 +157,14 @@
         "인기있는"
       ],
       "Category": "럼 기반 칵테일",
+      "BPM": 150.0,
       "RequiredIngredientsVisual": [
         "럼 병, 민트 잎 아이콘, 라임 조각, 탄산수 병"
       ],
       "CompletedVisualResourceID": "하이볼 글라스에 민트 잎과 라임이 가득, 으깬 얼음",
-      "OpenOption": null
+      "OpenOption": null,
+      "IconImage": "200010_Image.sprite",
+      "Prefab": "200010_prefab"
     },
     {
       "NO": 200011,
@@ -325,11 +190,14 @@
         "럼베이스"
       ],
       "Category": "럼 기반 칵테일",
+      "BPM": 150.0,
       "RequiredIngredientsVisual": [
         "라이트럼, 블루큐라소, 코코넛럼(또는크림), 파인애플주스"
       ],
       "CompletedVisualResourceID": "허리케인 글라스에 파란색 액체, 파인애플과 체리 장식",
-      "OpenOption": null
+      "OpenOption": null,
+      "IconImage": "200011_Image.sprite",
+      "Prefab": "200010_prefab"
     },
     {
       "NO": 200012,
@@ -355,72 +223,14 @@
         "보드카베이스"
       ],
       "Category": "보드카 기반 칵테일",
+      "BPM": 150.0,
       "RequiredIngredientsVisual": [
         "보드카, 피치 리큐르, 크랜베리 주스, 오렌지 주스"
       ],
       "CompletedVisualResourceID": "하이볼 글라스에 붉은색과 주황색이 층을 이룬 듯한 모습",
-      "OpenOption": null
-    },
-    {
-      "NO": 200013,
-      "RecipeID_eng": "june_bug",
-      "RecipeName": "준벅 (June Bug)",
-      "Diffic": 0,
-      "Description": null,
-      "KeyCombination": [
-        "_",
-        "w",
-        "z",
-        "s",
-        "w",
-        "a",
-        "w",
-        "z"
-      ],
-      "BasePrice": 11500,
-      "Tags": [
-        "매우달콤한",
-        "메론맛",
-        "초록색",
-        "열대과일"
-      ],
-      "Category": "리큐르 기반 칵테일",
-      "RequiredIngredientsVisual": [
-        "메론리큐르, 코코넛럼, 바나나리큐르, 파인애플주스, (스윗앤사워)"
-      ],
-      "CompletedVisualResourceID": "하이볼 글라스에 초록색 액체, 과일 장식",
-      "OpenOption": null
-    },
-    {
-      "NO": 200014,
-      "RecipeID_eng": "pina_colada",
-      "RecipeName": "피나 콜라다 (Piña Colada)",
-      "Diffic": 0,
-      "Description": null,
-      "KeyCombination": [
-        "a",
-        "s",
-        "d",
-        "z",
-        "w",
-        "_",
-        "s",
-        "_"
-      ],
-      "BasePrice": 12500,
-      "Tags": [
-        "매우달콤한",
-        "코코넛",
-        "파인애플",
-        "럼베이스",
-        "부드러운"
-      ],
-      "Category": "럼 기반 칵테일",
-      "RequiredIngredientsVisual": [
-        "라이트럼, 코코넛크림, 파인애플주스"
-      ],
-      "CompletedVisualResourceID": "큰 글라스(주로 허리케인)에 하얀색 크리미한 액체, 파인애플/체리",
-      "OpenOption": null
+      "OpenOption": null,
+      "IconImage": "200012_Image.sprite",
+      "Prefab": "200010_prefab"
     },
     {
       "NO": 200015,
@@ -446,41 +256,14 @@
         "소금"
       ],
       "Category": "데킬라 기반 칵테일",
+      "BPM": 180.0,
       "RequiredIngredientsVisual": [
         "데킬라 병, 트리플섹 병, 라임 주스 병, 소금 아이콘"
       ],
       "CompletedVisualResourceID": "마가리타 글라스 테두리에 소금이 묻어있고, 라임색 액체",
-      "OpenOption": null
-    },
-    {
-      "NO": 200016,
-      "RecipeID_eng": "old_fashioned",
-      "RecipeName": "올드 패션드 (Old Fashioned)",
-      "Diffic": 0,
-      "Description": null,
-      "KeyCombination": [
-        "s",
-        "w",
-        "d",
-        "z",
-        "a",
-        "w",
-        "s",
-        "z"
-      ],
-      "BasePrice": 15000,
-      "Tags": [
-        "클래식한",
-        "깊은맛",
-        "위스키베이스",
-        "역사있는"
-      ],
-      "Category": "위스키 기반 칵테일",
-      "RequiredIngredientsVisual": [
-        "위스키 병, 각설탕 아이콘, 비터스 병, 오렌지 껍질 아이콘"
-      ],
-      "CompletedVisualResourceID": "온더락 글라스에 갈색 액체, 커다란 얼음, 오렌지 필 장식",
-      "OpenOption": null
+      "OpenOption": null,
+      "IconImage": "200015_Image.sprite",
+      "Prefab": "200010_prefab"
     },
     {
       "NO": 200017,
@@ -507,41 +290,14 @@
         "꽤독함"
       ],
       "Category": "보드카 기반 칵테일",
+      "BPM": 180.0,
       "RequiredIngredientsVisual": [
         "보드카(레몬), 트리플섹, 라임주스, 크랜베리주스"
       ],
       "CompletedVisualResourceID": "마티니 글라스에 핑크빛 액체, 라임 트위스트 또는 체리 장식",
-      "OpenOption": null
-    },
-    {
-      "NO": 200018,
-      "RecipeID_eng": "irish_coffee",
-      "RecipeName": "아이리쉬 커피 (Irish Coffee)",
-      "Diffic": 0,
-      "Description": null,
-      "KeyCombination": [
-        "w",
-        "z",
-        "a",
-        "s",
-        "d",
-        "w",
-        "z",
-        "a"
-      ],
-      "BasePrice": 13000,
-      "Tags": [
-        "따뜻한",
-        "커피맛",
-        "부드러운크림",
-        "위스키베이스"
-      ],
-      "Category": "위스키 기반 칵테일",
-      "RequiredIngredientsVisual": [
-        "아이리쉬 위스키, 뜨거운 커피, 설탕, 휘핑크림"
-      ],
-      "CompletedVisualResourceID": "내열 유리잔에 커피와 크림이 층을 이룬 모습, (시나몬 가루)",
-      "OpenOption": null
+      "OpenOption": null,
+      "IconImage": "200017_Image.sprite",
+      "Prefab": "200010_prefab"
     },
     {
       "NO": 200019,
@@ -568,41 +324,14 @@
         "인생의맛"
       ],
       "Category": "K-Mix",
+      "BPM": 180.0,
       "RequiredIngredientsVisual": [
         "콜라캔, 소주병, 맥주병, 빈 맥주잔 2개, 빈 소주잔 1개 아이콘"
       ],
       "CompletedVisualResourceID": "맥주잔 안에 소주잔, 그 안에 콜라. 다른 잔엔 맥주.",
-      "OpenOption": null
-    },
-    {
-      "NO": 200020,
-      "RecipeID_eng": "long_island_iced_tea",
-      "RecipeName": "롱 아일랜드 아이스티 (Long Island Iced Tea)",
-      "Diffic": 0,
-      "Description": null,
-      "KeyCombination": [
-        "z",
-        "w",
-        "a",
-        "s",
-        "z",
-        "d",
-        "z",
-        "a"
-      ],
-      "BasePrice": 17000,
-      "Tags": [
-        "강한도수",
-        "여러가지술",
-        "아이스티맛",
-        "반전매력"
-      ],
-      "Category": "스페셜 칵테일",
-      "RequiredIngredientsVisual": [
-        "보드카, 진, 럼, 데킬라, 트리플섹 병 아이콘, 콜라 병"
-      ],
-      "CompletedVisualResourceID": "하이볼 글라스에 아이스티 색상의 액체, 레몬 슬라이스 장식",
-      "OpenOption": null
+      "OpenOption": null,
+      "IconImage": "200019_Image.sprite",
+      "Prefab": "200019_prefab"
     }
   ]
 }

@@ -22,6 +22,9 @@ public class InputManager
     private Transform _playerTransform;
     public float moveSpeed = 7f;
     public float rotationSpeed = 200f;
+    
+    // 서빙 관련 변수
+    public float interactionDistance = 5f;  // 인터랙션 가능 거리
 
     public InputManager()
     {
@@ -137,13 +140,20 @@ public class InputManager
             Managers.Game.CustomerCreator._tableManager.DebugPrintAllTableOrders();
         }
         
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            Managers.Map.DebugPrintWaitingQueue();
+        }
+        
         if (Input.GetKeyDown(KeyCode.B))
         {
             OnBackViewKey?.Invoke();
+            Managers.PublishAction(ActionType.Camera_BackViewActivated);
         }
         if (Input.GetKeyDown(KeyCode.T))
         {
             OnTopViewKey?.Invoke();
+            Managers.PublishAction(ActionType.Camera_TopViewActivated);
         }
         if (Input.GetKeyDown(KeyCode.K))
         {
@@ -151,7 +161,7 @@ public class InputManager
         }
 
 
-       if (Input.GetKeyDown(KeyCode.Space) && Managers.Ingame.isInteracting && !Managers.Ingame.isRhythmGameStarted)
+       if (Input.GetKeyDown(KeyCode.Space) && Managers.Ingame.isInteracting && !Managers.Ingame.isRhythmGameStarted) //Start Rhythm Game
         {
             Managers.Ingame.isRhythmGameStarted = true;
             Managers.Ingame.StartText.SetActive(false);
@@ -160,12 +170,32 @@ public class InputManager
 
         if (Input.GetKeyDown(KeyCode.Escape) && Managers.Ingame.isInteracting)
         {
-            Managers.Ingame.rhythmGameManager?.ForceStopAndFail();
+            Managers.Ingame.rhythmGameManager?.ESCPressed();
             Managers.Ingame.Resume();
+            
+            // 리듬게임 강제 종료 시 메인 BGM 재시작
+            RestartMainBGM();
+            
+            
+            UI_GameScene sceneUI = Managers.UI.ShowSceneUI<UI_GameScene>();
+            sceneUI.GetComponent<Canvas>().sortingOrder = 100;
+            sceneUI.SetInfo();
         }
 
-
-
+        // Tab키로 현재 레시피 건너뛰기 (리듬게임 진행 중일 때만)
+        if (Input.GetKeyDown(KeyCode.Tab) && Managers.Ingame.isInteracting && Managers.Ingame.isRhythmGameStarted)
+        {
+            // tab 사운드 재생
+            Managers.Sound.Play(Define.ESound.Effect, "tab");
+            
+            Managers.Ingame.rhythmGameManager?.SkipCurrentRecipe();
+        }
+        
+        // F키로 음식 서빙 (리듬게임 중이 아닐 때만)
+        if (Input.GetKeyDown(KeyCode.F) && !Managers.Ingame.isInteracting)
+        {
+            HandleFoodServing();
+        }
     }
 
     private void HandleMouseInput()
@@ -221,6 +251,60 @@ public class InputManager
             }
 
             _isDragging = false;
+        }
+    }
+
+    private void HandleFoodServing()
+    {
+        if (Managers.Game?.Player == null) return;
+        
+        Vector3 playerPos = Managers.Game.Player.transform.position;
+        
+        // TableManager에게 서빙 처리 위임
+        Table nearestTable = Managers.Game.CustomerCreator.TableManager.GetNearestServableTable(playerPos);
+        
+        if (nearestTable != null)
+        {
+            Debug.Log($"<color=green>[InputManager] 테이블 {nearestTable.tableId}에 음식 서빙 시도!</color>");
+            
+            bool serveSuccess = Managers.Game.CustomerCreator.TableManager.TryServeTable(nearestTable);
+            
+            if (serveSuccess)
+            {
+                Debug.Log($"<color=green>[InputManager] 테이블 {nearestTable.tableId} 서빙 완료!</color>");
+            }
+            else
+            {
+                Debug.Log($"<color=yellow>[InputManager] 테이블 {nearestTable.tableId} 서빙 실패!</color>");
+            }
+        }
+        else
+        {
+            Debug.Log("<color=yellow>[InputManager] 근처에 서빙 가능한 테이블이 없습니다.</color>");
+        }
+    }
+
+    /// <summary>
+    /// 메인 BGM을 재시작합니다.
+    /// </summary>
+    private void RestartMainBGM()
+    {
+        try 
+        {
+            AudioClip audioClip = Managers.Resource.Load<AudioClip>("spring-day");
+            if (audioClip != null)
+            {
+                Managers.Sound.Play(Define.ESound.Bgm, audioClip);
+                Debug.Log("<color=green>[InputManager]</color> 메인 BGM 재시작: spring-day");
+            }
+            else
+            {
+                Debug.LogWarning("<color=yellow>[InputManager]</color> spring-day AudioClip을 찾을 수 없습니다.");
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"<color=red>[InputManager]</color> BGM 재시작 실패: {e.Message}");
         }
     }
 }

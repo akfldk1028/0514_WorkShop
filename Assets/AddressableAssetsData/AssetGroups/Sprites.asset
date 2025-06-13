@@ -14,7 +14,67 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_GroupName: Sprites
   m_GUID: 759fe02f640b51842a42decb0bf020c6
-  m_SerializeEntries: []
+  m_SerializeEntries:
+  - m_GUID: 1171f08c591b9b643984b6fb1785b3d9
+    m_Address: 200012_Image.sprite
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PreLoad
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1d855f08f9e1e13488e68f273dd37b96
+    m_Address: 200010_Image.sprite
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PreLoad
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1dfed7df51f4d1e40a55c2d842e86d05
+    m_Address: 200001_Image.sprite
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PreLoad
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4a4dfac6c3487d84599393b045dad1bb
+    m_Address: 200019_Image.sprite
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PreLoad
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 554175ed81eb9f24bbcdc17c9b380fac
+    m_Address: 200015_Image.sprite
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PreLoad
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5b5fd31a1ecb50c4f8b40d8a802b91e8
+    m_Address: 200006_Image.sprite
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PreLoad
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7bdabeed88e819348a60fa36e5518860
+    m_Address: 200003_Image.sprite
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PreLoad
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 885cb35f07c200d408e847d59ea758d7
+    m_Address: 200017_Image.sprite
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PreLoad
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a0dc027fc26cf7c45b6f56358403ad7d
+    m_Address: 200009_Image.sprite
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PreLoad
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a90b265a3658eef4e9b6030131f829e2
+    m_Address: 200011_Image.sprite
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PreLoad
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 3b34cd1d0f58d714b8b4fcf9c86bdbb4, type: 2}
   m_SchemaSet:

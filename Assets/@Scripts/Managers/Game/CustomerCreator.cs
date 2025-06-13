@@ -25,6 +25,11 @@ public class CustomerCreator
     private IDisposable updateSubscription;
     private IDisposable customerSubscription;
     private bool isActive = false;
+    
+    [Header("고객 스폰 제한 설정")]
+    public int maxCustomersToSpawn = 20; // 최대 스폰할 고객 수
+    private int spawnedCustomersCount = 0; // 현재까지 스폰된 고객 수
+    
     private int[] characterIdList = { CUSTOMER_ID_2, CUSTOMER_ID_3, CUSTOMER_ID_4, CUSTOMER_ID_5, CUSTOMER_ID_6, CUSTOMER_ID_7 }; // 예시: 원하는 id들로 채우세요
 
     public CustomerCreator()
@@ -41,7 +46,7 @@ public class CustomerCreator
         isActive = true;
         lastSpawnTime = Time.time;
         updateSubscription = Managers.Subscribe(ActionType.Managers_Update, OnUpdate);
-        Debug.Log("[CustomerCreator] 자동 스폰 시작");
+        Debug.Log($"[CustomerCreator] 자동 스폰 시작 (최대 {maxCustomersToSpawn}명)");
     }
     
     public void StopAutoSpawn()
@@ -56,6 +61,14 @@ public class CustomerCreator
     private void OnUpdate()
     {
         if (!isActive) return;
+        
+        // 최대 고객 수에 도달했으면 스폰 중지
+        if (spawnedCustomersCount >= maxCustomersToSpawn)
+        {
+            Debug.Log($"<color=yellow>[CustomerCreator]</color> 최대 고객 수 ({maxCustomersToSpawn}명)에 도달하여 스폰을 중지합니다.");
+            StopAutoSpawn();
+            return;
+        }
         
         if (Time.time - lastSpawnTime >= spawnInterval)
         {
@@ -173,52 +186,77 @@ public class CustomerCreator
 
     private void SpawnCustomer()
     {
-        var waitingCells = Managers.Map.WaitingCells;
-        if (waitingCells.Count == 0) return;
-
-        // (1) 랜덤으로 대기 지점 하나를 선택
-        int randomIndex = UnityEngine.Random.Range(0, waitingCells.Count);
-        Vector3 desiredPos = waitingCells[randomIndex];
-
-        // (2) 원하는 y 높이를 대략 0으로 맞추되, 실제 NavMesh 높이를 곧바로 취득할 것이므로 아래 코드에서 덮어씌워질 예정
-        desiredPos.y = 0f;
-
-        // (3) 먼저 NavMesh.SamplePosition으로 "진짜 NavMesh 위" 좌표를 구한다
-        NavMeshHit hit;
-        float sampleRadius = 10.0f; // 반경을 넉넉하게 잡는다 (필요에 따라 조정)
-        if (!NavMesh.SamplePosition(desiredPos, out hit, sampleRadius, NavMesh.AllAreas))
-        {
-            Debug.LogWarning("[CustomerCreator] NavMesh.SamplePosition 실패: NavMesh 위에 놓을 수 없습니다.");
-            return;
-        }
-
-        // hit.position이 곧 "NavMesh 위에 유효한 좌표"가 된다
-        Vector3 spawnPos = hit.position;
-        Debug.Log($"[CustomerCreator] NavMesh 위로 보정된 Spawn 위치: {spawnPos}");
-
-        // (4) 이제 이 spawnPos를 사용해서 Customer를 생성한다
-        int randomCharacterIndex = UnityEngine.Random.Range(0, characterIdList.Length - 1);
+        // 2. 고객 타입 선택
+        int randomCharacterIndex = UnityEngine.Random.Range(0, characterIdList.Length);
         int randomCharacterId = characterIdList[randomCharacterIndex];
-
-        Customer customer = Managers.Object.Spawn<Customer>(spawnPos, randomCharacterId, pooling: true);
+        
+        // 3. 대기 위치 할당받기 (없으면 기본 위치 사용)
+        Vector3 waitingPosition = Managers.Map.GetNextAvailableWaitingPositionForSpawn();
+        if (waitingPosition == Vector3.zero)
+        {
+            // 대기 위치가 없으면 기본 대기 위치 사용
+            waitingPosition = Managers.Map.WaitingCellPos;
+            Debug.Log($"<color=yellow>[CustomerCreator]</color> 대기 위치가 꽉 참! 기본 위치에 스폰: {waitingPosition}");
+        }
+        
+        // 4. 대기 위치에서 바로 Customer 생성
+        Customer customer = Managers.Object.Spawn<Customer>(waitingPosition, randomCharacterId, pooling: true);
         if (customer == null)
         {
-            Debug.LogWarning("[CustomerCreator] Customer 풀에서 가져오지 못했습니다.");
+            Debug.LogWarning("[CustomerCreator] Customer 생성 실패!");
             return;
         }
-
-        // (5) Spawn 이후, NavMeshAgent 컴포넌트를 꺼내서 이동 기능을 바로 사용할 준비를 한다
+        
+        // 5. Agent 확인 및 기본 설정
         NavMeshAgent agent = customer.GetComponent<NavMeshAgent>();
         if (agent == null)
         {
-            Debug.LogWarning("[CustomerCreator] Customer에 NavMeshAgent 컴포넌트가 없습니다!");
+            Debug.LogError($"<color=red>[CustomerCreator]</color> {customer.name}에 NavMeshAgent가 없습니다!");
+            Managers.Object.Despawn(customer);
+            return;
         }
-        else
-        {
-
-        }
-
+        
+        agent.enabled = true;
+        agent.speed = 3.5f;
+        
+        // 6. 대기열에 정식 등록
+        Managers.Map.RegisterCustomerInQueue(customer, waitingPosition);
+        
+        // 7. 스폰된 고객 수 증가
+        spawnedCustomersCount++;
+        
+        Debug.Log($"<color=green>[CustomerCreator]</color> {customer.name} 대기줄에 직접 스폰 완료! 위치: {waitingPosition}");
+        Debug.Log($"<color=cyan>[CustomerCreator]</color> 현재 대기자: {Managers.Map.WaitingCustomerCount}명, 총 스폰된 고객: {spawnedCustomersCount}/{maxCustomersToSpawn}명");
+        
         Managers.PublishAction(ActionType.Customer_Spawned);
+    }
+    
+    /// <summary>
+    /// 스폰 카운터를 리셋합니다.
+    /// </summary>
+    public void ResetSpawnCounter()
+    {
+        spawnedCustomersCount = 0;
+        Debug.Log($"<color=green>[CustomerCreator]</color> 스폰 카운터가 리셋되었습니다.");
+    }
+    
+    /// <summary>
+    /// 최대 스폰 수를 변경합니다.
+    /// </summary>
+    /// <param name="newMaxCount">새로운 최대 스폰 수</param>
+    public void SetMaxCustomersToSpawn(int newMaxCount)
+    {
+        maxCustomersToSpawn = newMaxCount;
+        Debug.Log($"<color=green>[CustomerCreator]</color> 최대 스폰 수가 {newMaxCount}명으로 변경되었습니다.");
+    }
+    
+    /// <summary>
+    /// 현재 스폰 상태를 반환합니다.
+    /// </summary>
+    /// <returns>현재까지 스폰된 고객 수와 최대 스폰 수</returns>
+    public (int spawned, int max) GetSpawnStatus()
+    {
+        return (spawnedCustomersCount, maxCustomersToSpawn);
     }
 
     // private void SpawnCustomer()

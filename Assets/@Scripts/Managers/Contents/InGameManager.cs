@@ -19,27 +19,15 @@ public class InGameManager
 
     [Header("         ")]
     public RhythmGameManager rhythmGameManager;
-    private int[] recipeIdList = { 200001, 200002, 200003, 200004, 200005 }; // 예시: 원하는 id들로 채우세요
+    private InteractableObject _currentInteractable; // 현재 상호작용 중인 오브젝트를 기억
+
+    private int[] recipeIdList = { 200001, 200003, 200006, 200009, 200010, 200011, 200012, 200015, 200017, 200019 }; // 예시: 원하는 id들로 채우세요
 
     //게임상태확인
     public bool isInteracting = false;
     public bool isRhythmGameStarted = false;
 
-    // private async void Awake()
-    // {
-    //     if (Instance == null)
-    //         Instance = this;
-    //     else
-    //     {
-    //         Destroy(gameObject);
-    //         return;
-    //     }
-    //     SetInfo();
-
-    //     AutoAssign();
-    // }
-
-
+  
 
     public Data.RecipeData getRandomRecipe()
     {
@@ -50,22 +38,7 @@ public class InGameManager
     }
 
 
-    // void Update()
-    // {
-    //     if (Input.GetKeyDown(KeyCode.Space) && isInteracting && !isRhythmGameStarted)
-    //     {
-    //         isRhythmGameStarted = true;
-    //         StartText.SetActive(false);
-    //         rhythmGameManager?.StartRhythmSequence();
-    //     }
-
-    //     if (Input.GetKeyDown(KeyCode.Escape) && isInteracting)
-    //     {
-    //         rhythmGameManager?.ForceStopAndFail();
-    //         Resume();
-    //     }
-    // }
-
+ 
     public void Init()
     {
         // InGameScene에서 찾은 오브젝트들 참조
@@ -76,36 +49,12 @@ public class InGameManager
         rhythmGameManager = InGameScene.RhythmGameManager;
     }
 
-    // F키 눌렀을 때 실행
-    // public void InteractWith() //InteractagleObject의 Interact에서 호출
-    // {
-    //     isInteracting = true;
 
-    //     if (playerObj != null)
-    //         playerObj.SetActive(false);
-
-    //     if (playerMove != null)
-    //         playerMove.enabled = false;
-
-    //     if (cameraControl != null)
-    //         cameraControl.enabled = false;
-
-    //     if (cameraTransform != null)
-    //     {
-    //         fixedCameraPosition = new Vector3(-6.38f, 4.5f, 9.5f);
-    //         fixedCameraRotation = new Vector3(70f, -90f, 0f);
-
-    //         cameraTransform.position = fixedCameraPosition;
-    //         cameraTransform.rotation = Quaternion.Euler(fixedCameraRotation);
-    //     }
-
-    //     if (interactionCanvas != null)
-    //         interactionCanvas.SetActive(true);
-    // }
 
 
     public void InteractWith()
     {
+        Debug.Log("InteractWith");
         isInteracting = true;
         
         if (playerObj != null)
@@ -124,6 +73,7 @@ public class InGameManager
             
         if (interactionCanvas != null)
             interactionCanvas.SetActive(true);
+            Debug.Log("InteractWithFinish");
     }
 
 
@@ -153,26 +103,6 @@ public class InGameManager
 }
 
 
-    //ESC
-    // public void Resume() //InteractableIObject의 Update문에서 상호작용중+ESC 눌렀을 때 호출
-    // {
-    //     isInteracting = false;
-
-    //     if (StartText != null)
-    //         StartText.SetActive(true);
-
-    //     if (playerObj != null)
-    //         playerObj.SetActive(true);
-
-    //     if (playerMove != null)
-    //         playerMove.enabled = true;
-
-    //     // if (cameraControl != null)
-    //     //     cameraControl.enabled = true;
-
-    //     if (interactionCanvas != null)
-    //         interactionCanvas.SetActive(false);
-    // }
 
     public void EndRhythmGame(RhythmResult result)
     {
@@ -180,19 +110,56 @@ public class InGameManager
         {
             case RhythmResult.Fail:
                 Debug.Log("리듬게임 결과: 실패");
+                ShowCompletedRecipeIcon();
                 break;
             case RhythmResult.Good:
                 Debug.Log("리듬게임 결과: 굿");
+                ShowCompletedRecipeIcon();
                 break;
             case RhythmResult.Perfect:
                 Debug.Log("리듬게임 결과: 퍼펙트");
+                ShowCompletedRecipeIcon();
+                break;
+            case RhythmResult.Pause:
+                Debug.Log("리듬게임 결과: 일시정지/실패패");
                 break;
         }
 
-        isRhythmGameStarted = false;
+        //isRhythmGameStarted = false;
 
-        // 기타 후처리 로직 추가 가능
+        
     }
 
+    private void ShowCompletedRecipeIcon()
+    {
+        if (rhythmGameManager?.CurrentRecipe == null) return;
+
+        var recipe = rhythmGameManager.CurrentRecipe;
+        var iconSprite = Managers.Resource.Load<Sprite>(recipe.IconImage);
+        
+        if (iconSprite == null)
+        {
+            Debug.LogError($"<color=red>[InGameManager]</color> 스프라이트 로드 실패: {recipe.IconImage}");
+            return;
+        }
+
+        // 완료된 주문 데이터 설정 및 액션 발행
+        CompletedOrderData.LastCompletedSprite = iconSprite;
+        CompletedOrderData.LastCompletedRecipeId = recipe.NO;
+        CompletedOrderData.LastCompletedPrefabName = recipe.Prefab;
+        
+        // GameManager 인벤토리에도 추가
+        Managers.Game.AddRecipeToInventory(recipe.NO, recipe.RecipeName, recipe.Prefab);
+        
+        Managers.PublishAction(ActionType.GameScene_AddCompletedRecipe);
+    }
+
+    // 완료된 주문 데이터를 전달하기 위한 정적 클래스
+    public static class CompletedOrderData
+    {
+        public static Sprite LastCompletedSprite;
+        public static int LastCompletedRecipeId;
+        public static string LastCompletedPrefabName;
+    }
 }
 

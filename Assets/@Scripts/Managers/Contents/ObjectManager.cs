@@ -117,7 +117,18 @@ public class ObjectManager
 			// Monster monster = obj.GetComponent<Monster>();
 			// Monsters.Remove(monster);
 		}
-
+		else if (obj.ObjectType == EObjectType.Customer)
+		{
+			Customer customer = obj.GetComponent<Customer>();
+			Customers.Remove(customer);
+			Debug.Log($"<color=orange>[ObjectManager]</color> Customer {customer.name} 디스폰됨. 남은 고객 수: {Customers.Count}");
+		}
+		else if (obj.ObjectType == EObjectType.Player)
+		{
+			Player player = obj.GetComponent<Player>();
+			Players.Remove(player);
+			Debug.Log($"<color=cyan>[ObjectManager]</color> Player {player.name} 디스폰됨");
+		}
 
 		Managers.Resource.Destroy(obj.gameObject);
 	}

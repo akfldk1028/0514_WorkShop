@@ -170,6 +170,22 @@ public class UIManager
 		}
 	}
 
+	public void HideSceneUI()
+	{
+		if (_sceneUI != null)
+		{
+			_sceneUI.gameObject.SetActive(false);
+		}
+	}
+
+	public void ShowSceneUI()
+	{
+		if (_sceneUI != null)
+		{
+			_sceneUI.gameObject.SetActive(true);
+		}
+	}
+
 	public void CachePopupUI(Type type)
 	{
 		string name = type.Name;

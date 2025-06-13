@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5299d07f53cfd245918bd33fbd016d5, type: 3}
+  m_Name: RecipeSoundData
+  m_EditorClassIdentifier: 
+  recipeSounds:
+  - recipeId: 200001
+    soundA: {fileID: 8300000, guid: 8c56f9dc805b8b04e8f02cef8fa83df6, type: 3}
+    soundS: {fileID: 8300000, guid: f841811275154ae4bac82f7f9d50edcd, type: 3}
+    soundD: {fileID: 8300000, guid: 0cdb8df557686c248a4f3574349b03b1, type: 3}
+    soundW: {fileID: 8300000, guid: 08c233ca423bfc746bcb8c2165944010, type: 3}
+    soundZ: {fileID: 8300000, guid: 0091c8243fe14e64a9f04ad2aabfb74d, type: 3}
+  - recipeId: 200003
+    soundA: {fileID: 8300000, guid: c591ede2fedcbbd46acdf70551a89f3d, type: 3}
+    soundS: {fileID: 8300000, guid: 81859a0876f3a1f43b00417f0fe73878, type: 3}
+    soundD: {fileID: 8300000, guid: 70f8df23df32b5740b64c38e139d5c52, type: 3}
+    soundW: {fileID: 8300000, guid: 26070d6ddccda3c4787e2ba179f9a047, type: 3}
+    soundZ: {fileID: 8300000, guid: 20ede7ab3bc1ba04999ee1a273fc5de4, type: 3}
+  - recipeId: 200006
+    soundA: {fileID: 8300000, guid: c9512085834caea45b5456e6ecae82d7, type: 3}
+    soundS: {fileID: 8300000, guid: 11e2ae2958b86fe4f9fb8891be30446e, type: 3}
+    soundD: {fileID: 8300000, guid: cfad6f9a182d05942ae8865ed81ffd3f, type: 3}
+    soundW: {fileID: 8300000, guid: c5559c9a40aa50148bff8af700838140, type: 3}
+    soundZ: {fileID: 8300000, guid: e4bc2ab744de8d249a5d16f249d1eac8, type: 3}
+  - recipeId: 200009
+    soundA: {fileID: 8300000, guid: ef63224ed0096ce4398db8ebbd7eb9ac, type: 3}
+    soundS: {fileID: 8300000, guid: 1d80c778ad0e22540882184795cbd173, type: 3}
+    soundD: {fileID: 8300000, guid: 6af2e01b124136c4fbd5201e6368686d, type: 3}
+    soundW: {fileID: 8300000, guid: 5b7cae48567739c43a153adf44143514, type: 3}
+    soundZ: {fileID: 8300000, guid: ebe94d1a6e9a1a74684d547565adeadc, type: 3}
+  - recipeId: 200010
+    soundA: {fileID: 8300000, guid: 874fcc107bbddb74ab77b2971f5afd11, type: 3}
+    soundS: {fileID: 8300000, guid: e96f0864648d2df419fede5161cce9af, type: 3}
+    soundD: {fileID: 8300000, guid: 5e7872aa285844e48b5bef38b07b924d, type: 3}
+    soundW: {fileID: 8300000, guid: a047fd975aa4f934b9ea352fc2521b46, type: 3}
+    soundZ: {fileID: 8300000, guid: ceab0ffb018b3d646985b0306381c7e6, type: 3}
+  - recipeId: 200011
+    soundA: {fileID: 8300000, guid: 78c23771ef203d040804cec93996f603, type: 3}
+    soundS: {fileID: 8300000, guid: f0ad3761e76aa5a429a5e4a02a01e110, type: 3}
+    soundD: {fileID: 8300000, guid: 60775eb83637a284dadb8659d4ad6962, type: 3}
+    soundW: {fileID: 8300000, guid: 3d1cbc7541a25fa4a809602cd10fa513, type: 3}
+    soundZ: {fileID: 8300000, guid: 6bed27828fbf08545982eeec22e06cbd, type: 3}
+  - recipeId: 200012
+    soundA: {fileID: 8300000, guid: fe34ce95b618a954c8b5842f0d34f96c, type: 3}
+    soundS: {fileID: 8300000, guid: cb10101e93d74aa4d919e35185b027eb, type: 3}
+    soundD: {fileID: 8300000, guid: 166ef28769c774446aec4ca0bab70204, type: 3}
+    soundW: {fileID: 8300000, guid: 58cbda66fff1de046a46828f50d83edd, type: 3}
+    soundZ: {fileID: 8300000, guid: 2400f70894070b4428cbc37423fa5242, type: 3}
+  - recipeId: 200015
+    soundA: {fileID: 8300000, guid: c4069ce265ead34459eea3c763a4ceb8, type: 3}
+    soundS: {fileID: 8300000, guid: 6ff378164d20c194a97a4ca7b132a0d4, type: 3}
+    soundD: {fileID: 8300000, guid: f9925f8fab2081844a4b50b90b0261cd, type: 3}
+    soundW: {fileID: 8300000, guid: 28bc8569babbeaf479a9ac46baf53e68, type: 3}
+    soundZ: {fileID: 8300000, guid: 7572ba55223229242a658248110cdef4, type: 3}
+  - recipeId: 200017
+    soundA: {fileID: 8300000, guid: 17e540eece3e91b4587dfd622cd8791f, type: 3}
+    soundS: {fileID: 8300000, guid: b4417808e9512b94984967170120672c, type: 3}
+    soundD: {fileID: 8300000, guid: 3a2451573958c474585be7abf392819d, type: 3}
+    soundW: {fileID: 8300000, guid: 23cd9340e5f4b7c4bbbae5c4656db1b8, type: 3}
+    soundZ: {fileID: 8300000, guid: c4b18dfa854d1b0439c2c707dc5877dc, type: 3}
+  - recipeId: 200019
+    soundA: {fileID: 8300000, guid: b74f11f049573cd4899455ecabbf870a, type: 3}
+    soundS: {fileID: 8300000, guid: 42952cfebfebfcb49852b110e95ebaac, type: 3}
+    soundD: {fileID: 8300000, guid: c84074d301cb87c4e91bccb478175c6d, type: 3}
+    soundW: {fileID: 8300000, guid: c8b4ec808813b8444a168a36de73ea87, type: 3}
+    soundZ: {fileID: 8300000, guid: d025d3048daaa1c43a2fcc2efdcd1037, type: 3}
