@@ -176,6 +176,7 @@ public class InputManager
             // 리듬게임 강제 종료 시 메인 BGM 재시작
             RestartMainBGM();
             
+            
             UI_GameScene sceneUI = Managers.UI.ShowSceneUI<UI_GameScene>();
             sceneUI.GetComponent<Canvas>().sortingOrder = 100;
             sceneUI.SetInfo();
