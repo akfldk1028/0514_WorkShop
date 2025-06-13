@@ -170,7 +170,7 @@ public class InputManager
 
         if (Input.GetKeyDown(KeyCode.Escape) && Managers.Ingame.isInteracting)
         {
-            Managers.Ingame.rhythmGameManager?.ForceStopAndFail();
+            Managers.Ingame.rhythmGameManager?.ESCPressed();
             Managers.Ingame.Resume();
             
             // 리듬게임 강제 종료 시 메인 BGM 재시작

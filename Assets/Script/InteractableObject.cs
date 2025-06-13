@@ -34,20 +34,23 @@ public class InteractableObject : MonoBehaviour
         if (canInteract && !interacted)
         {
             ShowText();
-            if (Input.GetKeyDown(KeyCode.F))
+            if (Input.GetKeyDown(KeyCode.F)) //플레이 시 딱 한번만 정상실행되고 그 다음에는 안에 있는 코드가 실행이 안되는데 왜인지 모르겠음
             {
+                Debug.Log("getkeydown FFFFFFFF");
                 interacted = true;
-                Interact();
+                Managers.Ingame.InteractWith();
+                HideText();
             }
         }
         else if (!canInteract)
         {
+            interacted = false;
             HideText();
         }
 
         if (interacted && Input.GetKeyDown(KeyCode.Escape))
         {
-            Managers.Ingame.Resume();
+            //Managers.Ingame.Resume();
             interacted = false;
         }
 
@@ -57,8 +60,7 @@ public class InteractableObject : MonoBehaviour
     {
         if (interacted)
         {
-           Managers.Ingame.InteractWith();
-           HideText();
+
         }
     }
 

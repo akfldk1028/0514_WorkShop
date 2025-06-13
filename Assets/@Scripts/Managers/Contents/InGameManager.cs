@@ -19,6 +19,8 @@ public class InGameManager
 
     [Header("         ")]
     public RhythmGameManager rhythmGameManager;
+    private InteractableObject _currentInteractable; // 현재 상호작용 중인 오브젝트를 기억
+
     private int[] recipeIdList = { 200001, 200003, 200006, 200009, 200010, 200011, 200012, 200015, 200017, 200019 }; // 예시: 원하는 id들로 채우세요
 
     //게임상태확인
@@ -52,6 +54,7 @@ public class InGameManager
 
     public void InteractWith()
     {
+        Debug.Log("InteractWith");
         isInteracting = true;
         
         if (playerObj != null)
@@ -70,6 +73,7 @@ public class InGameManager
             
         if (interactionCanvas != null)
             interactionCanvas.SetActive(true);
+            Debug.Log("InteractWithFinish");
     }
 
 
@@ -116,11 +120,14 @@ public class InGameManager
                 Debug.Log("리듬게임 결과: 퍼펙트");
                 ShowCompletedRecipeIcon();
                 break;
+            case RhythmResult.Pause:
+                Debug.Log("리듬게임 결과: 일시정지/실패패");
+                break;
         }
 
-        isRhythmGameStarted = false;
+        //isRhythmGameStarted = false;
 
-        // 기타 후처리 로직 추가 가능
+        
     }
 
     private void ShowCompletedRecipeIcon()
