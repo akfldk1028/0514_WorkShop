@@ -600,6 +600,11 @@ public class RhythmGameManager : MonoBehaviour
             // UI 초기화
             RestoreKeyUI();
             
+            // 입력 데이터 초기화 (중요: 이전 게임의 입력 데이터를 지워야 함)
+            expectedTimes.Clear();
+            inputTimes.Clear();
+            inputKeys.Clear();
+            
             // 칵테일 오브젝트 정리
             if (currentCocktailPrefab != null)
             {
@@ -616,18 +621,21 @@ public class RhythmGameManager : MonoBehaviour
                 if (Managers.Data.RecipeDic.ContainsKey(nextOrder.recipeId))
                 {
                     currentRecipe = Managers.Data.RecipeDic[nextOrder.recipeId];
+                    UpdateRecipeTempo();  // BPM에 따라 interval 업데이트
                     Debug.Log($"<color=green>[RhythmGameManager]</color> 건너뛰고 다음 레시피로 시작: {currentRecipe.RecipeName} (ID: {nextOrder.recipeId})");
                 }
                 else
                 {
                     Debug.LogError($"<color=red>[RhythmGameManager]</color> 레시피 ID {nextOrder.recipeId}를 찾을 수 없습니다! 랜덤 레시피 사용.");
                     currentRecipe = Managers.Ingame.getRandomRecipe();
+                    UpdateRecipeTempo();  // BPM에 따라 interval 업데이트
                 }
             }
             else
             {
                 Debug.LogWarning($"<color=yellow>[RhythmGameManager]</color> 대기 중인 주문이 없습니다. 랜덤 레시피 사용.");
                 currentRecipe = Managers.Ingame.getRandomRecipe();
+                UpdateRecipeTempo();  // BPM에 따라 interval 업데이트
             }
             
             // 새로운 레시피로 다시 시작
