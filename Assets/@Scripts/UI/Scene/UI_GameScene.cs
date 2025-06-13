@@ -48,6 +48,7 @@ public class UI_GameScene : UI_Scene
 
     private IDisposable _orderTextSubscription;
     private IDisposable _goldAnimationSubscription; // 골드 애니메이션 구독 추가
+    private IDisposable _goldDecreaseSubscription; // 골드 감소 애니메이션 구독 추가
     private string _lastOrderText = ""; // 마지막 주문 텍스트 캐시
     private int completedRecipeCount = 0;
 
@@ -68,6 +69,8 @@ public class UI_GameScene : UI_Scene
         _orderTextSubscription = Managers.Subscribe(ActionType.GameScene_UpdateOrderText, OnUpdateOrderText);
         // 골드 애니메이션 이벤트 구독 추가
         _goldAnimationSubscription = Managers.Subscribe(ActionType.UI_AnimateGoldIncrease, OnAnimateGoldIncrease);
+        // 골드 감소 애니메이션 이벤트 구독 추가
+        _goldDecreaseSubscription = Managers.Subscribe(ActionType.UI_AnimateGoldDecrease, OnAnimateGoldDecrease);
         // 완료된 레시피 아이콘 추가 액션 구독
         Managers.Subscribe(ActionType.GameScene_AddCompletedRecipe, OnAddCompletedRecipe);
         // 완료된 레시피 아이콘 제거 액션 구독 추가
@@ -144,6 +147,7 @@ public class UI_GameScene : UI_Scene
     {
         _orderTextSubscription?.Dispose(); // IDisposable을 사용하여 구독 해제
         _goldAnimationSubscription?.Dispose(); // 골드 애니메이션 구독 해제 추가
+        _goldDecreaseSubscription?.Dispose(); // 골드 감소 애니메이션 구독 해제 추가
     }
 
     /// <summary>
@@ -161,6 +165,23 @@ public class UI_GameScene : UI_Scene
         UIAnimationController.AnimateGoldIncrease(goldText, oldGold, currentGold);
         
         Debug.Log($"<color=gold>🔥💰 [UI_GameScene] 화끈한 골드 애니메이션 실행!</color> {oldGold:N0} → {currentGold:N0}");
+    }
+
+    /// <summary>
+    /// 골드 감소 애니메이션 처리 - 돈이 나가는 버전! 💸😱
+    /// </summary>
+    private void OnAnimateGoldDecrease()
+    {
+        int currentGold = Managers.Game.Gold;
+        TMPro.TMP_Text goldText = GetText((int)Texts.GoldCountText);
+        
+        // 이전 골드 값을 파싱 (실패하면 0으로 기본값)
+        int.TryParse(goldText.text.Replace(",", ""), out int oldGold);
+        
+        // UIAnimationController로 돈이 나가는 애니메이션!
+        UIAnimationController.AnimateGoldDecrease(goldText, oldGold, currentGold);
+        
+        Debug.Log($"<color=red>💸😱 [UI_GameScene] 돈이 나가는 애니메이션 실행!</color> {oldGold:N0} → {currentGold:N0}");
     }
 
     private void OnTopViewActivated()

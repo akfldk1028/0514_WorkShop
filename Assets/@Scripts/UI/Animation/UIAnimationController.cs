@@ -48,6 +48,50 @@ public class UIAnimationController
     }
     
     /// <summary>
+    /// 골드 감소 애니메이션 - 돈이 나가는 느낌! 💸😱
+    /// </summary>
+    public static void AnimateGoldDecrease(TMP_Text goldText, int oldValue, int newValue)
+    {
+        // 💸 아쉬운 DoTween 숫자 카운팅 애니메이션 (더 빠르게 떨어짐)
+        DOTween.To(() => oldValue, x => {
+            goldText.text = x.ToString("N0");
+        }, newValue, 1.0f) // 1초로 더 빠르게
+        .SetEase(Ease.InQuart) // 가속하며 떨어지는 느낌
+        .OnComplete(() => {
+            goldText.text = newValue.ToString("N0");
+        });
+        
+        // 😱 충격적인 스케일 효과 (움츠러들었다가 원래대로)
+        goldText.transform.DOScale(0.7f, 0.3f)
+            .SetEase(Ease.InBack)
+            .OnComplete(() => {
+                goldText.transform.DOScale(1f, 0.4f).SetEase(Ease.OutBounce);
+            });
+        
+        // 💔 돈이 나가는 색상 변화 (회색 → 빨간색 → 어두운 빨간색 → 검정)
+        Sequence colorSequence = DOTween.Sequence();
+        colorSequence.Append(goldText.DOColor(Color.gray, 0.2f))
+                    .Append(goldText.DOColor(Color.red, 0.3f))
+                    .Append(goldText.DOColor(new Color(0.8f, 0f, 0f), 0.3f))
+                    .Append(goldText.DOColor(Color.black, 0.4f));
+        
+        // 😰 떨리는 효과 (돈이 나가는 충격!)
+        goldText.transform.DOShakePosition(0.8f, new Vector3(15f, 10f, 0f), 15, 90f)
+            .SetDelay(0.2f);
+        
+        // 💸 사라지는 듯한 알파 효과
+        DOTween.To(() => goldText.color.a, x => {
+            Color currentColor = goldText.color;
+            currentColor.a = x;
+            goldText.color = currentColor;
+        }, 0.5f, 0.15f)
+        .SetLoops(4, LoopType.Yoyo)
+        .SetDelay(0.3f);
+        
+        Debug.Log($"<color=red>💸😱 돈이 나가는 애니메이션!</color> {oldValue:N0} → {newValue:N0}");
+    }
+    
+    /// <summary>
     /// 유리잔 개수 변화 애니메이션 - 시원한 버전! 🥃✨
     /// </summary>
     public static void AnimateGlassUpdate(TMP_Text glassText, int oldValue, int newValue)
@@ -70,39 +114,67 @@ public class UIAnimationController
         Debug.Log($"<color=cyan>🥃✨ 유리잔 애니메이션!</color> {oldValue} → {newValue}");
     }
     
+    // 애니메이션 중복 실행 방지용 플래그들
+    private static bool _isOrderAnimating = false;
+    private static bool _isRecipeAnimating = false;
+    
     /// <summary>
     /// 주문 텍스트 업데이트 애니메이션 - 옆에서 삭삭삭 밀려드는 모던 버전! 📋💫
     /// </summary>
     public static void AnimateOrderUpdate(TMP_Text orderText, string newText)
     {
-        RectTransform rectTransform = orderText.GetComponent<RectTransform>();
-        Vector2 originalPos = rectTransform.anchoredPosition;
+        // 🛡️ 애니메이션 중복 실행 방지
+        if (_isOrderAnimating)
+        {
+            Debug.Log("<color=yellow>📋 주문 애니메이션 이미 실행 중 - 스킵</color>");
+            orderText.text = newText; // 텍스트만 즉시 변경
+            return;
+        }
         
-        // 📋💨 현재 텍스트를 오른쪽으로 밀어내기 (삭삭삭!)
-        rectTransform.DOAnchorPosX(originalPos.x + 300f, 0.2f) // 오른쪽으로 300픽셀 밀어내기
-            .SetEase(Ease.InQuart)
+        _isOrderAnimating = true;
+        
+        RectTransform rectTransform = orderText.GetComponent<RectTransform>();
+        
+        // 🔧 기존 애니메이션 완전 정리 및 강제 위치 리셋!
+        rectTransform.DOKill(true); // 완전 중단
+        orderText.transform.DOKill(true); // 완전 중단
+        
+        // 💪 원래 위치로 강제 리셋 (애니메이션 없이 즉시)
+        Vector2 originalPos = new Vector2(0, rectTransform.anchoredPosition.y); // X는 0으로 고정
+        rectTransform.anchoredPosition = originalPos;
+        orderText.transform.localScale = Vector3.one; // 스케일도 리셋
+        
+        // 📋💨 현재 텍스트를 오른쪽으로 밀어내기 (가속도 붙으면서 쭉~!)
+        rectTransform.DOAnchorPosX(originalPos.x + 350f, 0.25f)
+            .SetEase(Ease.InExpo)
             .OnComplete(() => {
                 // 텍스트 변경
                 orderText.text = newText;
                 
-                // 왼쪽에서 새로운 텍스트가 밀려들어오기
-                rectTransform.anchoredPosition = new Vector2(originalPos.x - 300f, originalPos.y);
-                rectTransform.DOAnchorPosX(originalPos.x, 0.25f) // 원래 위치로 슬라이드
-                    .SetEase(Ease.OutBack); // 살짝 튕기는 효과
+                // 왼쪽에서 새로운 텍스트가 쭉~ 밀려들어오기
+                rectTransform.anchoredPosition = new Vector2(originalPos.x - 350f, originalPos.y);
+                rectTransform.DOAnchorPosX(originalPos.x, 0.35f)
+                    .SetEase(Ease.OutExpo)
+                    .OnComplete(() => {
+                        // 🏁 애니메이션 완료 - 플래그 해제
+                        _isOrderAnimating = false;
+                        // 최종 위치 확실히 고정
+                        rectTransform.anchoredPosition = originalPos;
+                    });
             });
         
         // 💫 모던한 색상 변화 (사이버 블루 → 네온 퍼플 → 검정)
         Sequence colorSequence = DOTween.Sequence();
-        colorSequence.SetDelay(0.2f) // 밀려들어올 때 시작
-                    .Append(orderText.DOColor(new Color(0.4f, 0.8f, 1f), 0.15f)) // 사이버 블루
-                    .Append(orderText.DOColor(new Color(0.6f, 0.4f, 1f), 0.15f)) // 네온 퍼플
+        colorSequence.SetDelay(0.25f)
+                    .Append(orderText.DOColor(new Color(0.4f, 0.8f, 1f), 0.2f))
+                    .Append(orderText.DOColor(new Color(0.6f, 0.4f, 1f), 0.2f))
                     .Append(orderText.DOColor(Color.black, 0.3f));
         
         // 💥 들어올 때 살짝 커졌다가 원래 크기로 (임팩트!)
         DOTween.Sequence()
-            .SetDelay(0.2f)
-            .Append(orderText.transform.DOScale(1.15f, 0.1f))
-            .Append(orderText.transform.DOScale(1f, 0.15f).SetEase(Ease.OutQuart));
+            .SetDelay(0.25f)
+            .Append(orderText.transform.DOScale(1.15f, 0.15f))
+            .Append(orderText.transform.DOScale(1f, 0.2f).SetEase(Ease.OutQuart));
         
         Debug.Log($"<color=cyan>📋💫 모던한 주문 슬라이드!</color> 새 주문: {newText}");
     }
@@ -112,40 +184,65 @@ public class UIAnimationController
     /// </summary>
     public static void AnimateRecipeUpdate(TMP_Text recipeText, string newText)
     {
-        RectTransform rectTransform = recipeText.GetComponent<RectTransform>();
-        Vector2 originalPos = rectTransform.anchoredPosition;
+        // 🛡️ 애니메이션 중복 실행 방지
+        if (_isRecipeAnimating)
+        {
+            Debug.Log("<color=yellow>🔥 레시피 애니메이션 이미 실행 중 - 스킵</color>");
+            recipeText.text = newText; // 텍스트만 즉시 변경
+            return;
+        }
         
-        // 🔥💨 현재 텍스트를 왼쪽으로 밀어내기 (주문과 반대 방향!)
-        rectTransform.DOAnchorPosX(originalPos.x - 300f, 0.2f) // 왼쪽으로 300픽셀 밀어내기
-            .SetEase(Ease.InQuart)
+        _isRecipeAnimating = true;
+        
+        RectTransform rectTransform = recipeText.GetComponent<RectTransform>();
+        
+        // 🔧 기존 애니메이션 완전 정리 및 강제 위치 리셋!
+        rectTransform.DOKill(true); // 완전 중단
+        recipeText.transform.DOKill(true); // 완전 중단
+        
+        // 💪 원래 위치로 강제 리셋 (애니메이션 없이 즉시)
+        Vector2 originalPos = new Vector2(0, rectTransform.anchoredPosition.y); // X는 0으로 고정
+        rectTransform.anchoredPosition = originalPos;
+        recipeText.transform.localScale = Vector3.one; // 스케일도 리셋
+        recipeText.transform.rotation = Quaternion.identity; // 회전도 리셋
+        
+        // 🔥💨 현재 텍스트를 왼쪽으로 밀어내기 (가속도 붙으면서 쭉~!)
+        rectTransform.DOAnchorPosX(originalPos.x - 350f, 0.25f)
+            .SetEase(Ease.InExpo)
             .OnComplete(() => {
                 // 텍스트 변경
                 recipeText.text = newText;
                 
-                // 오른쪽에서 새로운 텍스트가 밀려들어오기
-                rectTransform.anchoredPosition = new Vector2(originalPos.x + 300f, originalPos.y);
-                rectTransform.DOAnchorPosX(originalPos.x, 0.25f) // 원래 위치로 슬라이드
-                    .SetEase(Ease.OutBack); // 살짝 튕기는 효과
+                // 오른쪽에서 새로운 텍스트가 쭉~ 밀려들어오기
+                rectTransform.anchoredPosition = new Vector2(originalPos.x + 350f, originalPos.y);
+                rectTransform.DOAnchorPosX(originalPos.x, 0.35f)
+                    .SetEase(Ease.OutExpo)
+                    .OnComplete(() => {
+                        // 🏁 애니메이션 완료 - 플래그 해제
+                        _isRecipeAnimating = false;
+                        // 최종 위치 확실히 고정
+                        rectTransform.anchoredPosition = originalPos;
+                    });
             });
         
         // 🔥💫 모던한 요리 색상 변화 (네온 오렌지 → 핫 핑크 → 검정)
         Sequence colorSequence = DOTween.Sequence();
-        colorSequence.SetDelay(0.2f) // 밀려들어올 때 시작
-                    .Append(recipeText.DOColor(new Color(1f, 0.5f, 0.2f), 0.15f)) // 네온 오렌지
-                    .Append(recipeText.DOColor(new Color(1f, 0.3f, 0.7f), 0.15f)) // 핫 핑크
+        colorSequence.SetDelay(0.25f)
+                    .Append(recipeText.DOColor(new Color(1f, 0.5f, 0.2f), 0.2f))
+                    .Append(recipeText.DOColor(new Color(1f, 0.3f, 0.7f), 0.2f))
                     .Append(recipeText.DOColor(Color.black, 0.3f));
         
         // 💥 들어올 때 살짝 커졌다가 원래 크기로 (임팩트!)
         DOTween.Sequence()
-            .SetDelay(0.2f)
-            .Append(recipeText.transform.DOScale(1.15f, 0.1f))
-            .Append(recipeText.transform.DOScale(1f, 0.15f).SetEase(Ease.OutQuart));
+            .SetDelay(0.25f)
+            .Append(recipeText.transform.DOScale(1.15f, 0.15f))
+            .Append(recipeText.transform.DOScale(1f, 0.2f).SetEase(Ease.OutQuart));
         
         // 🎪 부드러운 회전 효과도 유지 (살짝만)
         DOTween.Sequence()
-            .SetDelay(0.2f)
-            .Append(recipeText.transform.DORotate(new Vector3(0, 0, 5f), 0.15f))
-            .Append(recipeText.transform.DORotate(Vector3.zero, 0.15f).SetEase(Ease.OutQuart));
+            .SetDelay(0.25f)
+            .Append(recipeText.transform.DORotate(new Vector3(0, 0, 5f), 0.2f))
+            .Append(recipeText.transform.DORotate(Vector3.zero, 0.2f).SetEase(Ease.OutQuart));
         
         Debug.Log($"<color=magenta>🔥💫 모던한 레시피 슬라이드!</color> 새 레시피: {newText}");
     }

@@ -210,7 +210,19 @@ public class GameManager
 		Managers.PublishAction(ActionType.UI_AnimateGoldIncrease);
 	}
 
-	public bool SubtractGold(int amount) => SubtractResource(ResourceType.Gold, amount);
+	public bool SubtractGold(int amount) 
+	{
+		int oldGold = Gold;
+		bool result = SubtractResource(ResourceType.Gold, amount);
+		
+		if (result) // 성공적으로 차감된 경우에만 애니메이션
+		{
+			// 골드 감소 애니메이션을 위한 이벤트 발행
+			Managers.PublishAction(ActionType.UI_AnimateGoldDecrease);
+		}
+		
+		return result;
+	}
 	public void SetGold(int amount) => SetResource(ResourceType.Gold, amount);
 	
 	public void AddGlass(int amount) => AddResource(ResourceType.Glass, amount);
