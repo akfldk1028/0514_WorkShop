@@ -3,7 +3,7 @@
     {
       "NO": 200001,
       "RecipeID_eng": "gin_tonic",
-      "RecipeName": "진토닉 (Gin Tonic)",
+      "RecipeName": "진토닉",
       "Diffic": 0,
       "Description": null,
       "KeyCombination": [
@@ -36,7 +36,7 @@
     {
       "NO": 200003,
       "RecipeID_eng": "jack_and_coke",
-      "RecipeName": "잭콕 (Jack & Coke)",
+      "RecipeName": "잭콕",
       "Diffic": 0,
       "Description": null,
       "KeyCombination": [
@@ -69,7 +69,7 @@
     {
       "NO": 200006,
       "RecipeID_eng": "tequila_sunrise",
-      "RecipeName": "데킬라 선라이즈 (Tequila Sunrise)",
+      "RecipeName": "데킬라 선라이즈",
       "Diffic": 0,
       "Description": null,
       "KeyCombination": [
@@ -97,12 +97,12 @@
       "CompletedVisualResourceID": "하이볼 글라스에 아래는 붉은색, 위는 주황색으로 층이 진 칵테일",
       "OpenOption": null,
       "IconImage": "200006_Image.sprite",
-      "Prefab": "200004_prefab"
+      "Prefab": "200006_prefab"
     },
     {
       "NO": 200009,
       "RecipeID_eng": "somaek",
-      "RecipeName": "소맥 (Somaek)",
+      "RecipeName": "소맥",
       "Diffic": 0,
       "Description": null,
       "KeyCombination": [
@@ -130,12 +130,12 @@
       "CompletedVisualResourceID": "맥주잔에 소주와 맥주가 섞인 모습, (거품 표현)",
       "OpenOption": null,
       "IconImage": "200009_Image.sprite",
-      "Prefab": "200004_prefab"
+      "Prefab": "200009_prefab"
     },
     {
       "NO": 200010,
       "RecipeID_eng": "mojito",
-      "RecipeName": "모히또 (Mojito)",
+      "RecipeName": "모히또",
       "Diffic": 0,
       "Description": null,
       "KeyCombination": [
@@ -169,7 +169,7 @@
     {
       "NO": 200011,
       "RecipeID_eng": "blue_hawaiian",
-      "RecipeName": "블루 하와이안 (Blue Hawaiian)",
+      "RecipeName": "블루 하와이안",
       "Diffic": 0,
       "Description": null,
       "KeyCombination": [
@@ -197,12 +197,12 @@
       "CompletedVisualResourceID": "허리케인 글라스에 파란색 액체, 파인애플과 체리 장식",
       "OpenOption": null,
       "IconImage": "200011_Image.sprite",
-      "Prefab": "200010_prefab"
+      "Prefab": "200011_prefab"
     },
     {
       "NO": 200012,
       "RecipeID_eng": "sex_on_the_beach",
-      "RecipeName": "섹스 온 더 비치 (Sex on the Beach)",
+      "RecipeName": "섹스 온 더 비치",
       "Diffic": 0,
       "Description": null,
       "KeyCombination": [
@@ -230,12 +230,12 @@
       "CompletedVisualResourceID": "하이볼 글라스에 붉은색과 주황색이 층을 이룬 듯한 모습",
       "OpenOption": null,
       "IconImage": "200012_Image.sprite",
-      "Prefab": "200010_prefab"
+      "Prefab": "200012_prefab"
     },
     {
       "NO": 200015,
       "RecipeID_eng": "margarita",
-      "RecipeName": "마가리타 (Margarita)",
+      "RecipeName": "마가리타",
       "Diffic": 0,
       "Description": null,
       "KeyCombination": [
@@ -263,12 +263,12 @@
       "CompletedVisualResourceID": "마가리타 글라스 테두리에 소금이 묻어있고, 라임색 액체",
       "OpenOption": null,
       "IconImage": "200015_Image.sprite",
-      "Prefab": "200010_prefab"
+      "Prefab": "200015_prefab"
     },
     {
       "NO": 200017,
       "RecipeID_eng": "cosmopolitan",
-      "RecipeName": "코스모폴리탄 (Cosmopolitan)",
+      "RecipeName": "코스모폴리탄",
       "Diffic": 0,
       "Description": null,
       "KeyCombination": [
@@ -297,12 +297,12 @@
       "CompletedVisualResourceID": "마티니 글라스에 핑크빛 액체, 라임 트위스트 또는 체리 장식",
       "OpenOption": null,
       "IconImage": "200017_Image.sprite",
-      "Prefab": "200010_prefab"
+      "Prefab": "200017_prefab"
     },
     {
       "NO": 200019,
       "RecipeID_eng": "gojingamrae",
-      "RecipeName": "고진감래 (Gojingamrae)",
+      "RecipeName": "고진감래",
       "Diffic": 0,
       "Description": null,
       "KeyCombination": [

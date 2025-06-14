@@ -111,13 +111,13 @@ public class InputManager
         if (Input.GetKey(KeyCode.S)) moveDir.y -= 2;  // 후진
         if (Input.GetKey(KeyCode.A)) 
         {
-            moveDir.x -= 2;  // Player.cs로 회전 정보 전달
-            turn = -2f;      // InputManager에서도 직접 처리
+            moveDir.x -= 4;  // Player.cs로 회전 정보 전달
+            turn = -4f;      // InputManager에서도 직접 처리
         }
         if (Input.GetKey(KeyCode.D)) 
         {
-            moveDir.x += 2f;  // Player.cs로 회전 정보 전달
-            turn = 2f;       // InputManager에서도 직접 처리
+            moveDir.x += 4f;  // Player.cs로 회전 정보 전달
+            turn = 4f;       // InputManager에서도 직접 처리
         }
 
         // GameManager로 이동+회전 정보 전달 (Player.cs에서 처리)
@@ -168,7 +168,7 @@ public class InputManager
             Managers.Ingame.rhythmGameManager?.StartRhythmSequence();
         }
 
-        if (Input.GetKeyDown(KeyCode.Escape) && Managers.Ingame.isInteracting)
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             Managers.Ingame.rhythmGameManager?.ESCPressed();
             Managers.Ingame.Resume();
@@ -181,6 +181,8 @@ public class InputManager
             sceneUI.GetComponent<Canvas>().sortingOrder = 100;
             sceneUI.SetInfo();
         }
+
+        
 
         // Tab키로 현재 레시피 건너뛰기 (리듬게임 진행 중일 때만)
         if (Input.GetKeyDown(KeyCode.Tab) && Managers.Ingame.isInteracting && Managers.Ingame.isRhythmGameStarted)
@@ -287,7 +289,7 @@ public class InputManager
     /// <summary>
     /// 메인 BGM을 재시작합니다.
     /// </summary>
-    private void RestartMainBGM()
+    public void RestartMainBGM()
     {
         try 
         {

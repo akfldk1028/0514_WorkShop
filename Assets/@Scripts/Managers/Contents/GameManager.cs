@@ -317,7 +317,7 @@ public class GameManager
 		Debug.Log("<color=yellow>[GameManager]</color> 생성됨");
 		
 		// 리소스 매니저 초기화 및 UI 콜백 설정
-		_gameResourceManager.InitializeResource(ResourceType.Gold, 0, () => {
+		_gameResourceManager.InitializeResource(ResourceType.Gold, 3000, () => {
 			(Managers.UI.SceneUI as UI_GameScene)?.RefreshGoldText();
 		});
 		
