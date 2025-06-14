@@ -115,11 +115,21 @@ public class RhythmGameManager : MonoBehaviour
     {
         isRhythmGameEnded = false; 
         
+        // 🆕 Glass 체크 임시 비활성화 (테스트용)
+        /*
         // Glass 보유 여부 확인 (GameManager의 전용 메서드 사용)
         if (!Managers.Game.CanCraftRecipe(1))
         {
             Debug.LogWarning("<color=red>[RhythmGameManager]</color> Glass가 부족하여 리듬 게임을 시작할 수 없습니다.");
             return; // Glass가 없으면 시작하지 않음
+        }
+        */
+        
+        // 대신 Glass가 부족하면 자동으로 추가
+        if (!Managers.Game.CanCraftRecipe(1))
+        {
+            Managers.Game.AddGlass(5);
+            Debug.Log("<color=green>[RhythmGameManager]</color> Glass가 부족해서 자동으로 5개 추가했습니다.");
         }
         
         // 리듬게임 시작 시 메인 BGM 정지
@@ -545,6 +555,26 @@ public class RhythmGameManager : MonoBehaviour
             if (completedOrder != null)
             {
                 Debug.Log($"<color=green>[RhythmGameManager]</color> 주문 완료: {completedOrder.RecipeName}");
+                
+                // 🆕 완성된 레시피를 플레이어 인벤토리에 추가
+                Managers.Game.AddRecipeToInventory(completedOrder.recipeId, completedOrder.RecipeName, currentRecipe?.Prefab ?? "");
+                
+                // 🆕 UI에 완성된 레시피 아이콘 표시
+                var iconSprite = Managers.Resource.Load<Sprite>(currentRecipe?.IconImage ?? "");
+                if (iconSprite != null)
+                {
+                    InGameManager.CompletedOrderData.LastCompletedSprite = iconSprite;
+                    InGameManager.CompletedOrderData.LastCompletedRecipeId = completedOrder.recipeId;
+                    InGameManager.CompletedOrderData.LastCompletedPrefabName = currentRecipe?.Prefab ?? "";
+                    
+                    // UI 업데이트 액션 발행
+                    Managers.PublishAction(ActionType.GameScene_AddCompletedRecipe);
+                    Debug.Log($"<color=cyan>[RhythmGameManager]</color> UI 아이콘 추가 액션 발행: {completedOrder.RecipeName}");
+                }
+                else
+                {
+                    Debug.LogWarning($"<color=yellow>[RhythmGameManager]</color> 아이콘 이미지를 찾을 수 없습니다: {currentRecipe?.IconImage}");
+                }
             }
             
             currentRecipe = null;  // Clear current recipe on success only
@@ -569,9 +599,10 @@ public class RhythmGameManager : MonoBehaviour
             }
             else
             {
-                Debug.Log("<color=yellow>[RhythmGameManager]</color> 남은 주문이 없습니다. 메인 BGM을 재시작합니다.");
+                // Debug.Log("<color=yellow>[RhythmGameManager]</color> 남은 주문이 없습니다. 메인 BGM을 재시작합니다.");
                 isRhythmGameEnded = true;
                 ESCPressed();
+                Managers.Input.RestartMainBGM();
                 Managers.Ingame.Resume();
                 
             }
@@ -590,18 +621,37 @@ public class RhythmGameManager : MonoBehaviour
         {
             Debug.Log($"<color=cyan>[RhythmGameManager]</color> 레시피 건너뛰기: {currentRecipe?.RecipeName}");
             
-            // 현재 레시피 초기화
-            currentRecipe = null;
+            // 🔥 모든 코루틴을 완전히 정지시키기 (이게 핵심!)
+            StopAllCoroutines();
             
-            // 실행 중인 코루틴들 정지
-            // if (rhythmCoroutine != null) StopCoroutine(rhythmCoroutine);
-            // if (inputCoroutine != null) StopCoroutine(inputCoroutine);
-            // if (metronomeCoroutine != null) StopCoroutine(metronomeCoroutine);
-            
+            // 🔥 게임 상태 완전 초기화
             useMetronome = false;
+            isRhythmGameEnded = false; // 새 게임을 시작하므로 false
+            isRestart = false; // 건너뛰기는 새 게임 시작이므로 false
             
             // UI 초기화
             RestoreKeyUI();
+            KeyUI.SetActive(false); // UI도 완전히 숨기기
+            
+            // 모든 카운트다운 이미지 숨기기
+            foreach (var countdownImg in countdownImages)
+            {
+                if (countdownImg != null)
+                    countdownImg.SetActive(false);
+            }
+            
+            // Bad 이미지도 숨기기
+            if (badResultImage != null)
+                badResultImage.SetActive(false);
+                
+            // Sample 이미지도 숨기기
+            if (sampleImage != null)
+                sampleImage.gameObject.SetActive(false);
+            
+            // 입력 데이터 초기화 (중요: 이전 게임의 입력 데이터를 지워야 함)
+            expectedTimes.Clear();
+            inputTimes.Clear();
+            inputKeys.Clear();
             
             // 칵테일 오브젝트 정리
             if (currentCocktailPrefab != null)
@@ -610,13 +660,59 @@ public class RhythmGameManager : MonoBehaviour
                 currentCocktailPrefab = null;
             }
             
-            // 새로운 레시피로 다시 시작
-            StartRhythmSequence();
+            // 칵테일 스텝 오브젝트들도 초기화
+            if (cocktailStepObjects != null)
+                cocktailStepObjects.Clear();
+            if (cocktailFinalObjects != null)
+                cocktailFinalObjects.Clear();
+            
+            // 새로운 레시피 가져오기 (null 상태를 방지)
+            Order nextOrder = Managers.Game.CustomerCreator.OrderManager.PeekNextOrder();
+            
+            if (nextOrder != null)
+            {
+                // 주문된 레시피 ID로 레시피 데이터 가져오기
+                if (Managers.Data.RecipeDic.ContainsKey(nextOrder.recipeId))
+                {
+                    currentRecipe = Managers.Data.RecipeDic[nextOrder.recipeId];
+                    UpdateRecipeTempo();  // BPM에 따라 interval 업데이트
+                    Debug.Log($"<color=green>[RhythmGameManager]</color> 건너뛰고 다음 레시피로 시작: {currentRecipe.RecipeName} (ID: {nextOrder.recipeId})");
+                }
+                else
+                {
+                    Debug.LogError($"<color=red>[RhythmGameManager]</color> 레시피 ID {nextOrder.recipeId}를 찾을 수 없습니다! 랜덤 레시피 사용.");
+                    currentRecipe = Managers.Ingame.getRandomRecipe();
+                    UpdateRecipeTempo();  // BPM에 따라 interval 업데이트
+                }
+            }
+            else
+            {
+                Debug.LogWarning($"<color=yellow>[RhythmGameManager]</color> 대기 중인 주문이 없습니다. 랜덤 레시피 사용.");
+                currentRecipe = Managers.Ingame.getRandomRecipe();
+                UpdateRecipeTempo();  // BPM에 따라 interval 업데이트
+            }
+            
+            // 잠시 대기 후 새로운 레시피로 시작 (코루틴이 완전히 정리될 시간 확보)
+            StartCoroutine(DelayedRestartAfterSkip());
         }
         else
         {
             Debug.Log($"<color=yellow>[RhythmGameManager]</color> 건너뛸 수 있는 주문이 없습니다.");
         }
+    }
+    
+    /// <summary>
+    /// 건너뛰기 후 약간의 지연을 두고 새 게임을 시작하는 코루틴
+    /// </summary>
+    private IEnumerator DelayedRestartAfterSkip()
+    {
+        // 0.1초 대기 (코루틴 정리 시간 확보)
+        yield return new WaitForSeconds(0.1f);
+        
+        Debug.Log($"<color=magenta>[RhythmGameManager]</color> Tab 건너뛰기 후 새 게임 시작!");
+        
+        // 새로운 레시피로 다시 시작
+        StartRhythmSequence();
     }
 
     private void UpdateRecipeNameUI()
@@ -731,26 +827,26 @@ public class RhythmGameManager : MonoBehaviour
     /// <summary>
     /// 메인 BGM을 재시작합니다.
     /// </summary>
-    private void RestartMainBGM()
-    {
-        try 
-        {
-            AudioClip audioClip = Managers.Resource.Load<AudioClip>("spring-day");
-            if (audioClip != null)
-            {
-                Managers.Sound.Play(Define.ESound.Bgm, audioClip);
-                Debug.Log("<color=green>[RhythmGameManager]</color> 메인 BGM 재시작: spring-day");
-            }
-            else
-            {
-                Debug.LogWarning("<color=yellow>[RhythmGameManager]</color> spring-day AudioClip을 찾을 수 없습니다.");
-            }
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError($"<color=red>[RhythmGameManager]</color> BGM 재시작 실패: {e.Message}");
-        }
-    }
+    // private void RestartMainBGM()
+    // {
+    //     try 
+    //     {
+    //         AudioClip audioClip = Managers.Resource.Load<AudioClip>("spring-day");
+    //         if (audioClip != null)
+    //         {
+    //             Managers.Sound.Play(Define.ESound.Bgm, audioClip);
+    //             Debug.Log("<color=green>[RhythmGameManager]</color> 메인 BGM 재시작: spring-day");
+    //         }
+    //         else
+    //         {
+    //             Debug.LogWarning("<color=yellow>[RhythmGameManager]</color> spring-day AudioClip을 찾을 수 없습니다.");
+    //         }
+    //     }
+    //     catch (System.Exception e)
+    //     {
+    //         Debug.LogError($"<color=red>[RhythmGameManager]</color> BGM 재시작 실패: {e.Message}");
+    //     }
+    // }
 
     // ====== 보조/유틸리티 메서드 ======
     private void SetupAudioSources()

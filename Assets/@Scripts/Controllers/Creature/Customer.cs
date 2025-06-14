@@ -59,6 +59,9 @@ public class Customer : Unit
     private bool _isInWaitingQueue = false;
     private bool _isInEntryMode = false; // 입장 모드 (문으로 먼저 이동)
     
+    // 🆕 불만 상태 플래그 (음식 대기 시간 초과 등으로 불만스럽게 떠나는 경우)
+    private bool _isLeavingDueToComplaint = false;
+    
     [SerializeField]
     public TextMeshProUGUI orderText; // 인스펙터에서 할당 or 코드에서 찾기
 
@@ -317,8 +320,16 @@ private void OnDestroy()
                 Debug.Log($"<color=yellow>[Customer {this.name}] StandingUp 상태 진입 - 일어나는 애니메이션 시작</color>");
                 action.CustomerStandIdle();
                 
-                // 💰 돈 지불 로직 추가
-                PayForMeal();
+                // 🆕 불만으로 떠나는 경우가 아닐 때만 돈 지불
+                if (!_isLeavingDueToComplaint)
+                {
+                    PayForMeal();
+                    Debug.Log($"<color=green>[Customer {this.name}] 정상적으로 식사를 마쳐서 돈을 지불합니다.</color>");
+                }
+                else
+                {
+                    Debug.Log($"<color=red>[Customer {this.name}] 불만으로 떠나므로 돈을 지불하지 않습니다!</color>");
+                }
                 
                 _chair?.VacateSeat();
                 Managers.PublishAction(ActionType.Customer_FinishedEating);
@@ -769,6 +780,14 @@ private void OnDestroy()
     /// 할당된 대기 위치
     /// </summary>
     public Vector3 AssignedWaitingPosition => _assignedWaitingPosition;
+    
+    /// <summary>
+    /// 불만으로 떠나는 고객으로 설정 (Table.OnFoodWaitingTimeUp에서 호출)
+    /// </summary>
+    public void SetLeavingDueToComplaint()
+    {
+        _isLeavingDueToComplaint = true;
+    }
 
     /// <summary>
     /// 식사 후 돈 지불 처리

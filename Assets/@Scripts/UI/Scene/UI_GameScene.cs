@@ -336,11 +336,11 @@ public class UI_GameScene : UI_Scene
         
         if (rhythmManager != null && rhythmManager.CurrentRecipe != null)
         {
-            recipeDisplayText = $"🔥 제작 중: {rhythmManager.CurrentRecipe.RecipeName}";
+            recipeDisplayText = $"{rhythmManager.CurrentRecipe.RecipeName}";
         }
         else
         {
-            recipeDisplayText = "🔥 제작 중: 없음";
+            recipeDisplayText = "없음";
         }
         
         TMPro.TMP_Text recipeText = GetText((int)Texts.RecipeButtonText);

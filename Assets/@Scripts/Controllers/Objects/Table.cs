@@ -142,6 +142,9 @@ public class Table : Item
                 Debug.Log($"<color=cyan>[Table {tableId}] 고객 {customer.name} 현재 상태: {customer.CustomerState}</color>");
                 Debug.Log($"<color=cyan>[Table {tableId}] Agent 상태: {(customer.agent != null ? customer.agent.enabled.ToString() : "null")}</color>");
                 
+                // 🆕 불만으로 떠나는 고객임을 먼저 설정 (돈 지불 방지)
+                customer.SetLeavingDueToComplaint();
+                
                 // 고객을 불만 상태로 변경 - Customer 클래스가 알아서 처리
                 customer.CustomerState = ECustomerState.StandingUp;
                 Debug.Log($"<color=yellow>[Table {tableId}] 고객 {customer.name} 상태를 StandingUp으로 변경 완료</color>");

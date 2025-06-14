@@ -92,8 +92,8 @@ public class TableManager
 
         foreach (var table in _tables)
         {
-            // 테이블이 다 찼고, UI Canvas가 활성화되어 있는지 확인
-            if (!table.IsFullyOccupied || table.tableOrderCanvas == null || !table.tableOrderCanvas.gameObject.activeSelf) 
+            // 🆕 테이블이 다 찼고, ReadyToOrder 상태인 테이블만 주문 가능
+            if (!table.IsFullyOccupied || table.CurrentUIState != Table.ETableUIState.ReadyToOrder) 
                 continue; 
 
             float distance = Vector3.Distance(playerPos, table.transform.position);
@@ -349,8 +349,8 @@ public class TableManager
             }
             
             // 테이블 위에서 랜덤 위치에 1.5f 격차로 배치
-            float randomX = UnityEngine.Random.Range(-1.5f, 1.5f);
-            float randomZ = UnityEngine.Random.Range(-1.5f, 1.5f);
+            float randomX = UnityEngine.Random.Range(-1f, 1f);
+            float randomZ = UnityEngine.Random.Range(-1f, 1f);
             Vector3 offset = new Vector3(randomX, 0, randomZ);
             Vector3 spawnPos = table.transform.position + Vector3.up * 1.5f + offset;
             

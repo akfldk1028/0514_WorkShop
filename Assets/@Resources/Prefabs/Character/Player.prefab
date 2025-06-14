@@ -77,7 +77,7 @@ PrefabInstance:
       addedObject: {fileID: 2726487092877949288}
     - targetCorrespondingSourceObject: {fileID: 4600110157238723781, guid: 0d2d836e2e83b754fa1a1c4022d6d65d, type: 3}
       insertIndex: -1
-      addedObject: {fileID: -3542681928081317220}
+      addedObject: {fileID: 2888765582496299459}
   m_SourcePrefab: {fileID: 100100000, guid: 0d2d836e2e83b754fa1a1c4022d6d65d, type: 3}
 --- !u!1 &3432938055014428936 stripped
 GameObject:
@@ -119,14 +119,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 0}
---- !u!114 &-3542681928081317220
+--- !u!114 &2888765582496299459
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3432938055014428936}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 25c696e9e9517764993562c4b171dd3f, type: 3}
   m_Name: 
@@ -134,4 +134,4 @@ MonoBehaviour:
   enableTestMode: 1
   addAllRecipesOnStart: 1
   showTestUI: 1
-  testRecipeIds: 410d0300420d0300430d0300440d0300450d0300460d0300470d0300490d03004a0d03004b0d03004c0d03004d0d0300
+  testRecipeIds: 410d0300430d0300460d0300490d03004a0d03004b0d03004c0d03004f0d0300510d0300

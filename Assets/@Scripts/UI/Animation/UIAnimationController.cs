@@ -21,11 +21,7 @@ public class UIAnimationController
             goldText.text = newValue.ToString("N0");
         });
         
-        // 🎆 이중 스케일 펀치 효과
-        goldText.transform.DOPunchScale(Vector3.one * 0.4f, 0.8f, 8, 0.8f)
-            .OnComplete(() => {
-                goldText.transform.DOPunchScale(Vector3.one * 0.2f, 0.4f, 4, 0.5f);
-            });
+        // 🎆 스케일 효과 제거 (글자 크기 고정)
         
         // 🌈 색상 변화 시퀀스
         Sequence colorSequence = DOTween.Sequence();
@@ -109,7 +105,7 @@ public class UIAnimationController
                     .Append(glassText.DOColor(Color.black, 0.4f));
         
         // 🎯 부드러운 스케일 효과
-        glassText.transform.DOPunchScale(Vector3.one * 0.25f, 0.6f, 6, 0.6f);
+        // glassText.transform.DOPunchScale(Vector3.one * 0.25f, 0.6f, 6, 0.6f);
         
         Debug.Log($"<color=cyan>🥃✨ 유리잔 애니메이션!</color> {oldValue} → {newValue}");
     }
