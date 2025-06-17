@@ -139,7 +139,7 @@ public class RhythmGameManager : MonoBehaviour
         WaitASecond();
 
         // 현재 레시피가 없을 때만 새로운 레시피를 가져옴
-        if (isRestart) //재시작 시
+        if (isRestart) //실패 후 재시작 시
         {   
             RestoreKeyUI();
             Debug.Log($"<color=green>[RhythmGameManager]</color> 실패한 레시피 재시도: {currentRecipe.RecipeName}");
@@ -152,7 +152,7 @@ public class RhythmGameManager : MonoBehaviour
             KeyUI.SetActive(true);
             return;
         }
-        else
+        else //새 레시피 사용용
         {
             RestoreKeyUI();
             // OrderManager에서 다음 주문을 확인만 하기 (꺼내지 않음)
@@ -775,9 +775,28 @@ public class RhythmGameManager : MonoBehaviour
             {
                 Debug.Log($"<color=green>[LoadAndSpawnCocktailPrefab]</color> 프리팹 로드 성공: {recipeId}");
                 
+                if (recipeId == "200019" || recipeId == "200010") //고진감래 모히토
+                {
+                    // recipe가 빈 문자열일 때 y값을 10만큼 올림
+                    Vector3 adjustedPosition = cocktailSpawnPoint.position + Vector3.up * 0.535f;
+                    currentCocktailPrefab = Instantiate(prefab, adjustedPosition, cocktailSpawnPoint.rotation);
+                    Debug.Log($"<color=yellow>[LoadAndSpawnCocktailPrefab]</color> 빈 레시피 - Y 위치 +0.5 조정: {adjustedPosition}"); 
+                }
+                else if (recipeId == "200012") //섹스온더비치치
+                {
+                    Vector3 adjustedPosition = cocktailSpawnPoint.position + Vector3.up * 0.15f;
+                    currentCocktailPrefab = Instantiate(prefab, adjustedPosition, cocktailSpawnPoint.rotation);
+                    Debug.Log($"<color=yellow>[LoadAndSpawnCocktailPrefab]</color> 빈 레시피 - Y 위치 +0.5 조정: {adjustedPosition}"); 
+                }
+                else
+                {
+                    currentCocktailPrefab = Instantiate(prefab, cocktailSpawnPoint.position, cocktailSpawnPoint.rotation);
+                    Debug.Log($"<color=yellow>[LoadAndSpawnCocktailPrefab]</color> 레시피 생성: {recipeId}"); 
+                }
                 // 프리팹 생성
-                currentCocktailPrefab = Instantiate(prefab, cocktailSpawnPoint.position, cocktailSpawnPoint.rotation);
                 
+                
+
                 // 모든 Steps와 Final 오브젝트 비활성화 (Base는 활성화 상태 유지)
                 Transform stepsTransform = currentCocktailPrefab.transform.Find("1_Steps");
                 Transform finalTransform = currentCocktailPrefab.transform.Find("2_Final");
@@ -1004,15 +1023,7 @@ public class RhythmGameManager : MonoBehaviour
 
     public void ESCPressed() //정리해야됨
     {
-        Debug.Log("ESCPressed가 호출되었습니다.");
-        RestoreKeyUI();
-        KeyUI.SetActive(false);
-        sampleImage.gameObject.SetActive(false);
-        
-
-        Managers.Ingame.isRhythmGameStarted = false;
-
-        // 게임이 진행 중일 때 ESC를 누른 경우
+                // 게임이 진행 중일 때 ESC를 누른 경우
         if (!isRhythmGameEnded)
         {
             Debug.Log("<color=orange>[RhythmGameManager]</color> ESC를 눌러 리듬 게임을 강제 중단합니다.");
@@ -1020,17 +1031,18 @@ public class RhythmGameManager : MonoBehaviour
             StopAllCoroutines();
             isRhythmGameEnded = true; 
 
-
-            ClearCocktailPrefab();
             Managers.Ingame.EndRhythmGame(RhythmResult.Pause);
         }
-        // 게임이 이미 끝난 상태(성공 또는 주문없음)에서 ESC가 눌렸을 때 ->
-        else
-        {
-            Debug.Log("게임 종료 후 ESC: UI와 오브젝트를 정리합니다.");
-            // 이미 멈춰있는 상태이므로, 남은 오브젝트만 정리합니다.
-            ClearCocktailPrefab();
-        }
+
+        RestoreKeyUI();
+        KeyUI.SetActive(false);
+        sampleImage.gameObject.SetActive(false);
+        badResultImage.SetActive(false);
+
+        ClearCocktailPrefab();
+
+        Managers.Ingame.isRhythmGameStarted = false;
+
     }
 
     public void ClearCocktailPrefab()

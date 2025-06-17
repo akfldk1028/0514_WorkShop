@@ -25,6 +25,7 @@ public class UI_StartUpScene : UI_Scene
 		ExitButton,
 	}
 
+	public GameObject RecipeUI;
 
     public override bool Init()
     {
@@ -49,6 +50,8 @@ public class UI_StartUpScene : UI_Scene
 		GetButton((int)Buttons.ExitButton).gameObject.BindEvent(OnClickExitButton);
 
 		StartLoadAssets();
+
+		RecipeUI.SetActive(false); //임시로 넣은 레시피이미지 + 버튼
 		return true;
     }
 
@@ -61,7 +64,51 @@ public class UI_StartUpScene : UI_Scene
 	void OnClickRecipeButton(PointerEventData evt)
 	{
 		Debug.Log("RecipeButton");
+		RecipeUI.SetActive(true);
+
+		/////////// 이거 이미지 넣었을 때 내가 지정한 이미지 크기랑 로드했을 때 크기랑 달라서... 근데 왜그런지 잘 모르겠어서 그냥 일단 무식하게 키웠습니다... 나중에 알려주세요요
+		// 먼저 RecipeUI 전체를 크게 만들기
+		RectTransform recipeUITransform = RecipeUI.GetComponent<RectTransform>();
+		if (recipeUITransform != null)
+		{
+			recipeUITransform.localScale = Vector3.one * 2.0f; // 부모를 2배로 크게
+			Debug.Log("<color=magenta>[UI_StartUpScene]</color> RecipeUI 전체 크기 조정: 2.0배");
+		}
+		
+		// 그 다음 내부 레시피 이미지도 추가로 크게 만들기
+		bool foundRecipeImage = false;
+		
+		// 방법 1: "recipe" 이름으로 찾기
+		Transform recipeImageTransform = RecipeUI.transform.Find("recipe");
+		if (recipeImageTransform != null)
+		{
+			recipeImageTransform.localScale = Vector3.one * 1.5f; // 자식도 2.5배로 크게
+			Debug.Log("<color=green>[UI_StartUpScene]</color> 레시피 이미지 크기 조정: 2.5배 (Find로 발견)");
+			foundRecipeImage = true;
+		}
+		
+		// 방법 2: 모든 자식 오브젝트 중에서 이미지 컴포넌트가 있는 것들 찾기
+		if (!foundRecipeImage)
+		{
+			for (int i = 0; i < RecipeUI.transform.childCount; i++)
+			{
+				Transform child = RecipeUI.transform.GetChild(i);
+				if (child.GetComponent<Image>() != null)
+				{
+					child.localScale = Vector3.one * 1.5f; // 자식도 2.5배로 크게
+					Debug.Log($"<color=cyan>[UI_StartUpScene]</color> 자식 이미지 '{child.name}' 크기 조정: 2.5배");
+					foundRecipeImage = true;
+				}
+			}
+		}
+		
 		// Managers.Scene.LoadScene(EScene.RecipeScene);
+	}
+
+	public void CloseRecipeUI() //레시피 닫기
+	{
+		Debug.Log("CloseRecipeUI");
+		RecipeUI.SetActive(false);
 	}
 
 

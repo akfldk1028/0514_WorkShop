@@ -15,6 +15,7 @@ public class UI_GameScene : UI_Scene
        
         // CheatButton,
         shopButton,
+        RecipeButton,    // 🆕 레시피 버튼 추가!
 
         
     }
@@ -46,6 +47,10 @@ public class UI_GameScene : UI_Scene
         ReadyToServeItem,
     }
 
+    [Header("Recipe UI")]
+    public GameObject RecipeUI;  // 🆕 레시피 UI 오브젝트
+    private bool isRecipeUIOpen = false;  // 🆕 레시피 UI 열림 상태
+
     private IDisposable _orderTextSubscription;
     private IDisposable _goldAnimationSubscription; // 골드 애니메이션 구독 추가
     private IDisposable _goldDecreaseSubscription; // 골드 감소 애니메이션 구독 추가
@@ -63,6 +68,7 @@ public class UI_GameScene : UI_Scene
         BindObjects(typeof(GameObjects));
 
         GetButton((int)Buttons.shopButton).gameObject.BindEvent(OnClickShopButton);
+        GetButton((int)Buttons.RecipeButton).gameObject.BindEvent(OnClickRecipeButton);  // 🆕 레시피 버튼 이벤트 연결
         GetText((int)Texts.GoldCountText).text = "0";
         GetText((int)Texts.BattlePowerText).text = $"{Managers.Game.Glass}개";
         // 주문 텍스트 업데이트 액션 구독
@@ -84,6 +90,10 @@ public class UI_GameScene : UI_Scene
         Managers.Subscribe(ActionType.UI_UpdateOrderText, OnUpdateOrderTextFromRhythm);
         Managers.Subscribe(ActionType.UI_UpdateGlassText, OnUpdateGlassText);
         
+        // 🆕 레시피 UI 초기화
+        if (RecipeUI != null)
+            RecipeUI.SetActive(false);
+        
         Refresh();
         
         return true;
@@ -94,6 +104,7 @@ public class UI_GameScene : UI_Scene
 
     private void Update()
     {
+        
         // _elapsedTime += Time.deltaTime;
 
         // if (_elapsedTime >= _updateInterval)
@@ -130,6 +141,54 @@ public class UI_GameScene : UI_Scene
         UI_TableSetting popup = Managers.UI.ShowPopupUI<UI_TableSetting>();
         popup.GetComponent<Canvas>().sortingOrder = 101;
         popup.SetInfo();
+    }
+
+    void OnClickRecipeButton(PointerEventData evt)
+    {
+        Debug.Log("<color=cyan>[UI_GameScene]</color> Recipe 버튼 클릭!");
+        
+        if (RecipeUI != null)
+        {
+            RecipeUI.SetActive(true);
+            isRecipeUIOpen = true;
+            
+            /*// 레시피 UI 크기 조정 (StartUpScene과 동일한 로직)
+            RectTransform recipeUITransform = RecipeUI.GetComponent<RectTransform>();
+            if (recipeUITransform != null)
+            {
+                recipeUITransform.localScale = Vector3.one * 1.2f;
+                Debug.Log("<color=green>[UI_GameScene]</color> 레시피 UI 크기 조정: 1.2배");
+            }
+            
+            // 내부 레시피 이미지도 크기 조정
+            bool foundRecipeImage = false;
+            
+            Transform recipeImageTransform = RecipeUI.transform.Find("recipe");
+            if (recipeImageTransform != null)
+            {
+                recipeImageTransform.localScale = Vector3.one * 1.0f;
+                Debug.Log("<color=green>[UI_GameScene]</color> 레시피 이미지 크기 조정: 1.0배");
+                foundRecipeImage = true;
+            }
+            
+            if (!foundRecipeImage)
+            {
+                for (int i = 0; i < RecipeUI.transform.childCount; i++)
+                {
+                    Transform child = RecipeUI.transform.GetChild(i);
+                    if (child.GetComponent<Image>() != null)
+                    {
+                        child.localScale = Vector3.one * 1.0f;
+                        Debug.Log($"<color=cyan>[UI_GameScene]</color> 자식 이미지 '{child.name}' 크기 조정: 1.0배");
+                        foundRecipeImage = true;
+                    }
+                }
+            }*/
+        }
+        else
+        {
+            Debug.LogWarning("<color=yellow>[UI_GameScene]</color> RecipeUI가 할당되지 않았습니다!");
+        }
     }
 
     public void RefreshGoldText()
@@ -392,4 +451,10 @@ public class UI_GameScene : UI_Scene
         Debug.Log($"<color=cyan>[UI_GameScene]</color> 유리잔 텍스트 업데이트: {Managers.Game.Glass}개");
     }
 
+    public void CloseRecipeUI()
+    {
+        RecipeUI.SetActive(false);
+        isRecipeUIOpen = false;
+        Debug.Log("<color=blue>[UI_GameScene]</color> 레시피 UI 닫기");
+    }
 }

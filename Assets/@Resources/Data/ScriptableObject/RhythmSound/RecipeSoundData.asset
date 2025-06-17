@@ -26,11 +26,11 @@ MonoBehaviour:
     soundW: {fileID: 8300000, guid: 26070d6ddccda3c4787e2ba179f9a047, type: 3}
     soundZ: {fileID: 8300000, guid: 20ede7ab3bc1ba04999ee1a273fc5de4, type: 3}
   - recipeId: 200006
-    soundA: {fileID: 8300000, guid: c9512085834caea45b5456e6ecae82d7, type: 3}
-    soundS: {fileID: 8300000, guid: 11e2ae2958b86fe4f9fb8891be30446e, type: 3}
-    soundD: {fileID: 8300000, guid: cfad6f9a182d05942ae8865ed81ffd3f, type: 3}
-    soundW: {fileID: 8300000, guid: c5559c9a40aa50148bff8af700838140, type: 3}
-    soundZ: {fileID: 8300000, guid: e4bc2ab744de8d249a5d16f249d1eac8, type: 3}
+    soundA: {fileID: 8300000, guid: 78c23771ef203d040804cec93996f603, type: 3}
+    soundS: {fileID: 8300000, guid: f0ad3761e76aa5a429a5e4a02a01e110, type: 3}
+    soundD: {fileID: 8300000, guid: 60775eb83637a284dadb8659d4ad6962, type: 3}
+    soundW: {fileID: 8300000, guid: 3d1cbc7541a25fa4a809602cd10fa513, type: 3}
+    soundZ: {fileID: 8300000, guid: 6bed27828fbf08545982eeec22e06cbd, type: 3}
   - recipeId: 200009
     soundA: {fileID: 8300000, guid: ef63224ed0096ce4398db8ebbd7eb9ac, type: 3}
     soundS: {fileID: 8300000, guid: 1d80c778ad0e22540882184795cbd173, type: 3}
@@ -56,11 +56,11 @@ MonoBehaviour:
     soundW: {fileID: 8300000, guid: 58cbda66fff1de046a46828f50d83edd, type: 3}
     soundZ: {fileID: 8300000, guid: 2400f70894070b4428cbc37423fa5242, type: 3}
   - recipeId: 200015
-    soundA: {fileID: 8300000, guid: c4069ce265ead34459eea3c763a4ceb8, type: 3}
-    soundS: {fileID: 8300000, guid: 6ff378164d20c194a97a4ca7b132a0d4, type: 3}
-    soundD: {fileID: 8300000, guid: f9925f8fab2081844a4b50b90b0261cd, type: 3}
-    soundW: {fileID: 8300000, guid: 28bc8569babbeaf479a9ac46baf53e68, type: 3}
-    soundZ: {fileID: 8300000, guid: 7572ba55223229242a658248110cdef4, type: 3}
+    soundA: {fileID: 8300000, guid: 874fcc107bbddb74ab77b2971f5afd11, type: 3}
+    soundS: {fileID: 8300000, guid: e96f0864648d2df419fede5161cce9af, type: 3}
+    soundD: {fileID: 8300000, guid: 5e7872aa285844e48b5bef38b07b924d, type: 3}
+    soundW: {fileID: 8300000, guid: a047fd975aa4f934b9ea352fc2521b46, type: 3}
+    soundZ: {fileID: 8300000, guid: ceab0ffb018b3d646985b0306381c7e6, type: 3}
   - recipeId: 200017
     soundA: {fileID: 8300000, guid: 17e540eece3e91b4587dfd622cd8791f, type: 3}
     soundS: {fileID: 8300000, guid: b4417808e9512b94984967170120672c, type: 3}

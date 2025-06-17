@@ -31,8 +31,8 @@ public class CameraController : InitBase
 	
 	// 현재 뷰 모드를 외부에서 확인할 수 있는 프로퍼티
 	public bool IsTopView => currentViewMode == ViewMode.TopView;
-    public float positionSmoothSpeed = 0.125f;  // 0.05f에서 증가 (더 부드럽게)
-    public float rotationSmoothSpeed = 2f;      // 7f에서 감소 (너무 빠른 회전 방지)
+    public float positionSmoothSpeed = 0.125f;  // 0.05f에서 0.15f로 증가 (더 빠르게 따라가기)
+    public float rotationSmoothSpeed = 5f;      // 7f에서 감소 (너무 빠른 회전 방지)
 
 	private bool justSwitchedToBackView = false;
 
