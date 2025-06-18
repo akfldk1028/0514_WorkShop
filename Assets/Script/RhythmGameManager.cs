@@ -781,6 +781,14 @@ public class RhythmGameManager : MonoBehaviour
                     Vector3 adjustedPosition = cocktailSpawnPoint.position + Vector3.up * 0.535f;
                     currentCocktailPrefab = Instantiate(prefab, adjustedPosition, cocktailSpawnPoint.rotation);
                     Debug.Log($"<color=yellow>[LoadAndSpawnCocktailPrefab]</color> 빈 레시피 - Y 위치 +0.5 조정: {adjustedPosition}"); 
+
+                    if(recipeId == "200010")
+                    {
+                        // Z값을 -0.178만큼 추가 조정
+                        Vector3 currentPosition = currentCocktailPrefab.transform.position;
+                        currentCocktailPrefab.transform.position = new Vector3(currentPosition.x, currentPosition.y, currentPosition.z + 0.178f);
+                        Debug.Log($"<color=cyan>[LoadAndSpawnCocktailPrefab]</color> recipeId 200010 - Z 위치 -0.178 추가 조정: {currentCocktailPrefab.transform.position}");
+                    }
                 }
                 else if (recipeId == "200012") //섹스온더비치치
                 {
@@ -793,6 +801,18 @@ public class RhythmGameManager : MonoBehaviour
                     currentCocktailPrefab = Instantiate(prefab, cocktailSpawnPoint.position, cocktailSpawnPoint.rotation);
                     Debug.Log($"<color=yellow>[LoadAndSpawnCocktailPrefab]</color> 레시피 생성: {recipeId}"); 
                 }
+
+                if(recipeId == "200001" || recipeId == "200003" || recipeId == " 200017")
+                {
+
+                }
+                else
+                {
+                    // Y축으로 270도 회전 적용
+                    currentCocktailPrefab.transform.rotation = Quaternion.Euler(0, 270, 0);
+                }
+
+
                 // 프리팹 생성
                 
                 
